@@ -21,6 +21,41 @@
     </ui:FluentWindow.InputBindings>
     <ui:FluentWindow.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Style x:Key="SidebarNavButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="44" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="Background" Value="#00000000" />
+            <Setter Property="Foreground" Value="{DynamicResource AppSidebarTextBrush}" />
+            <Setter Property="BorderBrush" Value="#00000000" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Padding" Value="12,0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="RootBorder"
+                                CornerRadius="12"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="RootBorder" Property="Background" Value="#1FFFFFFF" />
+                                <Setter TargetName="RootBorder" Property="BorderBrush" Value="#33FFFFFF" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="RootBorder" Property="Background" Value="#28FFFFFF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </ui:FluentWindow.Resources>
 
     <Grid Background="{DynamicResource AppSurfaceBrush}">
@@ -30,33 +65,107 @@
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0"
+                Margin="12"
+                CornerRadius="20"
                 Background="{DynamicResource AppSidebarBrush}">
-            <DockPanel Margin="16">
-                <StackPanel DockPanel.Dock="Top">
-                    <TextBlock Text="POS"
-                               Foreground="{DynamicResource AppSidebarTextBrush}"
-                               FontSize="26"
-                               FontWeight="SemiBold" />
-                    <TextBlock Text="Offline Retail Suite"
-                               Foreground="{DynamicResource AppSidebarMutedTextBrush}"
-                               Margin="0,4,0,0" />
-                </StackPanel>
+            <Border.BorderBrush>
+                <SolidColorBrush Color="#2C3542" />
+            </Border.BorderBrush>
+            <Border.BorderThickness>1</Border.BorderThickness>
+            <Grid>
+                <Rectangle RadiusX="20" RadiusY="20" IsHitTestVisible="False" Opacity="0.14">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#FFFFFF" Offset="0" />
+                            <GradientStop Color="#00FFFFFF" Offset="1" />
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
 
-                <StackPanel Margin="0,20,0,0">
-                    <Button Content="{DynamicResource NavDashboard}" Height="42" Margin="0,0,0,8" Command="{Binding ShowDashboardModuleCommand}" />
-                    <Button Content="{DynamicResource NavPos}" Height="42" Margin="0,0,0,8" Command="{Binding ShowPosModuleCommand}" />
-                    <Button Content="{DynamicResource NavProducts}" Height="42" Margin="0,0,0,8" Command="{Binding ShowProductsModuleCommand}" />
-                    <Button Content="{DynamicResource NavCustomers}" Height="42" Margin="0,0,0,8" Command="{Binding ShowCustomersModuleCommand}" />
-                    <Button Content="{DynamicResource NavWarranty}" Height="42" Margin="0,0,0,8" Command="{Binding ShowWarrantyModuleCommand}" />
-                    <Button Content="{DynamicResource NavMaintenance}" Height="42" Margin="0,0,0,8" Command="{Binding ShowMaintenanceModuleCommand}" />
-                    <Button Content="{DynamicResource NavReports}" Height="42" Margin="0,0,0,8" Command="{Binding ShowReportsModuleCommand}" />
-                    <Button Content="{DynamicResource NavSettings}" Height="42" Margin="0,0,0,8" Command="{Binding ShowSettingsModuleCommand}" />
-                    <Button Content="{DynamicResource NavUsers}"
-                            Height="42"
-                            Command="{Binding ShowUsersModuleCommand}"
-                            Visibility="{Binding CanAccessUsersModule, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                </StackPanel>
-            </DockPanel>
+                <DockPanel Margin="14">
+                    <Border DockPanel.Dock="Bottom"
+                            Margin="0,12,0,0"
+                            Padding="12"
+                            CornerRadius="10"
+                            Background="#12000000">
+                        <TextBlock Text="POS v1.0"
+                                   Foreground="{DynamicResource AppSidebarMutedTextBrush}"
+                                   FontSize="12" />
+                    </Border>
+
+                    <StackPanel DockPanel.Dock="Top">
+                        <Border CornerRadius="14" Background="#1DFFFFFF" Padding="12" Margin="0,0,0,14">
+                            <StackPanel>
+                                <TextBlock Text="POS"
+                                           Foreground="{DynamicResource AppSidebarTextBrush}"
+                                           FontSize="26"
+                                           FontWeight="SemiBold" />
+                                <TextBlock Text="Offline Retail Suite"
+                                           Foreground="{DynamicResource AppSidebarMutedTextBrush}"
+                                           Margin="0,3,0,0"
+                                           FontSize="12" />
+                            </StackPanel>
+                        </Border>
+
+                        <Button Style="{StaticResource SidebarNavButtonStyle}" Command="{Binding ShowDashboardModuleCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="22" />
+                                <TextBlock Text="{DynamicResource NavDashboard}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource SidebarNavButtonStyle}" Command="{Binding ShowPosModuleCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE719;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="22" />
+                                <TextBlock Text="{DynamicResource NavPos}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource SidebarNavButtonStyle}" Command="{Binding ShowProductsModuleCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE8CC;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="22" />
+                                <TextBlock Text="{DynamicResource NavProducts}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource SidebarNavButtonStyle}" Command="{Binding ShowCustomersModuleCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="22" />
+                                <TextBlock Text="{DynamicResource NavCustomers}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource SidebarNavButtonStyle}" Command="{Binding ShowWarrantyModuleCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="22" />
+                                <TextBlock Text="{DynamicResource NavWarranty}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource SidebarNavButtonStyle}" Command="{Binding ShowMaintenanceModuleCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE90F;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="22" />
+                                <TextBlock Text="{DynamicResource NavMaintenance}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource SidebarNavButtonStyle}" Command="{Binding ShowReportsModuleCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE9D2;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="22" />
+                                <TextBlock Text="{DynamicResource NavReports}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource SidebarNavButtonStyle}" Command="{Binding ShowSettingsModuleCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="22" />
+                                <TextBlock Text="{DynamicResource NavSettings}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource SidebarNavButtonStyle}"
+                                Command="{Binding ShowUsersModuleCommand}"
+                                Visibility="{Binding CanAccessUsersModule, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE77B;" FontFamily="Segoe MDL2 Assets" FontSize="15" Width="22" />
+                                <TextBlock Text="{DynamicResource NavUsers}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </DockPanel>
+            </Grid>
         </Border>
 
         <Grid Grid.Column="1" Margin="22">
