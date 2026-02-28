@@ -12,7 +12,7 @@ namespace Presentation.Resources.Localization
 
         public event Action? LanguageChanged;
 
-        public string CurrentCultureCode { get; private set; } = "en-US";
+        public string CurrentCultureCode { get; private set; } = "ar-SA";
 
         public bool IsRightToLeft => CultureInfo.GetCultureInfo(CurrentCultureCode).TextInfo.IsRightToLeft;
 
