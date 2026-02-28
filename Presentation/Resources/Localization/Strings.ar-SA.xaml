@@ -13,6 +13,12 @@
     <sys:String x:Key="LanguageEnglish">الإنجليزية</sys:String>
     <sys:String x:Key="LanguageArabic">العربية</sys:String>
     <sys:String x:Key="LoggedUser">المستخدم الحالي:</sys:String>
+    <sys:String x:Key="DashboardProducts">إجمالي المنتجات</sys:String>
+    <sys:String x:Key="DashboardCustomers">العملاء النشطون</sys:String>
+    <sys:String x:Key="DashboardSalesToday">مبيعات اليوم</sys:String>
+    <sys:String x:Key="DashboardInvoicesToday">فواتير اليوم</sys:String>
+    <sys:String x:Key="DashboardDueMaintenance">صيانة مستحقة</sys:String>
+    <sys:String x:Key="DashboardActiveWarranties">ضمانات نشطة</sys:String>
     <sys:String x:Key="Search">بحث</sys:String>
     <sys:String x:Key="New">جديد</sys:String>
     <sys:String x:Key="Save">حفظ</sys:String>
@@ -74,6 +80,11 @@
     <sys:String x:Key="RestoreBackup">استعادة نسخة</sys:String>
     <sys:String x:Key="VerifyBackup">التحقق من النسخة</sys:String>
     <sys:String x:Key="Phone">الهاتف</sys:String>
+    <sys:String x:Key="Username">اسم المستخدم</sys:String>
+    <sys:String x:Key="Password">كلمة المرور</sys:String>
+    <sys:String x:Key="Role">الدور</sys:String>
+    <sys:String x:Key="IsActive">نشط</sys:String>
+    <sys:String x:Key="UserEditor">محرر المستخدم</sys:String>
     <sys:String x:Key="Location">الموقع</sys:String>
     <sys:String x:Key="Notes">ملاحظات</sys:String>
     <sys:String x:Key="StockAdjustment">تعديل المخزون</sys:String>

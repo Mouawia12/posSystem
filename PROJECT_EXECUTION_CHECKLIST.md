@@ -16,7 +16,7 @@
 - [x] Application module structure
 - [x] Presentation module structure
 - [x] Shared module structure
-- [ ] Dashboard module implementation
+- [x] Dashboard module implementation
 - [x] POS module implementation
 - [x] Products module implementation
 - [x] Customers module implementation
@@ -24,7 +24,7 @@
 - [x] Maintenance module implementation
 - [x] Reports module implementation
 - [x] Settings module implementation
-- [ ] Users module implementation
+- [x] Users module implementation
 
 ## Database Tables
 - [x] Users
@@ -46,14 +46,14 @@
 ## UI Screens
 - [x] Main Fluent shell (Sidebar + Header + Content area)
 - [x] POS screen (search + barcode input + cart + payment actions)
-- [ ] Dashboard screen
+- [x] Dashboard screen
 - [x] Products management screen
 - [x] Customers management screen
 - [x] Warranty management screen
 - [x] Maintenance schedule screen
 - [x] Reports screen
 - [x] Settings screen
-- [ ] Users screen (owner only)
+- [x] Users screen (owner only)
 
 ## Features
 - [x] Layered folder architecture (`Core/Infrastructure/Application/Presentation/Shared`)
@@ -81,7 +81,7 @@
 - [ ] Search latency validation under 300ms
 
 ## Security Items
-- [ ] Password hashing policy with salt strategy
+- [x] Password hashing policy with salt strategy
 - [ ] Login lockout / brute-force protection
 - [x] Permission matrix and action guards
 - [x] Global exception logging

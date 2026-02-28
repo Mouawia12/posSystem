@@ -17,7 +17,9 @@ namespace Presentation.ViewModels
         private readonly IWarrantyManagementService _warrantyManagementService;
         private readonly IMaintenanceManagementService _maintenanceManagementService;
         private readonly IReportingService _reportingService;
+        private readonly IDashboardService _dashboardService;
         private readonly ISettingsService _settingsService;
+        private readonly IUserManagementService _userManagementService;
         private readonly IBackupRestoreService _backupRestoreService;
         private readonly IPrintingService _printingService;
         private readonly IInvoiceService _invoiceService;
@@ -29,7 +31,14 @@ namespace Presentation.ViewModels
         [ObservableProperty] private string _loggedUserName = "owner";
         [ObservableProperty] private UserRole _loggedUserRole = UserRole.Owner;
         [ObservableProperty] private string _companyName = "My Retail Store";
-        [ObservableProperty] private string _activeModule = "POS";
+        [ObservableProperty] private string _activeModule = "DASHBOARD";
+
+        [ObservableProperty] private int _dashboardTotalProducts;
+        [ObservableProperty] private int _dashboardActiveCustomers;
+        [ObservableProperty] private int _dashboardInvoicesToday;
+        [ObservableProperty] private decimal _dashboardSalesToday;
+        [ObservableProperty] private int _dashboardDueMaintenance;
+        [ObservableProperty] private int _dashboardActiveWarranties;
 
         [ObservableProperty] private string _searchTerm = string.Empty;
         [ObservableProperty] private string _barcodeInput = string.Empty;
@@ -93,6 +102,14 @@ namespace Presentation.ViewModels
         [ObservableProperty] private string _backupFilePath = string.Empty;
         [ObservableProperty] private string _lastBackupFilePath = string.Empty;
 
+        [ObservableProperty] private string _usersSearchTerm = string.Empty;
+        [ObservableProperty] private UserManagementDto? _selectedManagedUser;
+        [ObservableProperty] private long? _editingUserId;
+        [ObservableProperty] private string _editingUsername = string.Empty;
+        [ObservableProperty] private string _editingUserPassword = string.Empty;
+        [ObservableProperty] private UserRole _editingUserRole = UserRole.Cashier;
+        [ObservableProperty] private bool _editingUserIsActive = true;
+
         [ObservableProperty] private object? _currentContent;
         [ObservableProperty] private FlowDirection _flowDirection = FlowDirection.LeftToRight;
         [ObservableProperty] private bool _canAccessUsersModule;
@@ -106,7 +123,10 @@ namespace Presentation.ViewModels
         public ObservableCollection<MaintenanceScheduleManagementDto> MaintenanceSchedules { get; } = [];
         public ObservableCollection<ReportDailySalesDto> DailySalesReport { get; } = [];
         public ObservableCollection<ReportTopProductDto> TopProductsReport { get; } = [];
+        public ObservableCollection<UserManagementDto> ManagedUsers { get; } = [];
+        public ObservableCollection<UserRole> AvailableUserRoles { get; } = [UserRole.Owner, UserRole.Manager, UserRole.Cashier];
 
+        public bool IsDashboardModule => ActiveModule == "DASHBOARD";
         public bool IsPosModule => ActiveModule == "POS";
         public bool IsProductsModule => ActiveModule == "PRODUCTS";
         public bool IsCustomersModule => ActiveModule == "CUSTOMERS";
@@ -114,7 +134,9 @@ namespace Presentation.ViewModels
         public bool IsMaintenanceModule => ActiveModule == "MAINTENANCE";
         public bool IsReportsModule => ActiveModule == "REPORTS";
         public bool IsSettingsModule => ActiveModule == "SETTINGS";
+        public bool IsUsersModule => ActiveModule == "USERS";
 
+        public IAsyncRelayCommand ShowDashboardModuleCommand { get; }
         public IRelayCommand ShowPosModuleCommand { get; }
         public IAsyncRelayCommand ShowProductsModuleCommand { get; }
         public IAsyncRelayCommand ShowCustomersModuleCommand { get; }
@@ -122,6 +144,7 @@ namespace Presentation.ViewModels
         public IAsyncRelayCommand ShowMaintenanceModuleCommand { get; }
         public IAsyncRelayCommand ShowReportsModuleCommand { get; }
         public IAsyncRelayCommand ShowSettingsModuleCommand { get; }
+        public IAsyncRelayCommand ShowUsersModuleCommand { get; }
 
         public IAsyncRelayCommand SearchCommand { get; }
         public IRelayCommand AddSelectedToCartCommand { get; }
@@ -165,6 +188,10 @@ namespace Presentation.ViewModels
         public IAsyncRelayCommand CreateBackupCommand { get; }
         public IAsyncRelayCommand RestoreBackupCommand { get; }
         public IAsyncRelayCommand VerifyBackupCommand { get; }
+        public IAsyncRelayCommand LoadManagedUsersCommand { get; }
+        public IAsyncRelayCommand SaveManagedUserCommand { get; }
+        public IRelayCommand NewManagedUserCommand { get; }
+        public IAsyncRelayCommand DeactivateManagedUserCommand { get; }
 
         public MainWindowViewModel(
             IProductSearchService productSearchService,
@@ -173,7 +200,9 @@ namespace Presentation.ViewModels
             IWarrantyManagementService warrantyManagementService,
             IMaintenanceManagementService maintenanceManagementService,
             IReportingService reportingService,
+            IDashboardService dashboardService,
             ISettingsService settingsService,
+            IUserManagementService userManagementService,
             IBackupRestoreService backupRestoreService,
             IPrintingService printingService,
             IInvoiceService invoiceService,
@@ -187,7 +216,9 @@ namespace Presentation.ViewModels
             _warrantyManagementService = warrantyManagementService;
             _maintenanceManagementService = maintenanceManagementService;
             _reportingService = reportingService;
+            _dashboardService = dashboardService;
             _settingsService = settingsService;
+            _userManagementService = userManagementService;
             _backupRestoreService = backupRestoreService;
             _printingService = printingService;
             _invoiceService = invoiceService;
@@ -195,6 +226,7 @@ namespace Presentation.ViewModels
             _permissionService = permissionService;
             _localizationService = localizationService;
 
+            ShowDashboardModuleCommand = new AsyncRelayCommand(ShowDashboardModuleAsync);
             ShowPosModuleCommand = new RelayCommand(() => ActiveModule = "POS");
             ShowProductsModuleCommand = new AsyncRelayCommand(ShowProductsModuleAsync);
             ShowCustomersModuleCommand = new AsyncRelayCommand(ShowCustomersModuleAsync);
@@ -202,6 +234,7 @@ namespace Presentation.ViewModels
             ShowMaintenanceModuleCommand = new AsyncRelayCommand(ShowMaintenanceModuleAsync);
             ShowReportsModuleCommand = new AsyncRelayCommand(ShowReportsModuleAsync);
             ShowSettingsModuleCommand = new AsyncRelayCommand(ShowSettingsModuleAsync);
+            ShowUsersModuleCommand = new AsyncRelayCommand(ShowUsersModuleAsync);
 
             SearchCommand = new AsyncRelayCommand(SearchAsync);
             AddSelectedToCartCommand = new RelayCommand(AddSelectedToCart);
@@ -245,22 +278,51 @@ namespace Presentation.ViewModels
             CreateBackupCommand = new AsyncRelayCommand(CreateBackupAsync);
             RestoreBackupCommand = new AsyncRelayCommand(RestoreBackupAsync);
             VerifyBackupCommand = new AsyncRelayCommand(VerifyBackupAsync);
+            LoadManagedUsersCommand = new AsyncRelayCommand(LoadManagedUsersAsync);
+            SaveManagedUserCommand = new AsyncRelayCommand(SaveManagedUserAsync);
+            NewManagedUserCommand = new RelayCommand(ResetManagedUserForm);
+            DeactivateManagedUserCommand = new AsyncRelayCommand(DeactivateManagedUserAsync);
 
             InitializeSecurityContext();
             _localizationService.LanguageChanged += OnLanguageChanged;
             ApplyLanguageState();
+            _ = ShowDashboardModuleAsync();
             StatusMessage = "System initialized.";
         }
 
         public decimal Subtotal => CartItems.Sum(x => x.LineTotal);
         public decimal Total => Subtotal - Discount + Tax;
 
+        private async Task ShowDashboardModuleAsync() { ActiveModule = "DASHBOARD"; await LoadDashboardAsync(); }
         private async Task ShowProductsModuleAsync() { ActiveModule = "PRODUCTS"; await LoadManagedProductsAsync(); }
         private async Task ShowCustomersModuleAsync() { ActiveModule = "CUSTOMERS"; await LoadManagedCustomersAsync(); }
         private async Task ShowWarrantyModuleAsync() { ActiveModule = "WARRANTY"; await LoadWarrantiesAsync(); }
         private async Task ShowMaintenanceModuleAsync() { ActiveModule = "MAINTENANCE"; await LoadMaintenanceSchedulesAsync(); }
         private async Task ShowReportsModuleAsync() { ActiveModule = "REPORTS"; await LoadReportsAsync(); }
         private async Task ShowSettingsModuleAsync() { ActiveModule = "SETTINGS"; await LoadSettingsAsync(); }
+        private async Task ShowUsersModuleAsync()
+        {
+            if (!CanAccessUsersModule)
+            {
+                StatusMessage = "You are not allowed to access Users module.";
+                return;
+            }
+
+            ActiveModule = "USERS";
+            await LoadManagedUsersAsync();
+        }
+
+        private async Task LoadDashboardAsync()
+        {
+            var summary = await _dashboardService.GetSummaryAsync();
+            DashboardTotalProducts = summary.TotalProducts;
+            DashboardActiveCustomers = summary.ActiveCustomers;
+            DashboardInvoicesToday = summary.InvoicesToday;
+            DashboardSalesToday = summary.SalesToday;
+            DashboardDueMaintenance = summary.DueMaintenanceCount;
+            DashboardActiveWarranties = summary.ActiveWarrantyCount;
+            StatusMessage = "Dashboard loaded.";
+        }
 
         private async Task SearchAsync()
         {
@@ -432,6 +494,75 @@ namespace Presentation.ViewModels
         private void ResetManagedCustomerForm()
         {
             EditingCustomerId = null; EditingCustomerFullName = string.Empty; EditingCustomerPhone = string.Empty; EditingCustomerLocation = string.Empty; EditingCustomerNotes = string.Empty;
+        }
+
+        private async Task LoadManagedUsersAsync()
+        {
+            if (!CanAccessUsersModule)
+            {
+                StatusMessage = "You are not allowed to access Users module.";
+                return;
+            }
+
+            var result = await _userManagementService.GetUsersAsync(UsersSearchTerm);
+            ManagedUsers.Clear();
+            foreach (var item in result) ManagedUsers.Add(item);
+            StatusMessage = $"{ManagedUsers.Count} users loaded.";
+        }
+
+        private async Task SaveManagedUserAsync()
+        {
+            if (!CanAccessUsersModule)
+            {
+                StatusMessage = "You are not allowed to manage users.";
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(EditingUsername))
+            {
+                StatusMessage = "Username is required.";
+                return;
+            }
+
+            if (EditingUserId is null && string.IsNullOrWhiteSpace(EditingUserPassword))
+            {
+                StatusMessage = "Password is required for new user.";
+                return;
+            }
+
+            await _userManagementService.UpsertAsync(new UpsertUserRequestDto
+            {
+                Id = EditingUserId,
+                Username = EditingUsername,
+                Password = string.IsNullOrWhiteSpace(EditingUserPassword) ? null : EditingUserPassword,
+                Role = EditingUserRole,
+                IsActive = EditingUserIsActive
+            });
+
+            await LoadManagedUsersAsync();
+            ResetManagedUserForm();
+            StatusMessage = "User saved successfully.";
+        }
+
+        private async Task DeactivateManagedUserAsync()
+        {
+            if (!CanAccessUsersModule || SelectedManagedUser is null)
+            {
+                return;
+            }
+
+            await _userManagementService.DeactivateAsync(SelectedManagedUser.Id);
+            await LoadManagedUsersAsync();
+            StatusMessage = "User deactivated.";
+        }
+
+        private void ResetManagedUserForm()
+        {
+            EditingUserId = null;
+            EditingUsername = string.Empty;
+            EditingUserPassword = string.Empty;
+            EditingUserRole = UserRole.Cashier;
+            EditingUserIsActive = true;
         }
 
         private async Task LoadWarrantiesAsync()
@@ -647,6 +778,7 @@ namespace Presentation.ViewModels
 
         partial void OnActiveModuleChanged(string value)
         {
+            OnPropertyChanged(nameof(IsDashboardModule));
             OnPropertyChanged(nameof(IsPosModule));
             OnPropertyChanged(nameof(IsProductsModule));
             OnPropertyChanged(nameof(IsCustomersModule));
@@ -654,6 +786,7 @@ namespace Presentation.ViewModels
             OnPropertyChanged(nameof(IsMaintenanceModule));
             OnPropertyChanged(nameof(IsReportsModule));
             OnPropertyChanged(nameof(IsSettingsModule));
+            OnPropertyChanged(nameof(IsUsersModule));
         }
 
         partial void OnSelectedManagedProductChanged(ProductManagementDto? value)
@@ -675,6 +808,16 @@ namespace Presentation.ViewModels
             EditingCustomerPhone = value.Phone;
             EditingCustomerLocation = value.Location ?? string.Empty;
             EditingCustomerNotes = value.Notes ?? string.Empty;
+        }
+
+        partial void OnSelectedManagedUserChanged(UserManagementDto? value)
+        {
+            if (value is null) return;
+            EditingUserId = value.Id;
+            EditingUsername = value.Username;
+            EditingUserPassword = string.Empty;
+            EditingUserRole = value.Role;
+            EditingUserIsActive = value.IsActive;
         }
     }
 }

@@ -41,7 +41,9 @@ namespace posSystem
                     services.AddScoped<IWarrantyManagementService, WarrantyManagementService>();
                     services.AddScoped<IMaintenanceManagementService, MaintenanceManagementService>();
                     services.AddScoped<IReportingService, ReportingService>();
+                    services.AddScoped<IDashboardService, DashboardService>();
                     services.AddScoped<ISettingsService, SettingsService>();
+                    services.AddScoped<IUserManagementService, UserManagementService>();
                     services.AddScoped<IBackupRestoreService, BackupRestoreService>();
                     services.AddScoped<IPrintingService, PrintingService>();
                     services.AddScoped<IInvoiceService, InvoiceService>();

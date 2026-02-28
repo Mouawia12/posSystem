@@ -12,6 +12,12 @@
     <sys:String x:Key="LanguageEnglish" xmlns:sys="clr-namespace:System;assembly=mscorlib">English</sys:String>
     <sys:String x:Key="LanguageArabic" xmlns:sys="clr-namespace:System;assembly=mscorlib">Arabic</sys:String>
     <sys:String x:Key="LoggedUser" xmlns:sys="clr-namespace:System;assembly=mscorlib">Logged User:</sys:String>
+    <sys:String x:Key="DashboardProducts" xmlns:sys="clr-namespace:System;assembly=mscorlib">Total Products</sys:String>
+    <sys:String x:Key="DashboardCustomers" xmlns:sys="clr-namespace:System;assembly=mscorlib">Active Customers</sys:String>
+    <sys:String x:Key="DashboardSalesToday" xmlns:sys="clr-namespace:System;assembly=mscorlib">Sales Today</sys:String>
+    <sys:String x:Key="DashboardInvoicesToday" xmlns:sys="clr-namespace:System;assembly=mscorlib">Invoices Today</sys:String>
+    <sys:String x:Key="DashboardDueMaintenance" xmlns:sys="clr-namespace:System;assembly=mscorlib">Due Maintenance</sys:String>
+    <sys:String x:Key="DashboardActiveWarranties" xmlns:sys="clr-namespace:System;assembly=mscorlib">Active Warranties</sys:String>
     <sys:String x:Key="Search" xmlns:sys="clr-namespace:System;assembly=mscorlib">Search</sys:String>
     <sys:String x:Key="New" xmlns:sys="clr-namespace:System;assembly=mscorlib">New</sys:String>
     <sys:String x:Key="Save" xmlns:sys="clr-namespace:System;assembly=mscorlib">Save</sys:String>
@@ -73,6 +79,11 @@
     <sys:String x:Key="RestoreBackup" xmlns:sys="clr-namespace:System;assembly=mscorlib">Restore Backup</sys:String>
     <sys:String x:Key="VerifyBackup" xmlns:sys="clr-namespace:System;assembly=mscorlib">Verify Backup</sys:String>
     <sys:String x:Key="Phone" xmlns:sys="clr-namespace:System;assembly=mscorlib">Phone</sys:String>
+    <sys:String x:Key="Username" xmlns:sys="clr-namespace:System;assembly=mscorlib">Username</sys:String>
+    <sys:String x:Key="Password" xmlns:sys="clr-namespace:System;assembly=mscorlib">Password</sys:String>
+    <sys:String x:Key="Role" xmlns:sys="clr-namespace:System;assembly=mscorlib">Role</sys:String>
+    <sys:String x:Key="IsActive" xmlns:sys="clr-namespace:System;assembly=mscorlib">Is Active</sys:String>
+    <sys:String x:Key="UserEditor" xmlns:sys="clr-namespace:System;assembly=mscorlib">User Editor</sys:String>
     <sys:String x:Key="Location" xmlns:sys="clr-namespace:System;assembly=mscorlib">Location</sys:String>
     <sys:String x:Key="Notes" xmlns:sys="clr-namespace:System;assembly=mscorlib">Notes</sys:String>
     <sys:String x:Key="StockAdjustment" xmlns:sys="clr-namespace:System;assembly=mscorlib">Stock Adjustment</sys:String>
