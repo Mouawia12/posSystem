@@ -1,0 +1,92 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <sys:String x:Key="NavDashboard" xmlns:sys="clr-namespace:System;assembly=mscorlib">Dashboard</sys:String>
+    <sys:String x:Key="NavPos" xmlns:sys="clr-namespace:System;assembly=mscorlib">POS</sys:String>
+    <sys:String x:Key="NavProducts" xmlns:sys="clr-namespace:System;assembly=mscorlib">Products</sys:String>
+    <sys:String x:Key="NavCustomers" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customers</sys:String>
+    <sys:String x:Key="NavWarranty" xmlns:sys="clr-namespace:System;assembly=mscorlib">Warranty</sys:String>
+    <sys:String x:Key="NavMaintenance" xmlns:sys="clr-namespace:System;assembly=mscorlib">Maintenance</sys:String>
+    <sys:String x:Key="NavReports" xmlns:sys="clr-namespace:System;assembly=mscorlib">Reports</sys:String>
+    <sys:String x:Key="NavSettings" xmlns:sys="clr-namespace:System;assembly=mscorlib">Settings</sys:String>
+    <sys:String x:Key="NavUsers" xmlns:sys="clr-namespace:System;assembly=mscorlib">Users</sys:String>
+    <sys:String x:Key="LanguageEnglish" xmlns:sys="clr-namespace:System;assembly=mscorlib">English</sys:String>
+    <sys:String x:Key="LanguageArabic" xmlns:sys="clr-namespace:System;assembly=mscorlib">Arabic</sys:String>
+    <sys:String x:Key="LoggedUser" xmlns:sys="clr-namespace:System;assembly=mscorlib">Logged User:</sys:String>
+    <sys:String x:Key="Search" xmlns:sys="clr-namespace:System;assembly=mscorlib">Search</sys:String>
+    <sys:String x:Key="New" xmlns:sys="clr-namespace:System;assembly=mscorlib">New</sys:String>
+    <sys:String x:Key="Save" xmlns:sys="clr-namespace:System;assembly=mscorlib">Save</sys:String>
+    <sys:String x:Key="Deactivate" xmlns:sys="clr-namespace:System;assembly=mscorlib">Deactivate</sys:String>
+    <sys:String x:Key="AddItem" xmlns:sys="clr-namespace:System;assembly=mscorlib">Add Item</sys:String>
+    <sys:String x:Key="ProductName" xmlns:sys="clr-namespace:System;assembly=mscorlib">Name</sys:String>
+    <sys:String x:Key="CostPrice" xmlns:sys="clr-namespace:System;assembly=mscorlib">Cost Price</sys:String>
+    <sys:String x:Key="SalePrice" xmlns:sys="clr-namespace:System;assembly=mscorlib">Sale Price</sys:String>
+    <sys:String x:Key="QtyOnHand" xmlns:sys="clr-namespace:System;assembly=mscorlib">Qty On Hand</sys:String>
+    <sys:String x:Key="Qty" xmlns:sys="clr-namespace:System;assembly=mscorlib">Qty</sys:String>
+    <sys:String x:Key="QtyPlus" xmlns:sys="clr-namespace:System;assembly=mscorlib">Qty +</sys:String>
+    <sys:String x:Key="QtyMinus" xmlns:sys="clr-namespace:System;assembly=mscorlib">Qty -</sys:String>
+    <sys:String x:Key="Remove" xmlns:sys="clr-namespace:System;assembly=mscorlib">Remove</sys:String>
+    <sys:String x:Key="ProductEditor" xmlns:sys="clr-namespace:System;assembly=mscorlib">Product Editor</sys:String>
+    <sys:String x:Key="ProductActive" xmlns:sys="clr-namespace:System;assembly=mscorlib">Active Product</sys:String>
+    <sys:String x:Key="CustomerEditor" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer Editor</sys:String>
+    <sys:String x:Key="CustomerName" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer Name</sys:String>
+    <sys:String x:Key="CustomerId" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer ID</sys:String>
+    <sys:String x:Key="InvoiceId" xmlns:sys="clr-namespace:System;assembly=mscorlib">Invoice ID</sys:String>
+    <sys:String x:Key="DeviceType" xmlns:sys="clr-namespace:System;assembly=mscorlib">Device Type</sys:String>
+    <sys:String x:Key="Model" xmlns:sys="clr-namespace:System;assembly=mscorlib">Model</sys:String>
+    <sys:String x:Key="SerialNo" xmlns:sys="clr-namespace:System;assembly=mscorlib">Serial No.</sys:String>
+    <sys:String x:Key="WarrantyStatus" xmlns:sys="clr-namespace:System;assembly=mscorlib">Warranty Status</sys:String>
+    <sys:String x:Key="WarrantyEnd" xmlns:sys="clr-namespace:System;assembly=mscorlib">Warranty End</sys:String>
+    <sys:String x:Key="RegisterWarranty" xmlns:sys="clr-namespace:System;assembly=mscorlib">Register Warranty</sys:String>
+    <sys:String x:Key="CancelWarranty" xmlns:sys="clr-namespace:System;assembly=mscorlib">Cancel Warranty</sys:String>
+    <sys:String x:Key="DueDate" xmlns:sys="clr-namespace:System;assembly=mscorlib">Due Date</sys:String>
+    <sys:String x:Key="PeriodMonths" xmlns:sys="clr-namespace:System;assembly=mscorlib">Period (Months)</sys:String>
+    <sys:String x:Key="MaintenanceStatus" xmlns:sys="clr-namespace:System;assembly=mscorlib">Maintenance Status</sys:String>
+    <sys:String x:Key="MarkDone" xmlns:sys="clr-namespace:System;assembly=mscorlib">Mark Done</sys:String>
+    <sys:String x:Key="MarkSkipped" xmlns:sys="clr-namespace:System;assembly=mscorlib">Mark Skipped</sys:String>
+    <sys:String x:Key="AddVisit" xmlns:sys="clr-namespace:System;assembly=mscorlib">Add Visit</sys:String>
+    <sys:String x:Key="WorkType" xmlns:sys="clr-namespace:System;assembly=mscorlib">Work Type</sys:String>
+    <sys:String x:Key="CostAmount" xmlns:sys="clr-namespace:System;assembly=mscorlib">Cost Amount</sys:String>
+    <sys:String x:Key="WarrantyCovered" xmlns:sys="clr-namespace:System;assembly=mscorlib">Warranty Covered</sys:String>
+    <sys:String x:Key="FromDate" xmlns:sys="clr-namespace:System;assembly=mscorlib">From</sys:String>
+    <sys:String x:Key="ToDate" xmlns:sys="clr-namespace:System;assembly=mscorlib">To</sys:String>
+    <sys:String x:Key="GenerateReport" xmlns:sys="clr-namespace:System;assembly=mscorlib">Generate Report</sys:String>
+    <sys:String x:Key="TotalInvoices" xmlns:sys="clr-namespace:System;assembly=mscorlib">Total Invoices</sys:String>
+    <sys:String x:Key="GrossSales" xmlns:sys="clr-namespace:System;assembly=mscorlib">Gross Sales</sys:String>
+    <sys:String x:Key="NetSales" xmlns:sys="clr-namespace:System;assembly=mscorlib">Net Sales</sys:String>
+    <sys:String x:Key="Profit" xmlns:sys="clr-namespace:System;assembly=mscorlib">Profit</sys:String>
+    <sys:String x:Key="Payments" xmlns:sys="clr-namespace:System;assembly=mscorlib">Payments</sys:String>
+    <sys:String x:Key="DailySales" xmlns:sys="clr-namespace:System;assembly=mscorlib">Daily Sales</sys:String>
+    <sys:String x:Key="TopProducts" xmlns:sys="clr-namespace:System;assembly=mscorlib">Top Products</sys:String>
+    <sys:String x:Key="Date" xmlns:sys="clr-namespace:System;assembly=mscorlib">Date</sys:String>
+    <sys:String x:Key="SettingsTitle" xmlns:sys="clr-namespace:System;assembly=mscorlib">Application Settings</sys:String>
+    <sys:String x:Key="SettingsSubtitle" xmlns:sys="clr-namespace:System;assembly=mscorlib">Store identity, invoice and printing preferences</sys:String>
+    <sys:String x:Key="CompanyName" xmlns:sys="clr-namespace:System;assembly=mscorlib">Company Name</sys:String>
+    <sys:String x:Key="Address" xmlns:sys="clr-namespace:System;assembly=mscorlib">Address</sys:String>
+    <sys:String x:Key="InvoicePrefix" xmlns:sys="clr-namespace:System;assembly=mscorlib">Invoice Prefix</sys:String>
+    <sys:String x:Key="NextInvoiceNumber" xmlns:sys="clr-namespace:System;assembly=mscorlib">Next Invoice Number</sys:String>
+    <sys:String x:Key="Currency" xmlns:sys="clr-namespace:System;assembly=mscorlib">Currency</sys:String>
+    <sys:String x:Key="PrinterName" xmlns:sys="clr-namespace:System;assembly=mscorlib">Printer Name</sys:String>
+    <sys:String x:Key="SaveSettings" xmlns:sys="clr-namespace:System;assembly=mscorlib">Save Settings</sys:String>
+    <sys:String x:Key="BackupSection" xmlns:sys="clr-namespace:System;assembly=mscorlib">Backup &amp; Restore</sys:String>
+    <sys:String x:Key="BackupFilePath" xmlns:sys="clr-namespace:System;assembly=mscorlib">Backup File Path</sys:String>
+    <sys:String x:Key="CreateBackup" xmlns:sys="clr-namespace:System;assembly=mscorlib">Create Backup</sys:String>
+    <sys:String x:Key="RestoreBackup" xmlns:sys="clr-namespace:System;assembly=mscorlib">Restore Backup</sys:String>
+    <sys:String x:Key="VerifyBackup" xmlns:sys="clr-namespace:System;assembly=mscorlib">Verify Backup</sys:String>
+    <sys:String x:Key="Phone" xmlns:sys="clr-namespace:System;assembly=mscorlib">Phone</sys:String>
+    <sys:String x:Key="Location" xmlns:sys="clr-namespace:System;assembly=mscorlib">Location</sys:String>
+    <sys:String x:Key="Notes" xmlns:sys="clr-namespace:System;assembly=mscorlib">Notes</sys:String>
+    <sys:String x:Key="StockAdjustment" xmlns:sys="clr-namespace:System;assembly=mscorlib">Stock Adjustment</sys:String>
+    <sys:String x:Key="Reason" xmlns:sys="clr-namespace:System;assembly=mscorlib">Reason</sys:String>
+    <sys:String x:Key="StockIn" xmlns:sys="clr-namespace:System;assembly=mscorlib">Stock In</sys:String>
+    <sys:String x:Key="StockOut" xmlns:sys="clr-namespace:System;assembly=mscorlib">Stock Out</sys:String>
+    <sys:String x:Key="CartPanelTitle" xmlns:sys="clr-namespace:System;assembly=mscorlib">Cart</sys:String>
+    <sys:String x:Key="QuantityControls" xmlns:sys="clr-namespace:System;assembly=mscorlib">Quantity Controls</sys:String>
+    <sys:String x:Key="Discount" xmlns:sys="clr-namespace:System;assembly=mscorlib">Discount</sys:String>
+    <sys:String x:Key="Tax" xmlns:sys="clr-namespace:System;assembly=mscorlib">Tax</sys:String>
+    <sys:String x:Key="PartialPayment" xmlns:sys="clr-namespace:System;assembly=mscorlib">Partial Payment</sys:String>
+    <sys:String x:Key="TotalDisplay" xmlns:sys="clr-namespace:System;assembly=mscorlib">Total Display</sys:String>
+    <sys:String x:Key="PayCash" xmlns:sys="clr-namespace:System;assembly=mscorlib">Pay Cash</sys:String>
+    <sys:String x:Key="PayPartial" xmlns:sys="clr-namespace:System;assembly=mscorlib">Pay Partial</sys:String>
+    <sys:String x:Key="PrintA4" xmlns:sys="clr-namespace:System;assembly=mscorlib">Print A4</sys:String>
+    <sys:String x:Key="PrintThermal" xmlns:sys="clr-namespace:System;assembly=mscorlib">Print 80mm</sys:String>
+</ResourceDictionary>
