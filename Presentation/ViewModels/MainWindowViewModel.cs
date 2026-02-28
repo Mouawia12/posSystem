@@ -6,10 +6,15 @@ using Core.Enums;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Media;
+using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using Microsoft.Win32;
 
 namespace Presentation.ViewModels
 {
@@ -200,6 +205,8 @@ namespace Presentation.ViewModels
         public IAsyncRelayCommand MarkMaintenanceSkippedCommand { get; }
         public IAsyncRelayCommand AddMaintenanceVisitCommand { get; }
         public IAsyncRelayCommand LoadReportsCommand { get; }
+        public IRelayCommand PrintReportCommand { get; }
+        public IRelayCommand ExportReportCommand { get; }
         public IAsyncRelayCommand LoadSettingsCommand { get; }
         public IAsyncRelayCommand SaveSettingsCommand { get; }
         public IAsyncRelayCommand CreateBackupCommand { get; }
@@ -296,6 +303,8 @@ namespace Presentation.ViewModels
             MarkMaintenanceSkippedCommand = new AsyncRelayCommand(() => SetMaintenanceStatusAsync(MaintenanceStatus.Skipped));
             AddMaintenanceVisitCommand = new AsyncRelayCommand(AddMaintenanceVisitAsync);
             LoadReportsCommand = new AsyncRelayCommand(LoadReportsAsync);
+            PrintReportCommand = new RelayCommand(PrintReport);
+            ExportReportCommand = new RelayCommand(ExportReportHtml);
             LoadSettingsCommand = new AsyncRelayCommand(LoadSettingsAsync);
             SaveSettingsCommand = new AsyncRelayCommand(SaveSettingsAsync);
             CreateBackupCommand = new AsyncRelayCommand(CreateBackupAsync);
@@ -826,6 +835,211 @@ namespace Presentation.ViewModels
                 StatusMessage = Lf("MsgActionFailed", $"Action failed: {ex.Message}", ex.Message);
             }
         }
+
+        private void PrintReport()
+        {
+            try
+            {
+                var printDialog = new PrintDialog();
+                if (printDialog.ShowDialog() != true)
+                {
+                    StatusMessage = L("MsgReportPrintCanceled", "Report printing canceled.");
+                    return;
+                }
+
+                var document = BuildReportDocument();
+                document.ColumnWidth = printDialog.PrintableAreaWidth;
+                document.PageWidth = printDialog.PrintableAreaWidth;
+                document.PageHeight = printDialog.PrintableAreaHeight;
+                document.PagePadding = new Thickness(24);
+
+                printDialog.PrintDocument(((IDocumentPaginatorSource)document).DocumentPaginator, L("PrintReport", "Print Report"));
+                StatusMessage = L("MsgReportPrinted", "Report sent to printer.");
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = Lf("MsgActionFailed", $"Action failed: {ex.Message}", ex.Message);
+            }
+        }
+
+        private void ExportReportHtml()
+        {
+            try
+            {
+                var dialog = new SaveFileDialog
+                {
+                    Title = L("DownloadReport", "Download Report"),
+                    Filter = "HTML (*.html)|*.html",
+                    FileName = $"report-{DateTime.Now:yyyyMMdd-HHmmss}.html"
+                };
+
+                if (dialog.ShowDialog() != true)
+                {
+                    StatusMessage = L("MsgReportSaveCanceled", "Report export canceled.");
+                    return;
+                }
+
+                var html = BuildReportHtml();
+                File.WriteAllText(dialog.FileName, html, new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
+                StatusMessage = Lf("MsgReportSaved", "Report exported to: {0}", dialog.FileName);
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = Lf("MsgActionFailed", $"Action failed: {ex.Message}", ex.Message);
+            }
+        }
+
+        private FlowDocument BuildReportDocument()
+        {
+            var isArabic = string.Equals(_localizationService.CurrentCultureCode, "ar-SA", StringComparison.OrdinalIgnoreCase);
+            var from = ReportFromDate.Date;
+            var to = ReportToDate.Date;
+            var generatedAt = DateTime.Now;
+
+            var document = new FlowDocument
+            {
+                FontFamily = new System.Windows.Media.FontFamily("Segoe UI"),
+                FontSize = 13,
+                FlowDirection = isArabic ? FlowDirection.RightToLeft : FlowDirection.LeftToRight,
+                PagePadding = new Thickness(24)
+            };
+
+            document.Blocks.Add(new Paragraph(new Run(L("NavReports", "Reports")))
+            {
+                FontSize = 24,
+                FontWeight = FontWeights.Bold,
+                Margin = new Thickness(0, 0, 0, 8)
+            });
+
+            document.Blocks.Add(new Paragraph(new Run($"{L("CompanyName", "Company Name")}: {CompanyName}")) { Margin = new Thickness(0, 0, 0, 2) });
+            document.Blocks.Add(new Paragraph(new Run($"{L("ReportPeriod", "Period")}: {from:yyyy-MM-dd} - {to:yyyy-MM-dd}")) { Margin = new Thickness(0, 0, 0, 2) });
+            document.Blocks.Add(new Paragraph(new Run($"{L("ReportGeneratedAt", "Generated At")}: {generatedAt:yyyy-MM-dd HH:mm}")) { Margin = new Thickness(0, 0, 0, 14) });
+
+            document.Blocks.Add(new Paragraph(new Run(L("ReportSummarySection", "Summary"))) { FontSize = 16, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 0, 0, 8) });
+            var summary = new Table { CellSpacing = 0 };
+            summary.Columns.Add(new TableColumn { Width = new GridLength(260) });
+            summary.Columns.Add(new TableColumn { Width = new GridLength(220) });
+            var summaryGroup = new TableRowGroup();
+            summaryGroup.Rows.Add(MakeRow(L("TotalInvoices", "Total Invoices"), ReportTotalInvoices.ToString(CultureInfo.CurrentCulture)));
+            summaryGroup.Rows.Add(MakeRow(L("GrossSales", "Gross Sales"), FormatCurrency(ReportGrossSales)));
+            summaryGroup.Rows.Add(MakeRow(L("NetSales", "Net Sales"), FormatCurrency(ReportNetSales)));
+            summaryGroup.Rows.Add(MakeRow(L("Profit", "Profit"), FormatCurrency(ReportProfit)));
+            summaryGroup.Rows.Add(MakeRow(L("Payments", "Payments"), FormatCurrency(ReportTotalPayments)));
+            summary.RowGroups.Add(summaryGroup);
+            document.Blocks.Add(summary);
+
+            document.Blocks.Add(new Paragraph(new Run(L("DailySales", "Daily Sales"))) { FontSize = 16, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 16, 0, 8) });
+            foreach (var row in DailySalesReport)
+            {
+                document.Blocks.Add(new Paragraph(new Run(
+                    $"{row.Date:yyyy-MM-dd} | {L("TotalInvoices", "Total Invoices")}: {row.InvoiceCount} | {L("NetSales", "Net Sales")}: {FormatCurrency(row.NetSales)} | {L("Profit", "Profit")}: {FormatCurrency(row.Profit)}"))
+                { Margin = new Thickness(0, 0, 0, 4) });
+            }
+
+            document.Blocks.Add(new Paragraph(new Run(L("TopProducts", "Top Products"))) { FontSize = 16, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 16, 0, 8) });
+            foreach (var row in TopProductsReport)
+            {
+                document.Blocks.Add(new Paragraph(new Run(
+                    $"{row.ProductName} | {L("Qty", "Qty")}: {row.QuantitySold} | {L("NetSales", "Net Sales")}: {FormatCurrency(row.SalesAmount)} | {L("Profit", "Profit")}: {FormatCurrency(row.ProfitAmount)}"))
+                { Margin = new Thickness(0, 0, 0, 4) });
+            }
+
+            return document;
+        }
+
+        private static TableRow MakeRow(string label, string value)
+        {
+            var labelCell = new TableCell(new Paragraph(new Run(label)) { Margin = new Thickness(0) })
+            {
+                Padding = new Thickness(8, 6, 8, 6),
+                BorderBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(230, 235, 242)),
+                BorderThickness = new Thickness(0.6)
+            };
+
+            var valueCell = new TableCell(new Paragraph(new Run(value)) { Margin = new Thickness(0) })
+            {
+                Padding = new Thickness(8, 6, 8, 6),
+                BorderBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(230, 235, 242)),
+                BorderThickness = new Thickness(0.6)
+            };
+
+            var row = new TableRow();
+            row.Cells.Add(labelCell);
+            row.Cells.Add(valueCell);
+            return row;
+        }
+
+        private string BuildReportHtml()
+        {
+            var isArabic = string.Equals(_localizationService.CurrentCultureCode, "ar-SA", StringComparison.OrdinalIgnoreCase);
+            var dir = isArabic ? "rtl" : "ltr";
+            var align = isArabic ? "right" : "left";
+            var from = ReportFromDate.Date;
+            var to = ReportToDate.Date;
+            var generatedAt = DateTime.Now;
+
+            var sb = new StringBuilder();
+            sb.AppendLine("<!DOCTYPE html>");
+            sb.AppendLine($"<html lang=\"{(isArabic ? "ar" : "en")}\" dir=\"{dir}\">");
+            sb.AppendLine("<head><meta charset=\"utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />");
+            sb.AppendLine($"<title>{EscapeHtml(L("NavReports", "Reports"))}</title>");
+            sb.AppendLine("<style>");
+            sb.AppendLine("body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:#f4f7fb;color:#17212f;margin:0;padding:24px;}");
+            sb.AppendLine(".wrap{max-width:980px;margin:0 auto;background:#fff;border:1px solid #e7edf5;border-radius:14px;padding:22px;}");
+            sb.AppendLine("h1{margin:0 0 10px 0;font-size:28px;} .meta{color:#5a6d82;font-size:13px;margin:3px 0;}");
+            sb.AppendLine(".sec{margin-top:20px;} .sec h2{font-size:18px;margin:0 0 8px 0;}");
+            sb.AppendLine("table{width:100%;border-collapse:collapse;margin-top:8px;} th,td{border:1px solid #e7edf5;padding:8px 10px;text-align:" + align + ";} th{background:#f3f7fc;}");
+            sb.AppendLine("</style></head><body>");
+            sb.AppendLine("<div class=\"wrap\">");
+            sb.AppendLine($"<h1>{EscapeHtml(L("NavReports", "Reports"))}</h1>");
+            sb.AppendLine($"<div class=\"meta\">{EscapeHtml(L("CompanyName", "Company Name"))}: {EscapeHtml(CompanyName)}</div>");
+            sb.AppendLine($"<div class=\"meta\">{EscapeHtml(L("ReportPeriod", "Period"))}: {from:yyyy-MM-dd} - {to:yyyy-MM-dd}</div>");
+            sb.AppendLine($"<div class=\"meta\">{EscapeHtml(L("ReportGeneratedAt", "Generated At"))}: {generatedAt:yyyy-MM-dd HH:mm}</div>");
+
+            sb.AppendLine($"<div class=\"sec\"><h2>{EscapeHtml(L("ReportSummarySection", "Summary"))}</h2>");
+            sb.AppendLine("<table><tbody>");
+            AppendSummaryRow(sb, L("TotalInvoices", "Total Invoices"), ReportTotalInvoices.ToString(CultureInfo.CurrentCulture));
+            AppendSummaryRow(sb, L("GrossSales", "Gross Sales"), FormatCurrency(ReportGrossSales));
+            AppendSummaryRow(sb, L("NetSales", "Net Sales"), FormatCurrency(ReportNetSales));
+            AppendSummaryRow(sb, L("Profit", "Profit"), FormatCurrency(ReportProfit));
+            AppendSummaryRow(sb, L("Payments", "Payments"), FormatCurrency(ReportTotalPayments));
+            sb.AppendLine("</tbody></table></div>");
+
+            sb.AppendLine($"<div class=\"sec\"><h2>{EscapeHtml(L("DailySales", "Daily Sales"))}</h2>");
+            sb.AppendLine("<table><thead><tr>");
+            sb.AppendLine($"<th>{EscapeHtml(L("Date", "Date"))}</th><th>{EscapeHtml(L("TotalInvoices", "Total Invoices"))}</th><th>{EscapeHtml(L("NetSales", "Net Sales"))}</th><th>{EscapeHtml(L("Profit", "Profit"))}</th>");
+            sb.AppendLine("</tr></thead><tbody>");
+            foreach (var row in DailySalesReport)
+            {
+                sb.AppendLine("<tr>");
+                sb.AppendLine($"<td>{row.Date:yyyy-MM-dd}</td><td>{row.InvoiceCount}</td><td>{EscapeHtml(FormatCurrency(row.NetSales))}</td><td>{EscapeHtml(FormatCurrency(row.Profit))}</td>");
+                sb.AppendLine("</tr>");
+            }
+            sb.AppendLine("</tbody></table></div>");
+
+            sb.AppendLine($"<div class=\"sec\"><h2>{EscapeHtml(L("TopProducts", "Top Products"))}</h2>");
+            sb.AppendLine("<table><thead><tr>");
+            sb.AppendLine($"<th>{EscapeHtml(L("ProductName", "Product Name"))}</th><th>{EscapeHtml(L("Qty", "Qty"))}</th><th>{EscapeHtml(L("NetSales", "Net Sales"))}</th><th>{EscapeHtml(L("Profit", "Profit"))}</th>");
+            sb.AppendLine("</tr></thead><tbody>");
+            foreach (var row in TopProductsReport)
+            {
+                sb.AppendLine("<tr>");
+                sb.AppendLine($"<td>{EscapeHtml(row.ProductName)}</td><td>{row.QuantitySold:0.###}</td><td>{EscapeHtml(FormatCurrency(row.SalesAmount))}</td><td>{EscapeHtml(FormatCurrency(row.ProfitAmount))}</td>");
+                sb.AppendLine("</tr>");
+            }
+            sb.AppendLine("</tbody></table></div>");
+            sb.AppendLine("</div></body></html>");
+            return sb.ToString();
+        }
+
+        private static void AppendSummaryRow(StringBuilder sb, string label, string value)
+            => sb.AppendLine($"<tr><td><strong>{EscapeHtml(label)}</strong></td><td>{EscapeHtml(value)}</td></tr>");
+
+        private static string EscapeHtml(string? value)
+            => System.Net.WebUtility.HtmlEncode(value ?? string.Empty);
+
+        private static string FormatCurrency(decimal value)
+            => value.ToString("C2", CultureInfo.CurrentCulture);
 
         private async Task LoadSettingsAsync()
         {

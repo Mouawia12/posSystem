@@ -183,16 +183,17 @@
                         <TextBlock Text="{Binding WindowTitle}" Foreground="#6B7785" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                        <Button Content="{DynamicResource LanguageEnglish}"
-                                Command="{Binding SwitchToEnglishCommand}"
-                                Height="30"
-                                MinWidth="56"
-                                Margin="0,0,10,0" />
-                        <Button Content="{DynamicResource LanguageArabic}"
-                                Command="{Binding SwitchToArabicCommand}"
-                                Height="30"
-                                MinWidth="56"
-                                Margin="0,0,14,0" />
+                        <Menu Background="Transparent" BorderThickness="0" Margin="0,0,14,0" VerticalAlignment="Center">
+                            <MenuItem Header="&#xE909;"
+                                      FontFamily="Segoe MDL2 Assets"
+                                      FontSize="15"
+                                      Width="38"
+                                      Height="30"
+                                      HorizontalContentAlignment="Center">
+                                <MenuItem Header="{DynamicResource LanguageEnglish}" Command="{Binding SwitchToEnglishCommand}" />
+                                <MenuItem Header="{DynamicResource LanguageArabic}" Command="{Binding SwitchToArabicCommand}" />
+                            </MenuItem>
+                        </Menu>
                         <TextBlock Text="{DynamicResource LoggedUser}" VerticalAlignment="Center" Margin="0,0,6,0" />
                         <TextBlock Text="{Binding LoggedUserName}" FontWeight="SemiBold" VerticalAlignment="Center" />
                     </StackPanel>
@@ -1099,6 +1100,8 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="170" />
                             <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="150" />
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0" Text="{DynamicResource FromDate}" />
@@ -1106,6 +1109,8 @@
                         <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="16,0,8,0" Text="{DynamicResource ToDate}" />
                         <DatePicker Grid.Column="3" SelectedDate="{Binding ReportToDate}" Height="34" />
                         <Button Grid.Column="4" Margin="16,0,0,0" Height="34" Content="{DynamicResource GenerateReport}" Command="{Binding LoadReportsCommand}" />
+                        <Button Grid.Column="5" Margin="10,0,0,0" Height="34" Content="{DynamicResource PrintReport}" Command="{Binding PrintReportCommand}" />
+                        <Button Grid.Column="6" Margin="10,0,0,0" Height="34" Content="{DynamicResource DownloadReport}" Command="{Binding ExportReportCommand}" />
                     </Grid>
                 </Border>
 

@@ -66,6 +66,11 @@
     <sys:String x:Key="FromDate" xmlns:sys="clr-namespace:System;assembly=mscorlib">From</sys:String>
     <sys:String x:Key="ToDate" xmlns:sys="clr-namespace:System;assembly=mscorlib">To</sys:String>
     <sys:String x:Key="GenerateReport" xmlns:sys="clr-namespace:System;assembly=mscorlib">Generate Report</sys:String>
+    <sys:String x:Key="PrintReport" xmlns:sys="clr-namespace:System;assembly=mscorlib">Print Report</sys:String>
+    <sys:String x:Key="DownloadReport" xmlns:sys="clr-namespace:System;assembly=mscorlib">Download Report</sys:String>
+    <sys:String x:Key="ReportPeriod" xmlns:sys="clr-namespace:System;assembly=mscorlib">Period</sys:String>
+    <sys:String x:Key="ReportGeneratedAt" xmlns:sys="clr-namespace:System;assembly=mscorlib">Generated At</sys:String>
+    <sys:String x:Key="ReportSummarySection" xmlns:sys="clr-namespace:System;assembly=mscorlib">Summary</sys:String>
     <sys:String x:Key="TotalInvoices" xmlns:sys="clr-namespace:System;assembly=mscorlib">Total Invoices</sys:String>
     <sys:String x:Key="GrossSales" xmlns:sys="clr-namespace:System;assembly=mscorlib">Gross Sales</sys:String>
     <sys:String x:Key="NetSales" xmlns:sys="clr-namespace:System;assembly=mscorlib">Net Sales</sys:String>
@@ -162,6 +167,10 @@
     <sys:String x:Key="MsgMaintenanceVisitAdded" xmlns:sys="clr-namespace:System;assembly=mscorlib">Maintenance visit added.</sys:String>
     <sys:String x:Key="MsgReportDateRangeInvalid" xmlns:sys="clr-namespace:System;assembly=mscorlib">Report date range is invalid.</sys:String>
     <sys:String x:Key="MsgReportsGenerated" xmlns:sys="clr-namespace:System;assembly=mscorlib">Reports generated successfully.</sys:String>
+    <sys:String x:Key="MsgReportPrinted" xmlns:sys="clr-namespace:System;assembly=mscorlib">Report sent to printer.</sys:String>
+    <sys:String x:Key="MsgReportPrintCanceled" xmlns:sys="clr-namespace:System;assembly=mscorlib">Report printing canceled.</sys:String>
+    <sys:String x:Key="MsgReportSaved" xmlns:sys="clr-namespace:System;assembly=mscorlib">Report exported to: {0}</sys:String>
+    <sys:String x:Key="MsgReportSaveCanceled" xmlns:sys="clr-namespace:System;assembly=mscorlib">Report export canceled.</sys:String>
     <sys:String x:Key="MsgSettingsLoaded" xmlns:sys="clr-namespace:System;assembly=mscorlib">Settings loaded.</sys:String>
     <sys:String x:Key="MsgSettingsCompanyAndPrefixRequired" xmlns:sys="clr-namespace:System;assembly=mscorlib">Company Name and Invoice Prefix are required.</sys:String>
     <sys:String x:Key="MsgSettingsSaved" xmlns:sys="clr-namespace:System;assembly=mscorlib">Settings saved successfully.</sys:String>

@@ -67,6 +67,11 @@
     <sys:String x:Key="FromDate">من</sys:String>
     <sys:String x:Key="ToDate">إلى</sys:String>
     <sys:String x:Key="GenerateReport">توليد التقرير</sys:String>
+    <sys:String x:Key="PrintReport">طباعة التقرير</sys:String>
+    <sys:String x:Key="DownloadReport">تحميل التقرير</sys:String>
+    <sys:String x:Key="ReportPeriod">الفترة</sys:String>
+    <sys:String x:Key="ReportGeneratedAt">تاريخ الإنشاء</sys:String>
+    <sys:String x:Key="ReportSummarySection">الملخص</sys:String>
     <sys:String x:Key="TotalInvoices">عدد الفواتير</sys:String>
     <sys:String x:Key="GrossSales">إجمالي المبيعات</sys:String>
     <sys:String x:Key="NetSales">صافي المبيعات</sys:String>
@@ -163,6 +168,10 @@
     <sys:String x:Key="MsgMaintenanceVisitAdded">تمت إضافة زيارة الصيانة.</sys:String>
     <sys:String x:Key="MsgReportDateRangeInvalid">فترة التقرير غير صحيحة.</sys:String>
     <sys:String x:Key="MsgReportsGenerated">تم إنشاء التقارير بنجاح.</sys:String>
+    <sys:String x:Key="MsgReportPrinted">تم إرسال التقرير إلى الطابعة.</sys:String>
+    <sys:String x:Key="MsgReportPrintCanceled">تم إلغاء طباعة التقرير.</sys:String>
+    <sys:String x:Key="MsgReportSaved">تم تصدير التقرير إلى: {0}</sys:String>
+    <sys:String x:Key="MsgReportSaveCanceled">تم إلغاء تصدير التقرير.</sys:String>
     <sys:String x:Key="MsgSettingsLoaded">تم تحميل الإعدادات.</sys:String>
     <sys:String x:Key="MsgSettingsCompanyAndPrefixRequired">اسم الشركة وبادئة الفاتورة حقول إجبارية.</sys:String>
     <sys:String x:Key="MsgSettingsSaved">تم حفظ الإعدادات بنجاح.</sys:String>
