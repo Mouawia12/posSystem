@@ -961,20 +961,32 @@ namespace Presentation.ViewModels
             document.Blocks.Add(summary);
 
             document.Blocks.Add(new Paragraph(new Run(L("DailySales", "Daily Sales"))) { FontSize = 16, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 16, 0, 8) });
-            foreach (var row in DailySalesReport)
-            {
-                document.Blocks.Add(new Paragraph(new Run(
-                    $"{row.Date:yyyy-MM-dd} | {L("TotalInvoices", "Total Invoices")}: {row.InvoiceCount} | {L("NetSales", "Net Sales")}: {FormatCurrency(row.NetSales)} | {L("Profit", "Profit")}: {FormatCurrency(row.Profit)}"))
-                { Margin = new Thickness(0, 0, 0, 4) });
-            }
+            var dailyTable = BuildStyledTable(
+                [L("Date", "Date"), L("TotalInvoices", "Total Invoices"), L("NetSales", "Net Sales"), L("Profit", "Profit")],
+                DailySalesReport
+                    .Select(x => (IReadOnlyList<string>)
+                    [
+                        x.Date.ToString("yyyy-MM-dd", CultureInfo.CurrentCulture),
+                        x.InvoiceCount.ToString(CultureInfo.CurrentCulture),
+                        FormatCurrency(x.NetSales),
+                        FormatCurrency(x.Profit)
+                    ])
+                    .ToList());
+            document.Blocks.Add(dailyTable);
 
             document.Blocks.Add(new Paragraph(new Run(L("TopProducts", "Top Products"))) { FontSize = 16, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 16, 0, 8) });
-            foreach (var row in TopProductsReport)
-            {
-                document.Blocks.Add(new Paragraph(new Run(
-                    $"{row.ProductName} | {L("Qty", "Qty")}: {row.QuantitySold} | {L("NetSales", "Net Sales")}: {FormatCurrency(row.SalesAmount)} | {L("Profit", "Profit")}: {FormatCurrency(row.ProfitAmount)}"))
-                { Margin = new Thickness(0, 0, 0, 4) });
-            }
+            var productsTable = BuildStyledTable(
+                [L("ProductName", "Product Name"), L("Qty", "Qty"), L("NetSales", "Net Sales"), L("Profit", "Profit")],
+                TopProductsReport
+                    .Select(x => (IReadOnlyList<string>)
+                    [
+                        x.ProductName,
+                        x.QuantitySold.ToString("0.###", CultureInfo.CurrentCulture),
+                        FormatCurrency(x.SalesAmount),
+                        FormatCurrency(x.ProfitAmount)
+                    ])
+                    .ToList());
+            document.Blocks.Add(productsTable);
 
             return document;
         }
@@ -999,6 +1011,57 @@ namespace Presentation.ViewModels
             row.Cells.Add(labelCell);
             row.Cells.Add(valueCell);
             return row;
+        }
+
+        private static Table BuildStyledTable(IReadOnlyList<string> headers, IReadOnlyList<IReadOnlyList<string>> rows)
+        {
+            var borderBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(230, 235, 242));
+            var headerBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(243, 247, 252));
+            var stripeBrush = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(250, 252, 255));
+
+            var table = new Table { CellSpacing = 0 };
+            foreach (var _ in headers)
+            {
+                table.Columns.Add(new TableColumn());
+            }
+
+            var group = new TableRowGroup();
+            var headerRow = new TableRow();
+            foreach (var header in headers)
+            {
+                headerRow.Cells.Add(new TableCell(new Paragraph(new Run(header))
+                {
+                    Margin = new Thickness(0),
+                    FontWeight = FontWeights.SemiBold
+                })
+                {
+                    Padding = new Thickness(8, 6, 8, 6),
+                    BorderBrush = borderBrush,
+                    BorderThickness = new Thickness(0.7),
+                    Background = headerBrush
+                });
+            }
+            group.Rows.Add(headerRow);
+
+            for (var i = 0; i < rows.Count; i++)
+            {
+                var dataRow = new TableRow();
+                var cells = rows[i];
+                foreach (var cell in cells)
+                {
+                    dataRow.Cells.Add(new TableCell(new Paragraph(new Run(cell)) { Margin = new Thickness(0) })
+                    {
+                        Padding = new Thickness(8, 6, 8, 6),
+                        BorderBrush = borderBrush,
+                        BorderThickness = new Thickness(0.7),
+                        Background = i % 2 == 1 ? stripeBrush : null
+                    });
+                }
+                group.Rows.Add(dataRow);
+            }
+
+            table.RowGroups.Add(group);
+            return table;
         }
 
         private string BuildReportHtml()
