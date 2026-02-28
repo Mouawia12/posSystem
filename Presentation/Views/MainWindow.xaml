@@ -345,6 +345,26 @@
                         <TextBlock Text="{DynamicResource CartPanelTitle}" FontSize="18" FontWeight="SemiBold" />
                         <Separator Margin="0,8,0,12" />
 
+                        <Border Background="#FFF8E7"
+                                BorderBrush="#F2C46D"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="10"
+                                Margin="0,0,0,10"
+                                Visibility="{Binding HasLowStockAlerts, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource LowStockAlertsTitle}" FontWeight="SemiBold" Foreground="#8A5A00" />
+                                <TextBlock Text="{Binding LowStockAlertsSummary}" FontSize="12" Foreground="#8A5A00" Margin="0,2,0,6" />
+                                <ItemsControl ItemsSource="{Binding LowStockAlerts}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" FontSize="12" Foreground="#8A5A00" Margin="0,0,0,2" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
                         <DataGrid Height="280"
                                   AutoGenerateColumns="False"
                                   CanUserAddRows="False"

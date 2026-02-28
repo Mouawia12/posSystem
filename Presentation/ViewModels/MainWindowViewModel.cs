@@ -4,8 +4,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core.Enums;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
+using System.Media;
 using System.Threading;
 using System.Windows;
 
@@ -13,6 +15,8 @@ namespace Presentation.ViewModels
 {
     public partial class MainWindowViewModel : BaseViewModel
     {
+        private const decimal LowStockThreshold = 5m;
+
         private readonly IProductSearchService _productSearchService;
         private readonly IProductManagementService _productManagementService;
         private readonly ICustomerManagementService _customerManagementService;
@@ -128,6 +132,10 @@ namespace Presentation.ViewModels
         public ObservableCollection<UserManagementDto> ManagedUsers { get; } = [];
         public ObservableCollection<UserRole> AvailableUserRoles { get; } = [UserRole.Owner, UserRole.Manager, UserRole.Cashier];
         public ObservableCollection<string> AvailableCurrencies { get; } = ["USD", "SAR"];
+        public ObservableCollection<string> LowStockAlerts { get; } = [];
+
+        public bool HasLowStockAlerts => LowStockAlerts.Count > 0;
+        public string LowStockAlertsSummary => $"{LowStockAlerts.Count} items are near depletion.";
 
         public bool IsDashboardModule => ActiveModule == "DASHBOARD";
         public bool IsPosModule => ActiveModule == "POS";
@@ -285,6 +293,7 @@ namespace Presentation.ViewModels
             SaveManagedUserCommand = new AsyncRelayCommand(SaveManagedUserAsync);
             NewManagedUserCommand = new RelayCommand(ResetManagedUserForm);
             DeactivateManagedUserCommand = new AsyncRelayCommand(DeactivateManagedUserAsync);
+            LowStockAlerts.CollectionChanged += OnLowStockAlertsChanged;
 
             InitializeSecurityContext();
             _localizationService.LanguageChanged += OnLanguageChanged;
@@ -299,7 +308,7 @@ namespace Presentation.ViewModels
         public decimal Total => Subtotal - Discount + Tax;
 
         private async Task ShowDashboardModuleAsync() { ActiveModule = "DASHBOARD"; await LoadDashboardAsync(); }
-        private async Task ShowProductsModuleAsync() { ActiveModule = "PRODUCTS"; await LoadManagedProductsAsync(); }
+        private async Task ShowProductsModuleAsync() { ActiveModule = "PRODUCTS"; await LoadManagedProductsAsync(); await RefreshLowStockAlertsAsync(); }
         private async Task ShowCustomersModuleAsync() { ActiveModule = "CUSTOMERS"; await LoadManagedCustomersAsync(); }
         private async Task ShowWarrantyModuleAsync() { ActiveModule = "WARRANTY"; await LoadWarrantiesAsync(); }
         private async Task ShowMaintenanceModuleAsync() { ActiveModule = "MAINTENANCE"; await LoadMaintenanceSchedulesAsync(); }
@@ -346,11 +355,17 @@ namespace Presentation.ViewModels
                 Products.Clear();
                 foreach (var item in results) Products.Add(item);
                 StatusMessage = $"{Products.Count} records fetched.";
+                await RefreshLowStockAlertsAsync();
             }
             finally { IsBusy = false; }
         }
 
-        private void AddSelectedToCart() { if (SelectedProduct is not null) AddOrUpdateCartItem(SelectedProduct); }
+        private void AddSelectedToCart()
+        {
+            if (SelectedProduct is null) return;
+            AddOrUpdateCartItem(SelectedProduct);
+            SelectedProduct = null;
+        }
 
         private async Task ScanBarcodeAsync()
         {
@@ -369,12 +384,22 @@ namespace Presentation.ViewModels
 
         private void AddOrUpdateCartItem(ProductSearchDto product)
         {
+            PlayCartBeep();
             var existing = CartItems.FirstOrDefault(x => x.ProductId == product.Id);
             if (existing is not null) existing.Quantity += 1;
             else CartItems.Add(new PosCartItemViewModel { ProductId = product.Id, Sku = product.SKU, Name = product.Name, UnitPrice = product.SalePrice, UnitCost = product.SalePrice, Quantity = 1m });
             OnPropertyChanged(nameof(Subtotal));
             OnPropertyChanged(nameof(Total));
             NotifyPaymentCommandsState();
+
+            if (product.QuantityOnHand <= LowStockThreshold)
+            {
+                StatusMessage = $"Added {product.Name}. Warning: low stock ({product.QuantityOnHand:0.###}).";
+            }
+            else
+            {
+                StatusMessage = $"{product.Name} added to cart.";
+            }
         }
 
         private void IncreaseQuantity()
@@ -427,6 +452,7 @@ namespace Presentation.ViewModels
                 LastSavedInvoiceId = invoiceId;
                 StatusMessage = $"Invoice #{invoiceId} saved successfully.";
                 CancelSale();
+                await RefreshLowStockAlertsAsync();
             }
             catch (Exception ex) { StatusMessage = $"Save failed: {ex.Message}"; }
             finally { IsBusy = false; NotifyPaymentCommandsState(); }
@@ -470,6 +496,7 @@ namespace Presentation.ViewModels
             if (StockMovementQuantity <= 0) { StatusMessage = "Quantity must be greater than zero."; return; }
             await _productManagementService.AdjustStockAsync(new AdjustStockRequestDto { ProductId = SelectedManagedProduct.Id, MovementType = movementType, Quantity = StockMovementQuantity, Reason = StockMovementReason });
             await LoadManagedProductsAsync();
+            await RefreshLowStockAlertsAsync();
             StatusMessage = "Stock updated.";
         }
 
@@ -799,6 +826,35 @@ namespace Presentation.ViewModels
             OnPropertyChanged(nameof(DashboardSalesToday));
         }
 
+        private async Task RefreshLowStockAlertsAsync()
+        {
+            var products = await _productManagementService.GetProductsAsync();
+            var alerts = products
+                .Where(x => x.IsActive && x.QuantityOnHand <= LowStockThreshold)
+                .OrderBy(x => x.QuantityOnHand)
+                .ThenBy(x => x.Name)
+                .Take(12)
+                .Select(x => $"{x.Name} ({x.SKU}) - {x.QuantityOnHand:0.###}")
+                .ToList();
+
+            LowStockAlerts.Clear();
+            foreach (var alert in alerts)
+            {
+                LowStockAlerts.Add(alert);
+            }
+
+            if (HasLowStockAlerts && IsPosModule)
+            {
+                StatusMessage = $"Low stock alert: {LowStockAlerts.Count} products are near depletion.";
+            }
+        }
+
+        private void PlayCartBeep()
+        {
+            try { SystemSounds.Beep.Play(); }
+            catch { }
+        }
+
         private void InitializeSecurityContext()
         {
             LoggedUserName = _userContextService.Username;
@@ -826,6 +882,11 @@ namespace Presentation.ViewModels
             OnPropertyChanged(nameof(IsReportsModule));
             OnPropertyChanged(nameof(IsSettingsModule));
             OnPropertyChanged(nameof(IsUsersModule));
+
+            if (string.Equals(value, "POS", StringComparison.Ordinal))
+            {
+                _ = RefreshLowStockAlertsAsync();
+            }
         }
 
         partial void OnSelectedManagedProductChanged(ProductManagementDto? value)
@@ -849,6 +910,13 @@ namespace Presentation.ViewModels
             EditingCustomerNotes = value.Notes ?? string.Empty;
         }
 
+        partial void OnSelectedProductChanged(ProductSearchDto? value)
+        {
+            if (!IsPosModule || value is null) return;
+            AddOrUpdateCartItem(value);
+            SelectedProduct = null;
+        }
+
         partial void OnSelectedManagedUserChanged(UserManagementDto? value)
         {
             if (value is null) return;
@@ -857,6 +925,12 @@ namespace Presentation.ViewModels
             EditingUserPassword = string.Empty;
             EditingUserRole = value.Role;
             EditingUserIsActive = value.IsActive;
+        }
+
+        private void OnLowStockAlertsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(HasLowStockAlerts));
+            OnPropertyChanged(nameof(LowStockAlertsSummary));
         }
     }
 }

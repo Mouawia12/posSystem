@@ -93,6 +93,7 @@
     <sys:String x:Key="StockIn" xmlns:sys="clr-namespace:System;assembly=mscorlib">Stock In</sys:String>
     <sys:String x:Key="StockOut" xmlns:sys="clr-namespace:System;assembly=mscorlib">Stock Out</sys:String>
     <sys:String x:Key="CartPanelTitle" xmlns:sys="clr-namespace:System;assembly=mscorlib">Cart</sys:String>
+    <sys:String x:Key="LowStockAlertsTitle" xmlns:sys="clr-namespace:System;assembly=mscorlib">Low Stock Alerts</sys:String>
     <sys:String x:Key="QuantityControls" xmlns:sys="clr-namespace:System;assembly=mscorlib">Quantity Controls</sys:String>
     <sys:String x:Key="Discount" xmlns:sys="clr-namespace:System;assembly=mscorlib">Discount</sys:String>
     <sys:String x:Key="Tax" xmlns:sys="clr-namespace:System;assembly=mscorlib">Tax</sys:String>

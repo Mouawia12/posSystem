@@ -94,6 +94,7 @@
     <sys:String x:Key="StockIn">إدخال مخزون</sys:String>
     <sys:String x:Key="StockOut">إخراج مخزون</sys:String>
     <sys:String x:Key="CartPanelTitle">السلة</sys:String>
+    <sys:String x:Key="LowStockAlertsTitle">تنبيهات قرب نفاد المخزون</sys:String>
     <sys:String x:Key="QuantityControls">التحكم بالكمية</sys:String>
     <sys:String x:Key="Discount">الخصم</sys:String>
     <sys:String x:Key="Tax">الضريبة</sys:String>
