@@ -170,6 +170,7 @@
     <sys:String x:Key="MsgReportsGenerated">تم إنشاء التقارير بنجاح.</sys:String>
     <sys:String x:Key="MsgReportPrinted">تم إرسال التقرير إلى الطابعة.</sys:String>
     <sys:String x:Key="MsgReportPrintCanceled">تم إلغاء طباعة التقرير.</sys:String>
+    <sys:String x:Key="MsgReportPrinterNotFound">لم يتم العثور على طابعة متاحة.</sys:String>
     <sys:String x:Key="MsgReportSaved">تم تصدير التقرير إلى: {0}</sys:String>
     <sys:String x:Key="MsgReportSaveCanceled">تم إلغاء تصدير التقرير.</sys:String>
     <sys:String x:Key="MsgSettingsLoaded">تم تحميل الإعدادات.</sys:String>

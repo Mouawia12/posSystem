@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Media;
+using System.Printing;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -123,6 +124,7 @@ namespace Presentation.ViewModels
 
         [ObservableProperty] private object? _currentContent;
         [ObservableProperty] private FlowDirection _flowDirection = FlowDirection.LeftToRight;
+        [ObservableProperty] private string _currentLanguageCode = "EN";
         [ObservableProperty] private bool _canAccessUsersModule;
         [ObservableProperty] private bool _canProcessSales;
 
@@ -840,14 +842,20 @@ namespace Presentation.ViewModels
         {
             try
             {
-                var printDialog = new PrintDialog();
-                if (printDialog.ShowDialog() != true)
+                var document = BuildReportDocument();
+                var queue = ResolveReportPrintQueue();
+                if (queue is null)
                 {
-                    StatusMessage = L("MsgReportPrintCanceled", "Report printing canceled.");
+                    StatusMessage = L("MsgReportPrinterNotFound", "No available printer was found.");
                     return;
                 }
 
-                var document = BuildReportDocument();
+                var printDialog = new PrintDialog
+                {
+                    PrintQueue = queue,
+                    PrintTicket = queue.DefaultPrintTicket
+                };
+
                 document.ColumnWidth = printDialog.PrintableAreaWidth;
                 document.PageWidth = printDialog.PrintableAreaWidth;
                 document.PageHeight = printDialog.PrintableAreaHeight;
@@ -859,6 +867,30 @@ namespace Presentation.ViewModels
             catch (Exception ex)
             {
                 StatusMessage = Lf("MsgActionFailed", $"Action failed: {ex.Message}", ex.Message);
+            }
+        }
+
+        private PrintQueue? ResolveReportPrintQueue()
+        {
+            try
+            {
+                var server = new LocalPrintServer();
+                if (!string.IsNullOrWhiteSpace(SettingsPrinterName))
+                {
+                    var namedQueue = server
+                        .GetPrintQueues()
+                        .FirstOrDefault(q => string.Equals(q.Name, SettingsPrinterName, StringComparison.OrdinalIgnoreCase));
+                    if (namedQueue is not null)
+                    {
+                        return namedQueue;
+                    }
+                }
+
+                return LocalPrintServer.GetDefaultPrintQueue();
+            }
+            catch
+            {
+                return null;
             }
         }
 
@@ -1138,7 +1170,11 @@ namespace Presentation.ViewModels
                 : L("MsgLanguageEnglish", "Switched to English.");
         }
 
-        private void ApplyLanguageState() => FlowDirection = _localizationService.IsRightToLeft ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+        private void ApplyLanguageState()
+        {
+            FlowDirection = _localizationService.IsRightToLeft ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+            CurrentLanguageCode = string.Equals(_localizationService.CurrentCultureCode, "ar-SA", StringComparison.OrdinalIgnoreCase) ? "AR" : "EN";
+        }
         private static string NormalizeCurrencyCode(string? currencyCode)
             => string.Equals(currencyCode, "SAR", StringComparison.OrdinalIgnoreCase) ? "SAR" : "USD";
 

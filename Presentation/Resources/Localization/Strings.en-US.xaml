@@ -169,6 +169,7 @@
     <sys:String x:Key="MsgReportsGenerated" xmlns:sys="clr-namespace:System;assembly=mscorlib">Reports generated successfully.</sys:String>
     <sys:String x:Key="MsgReportPrinted" xmlns:sys="clr-namespace:System;assembly=mscorlib">Report sent to printer.</sys:String>
     <sys:String x:Key="MsgReportPrintCanceled" xmlns:sys="clr-namespace:System;assembly=mscorlib">Report printing canceled.</sys:String>
+    <sys:String x:Key="MsgReportPrinterNotFound" xmlns:sys="clr-namespace:System;assembly=mscorlib">No available printer was found.</sys:String>
     <sys:String x:Key="MsgReportSaved" xmlns:sys="clr-namespace:System;assembly=mscorlib">Report exported to: {0}</sys:String>
     <sys:String x:Key="MsgReportSaveCanceled" xmlns:sys="clr-namespace:System;assembly=mscorlib">Report export canceled.</sys:String>
     <sys:String x:Key="MsgSettingsLoaded" xmlns:sys="clr-namespace:System;assembly=mscorlib">Settings loaded.</sys:String>
