@@ -9,6 +9,10 @@
     <sys:String x:Key="NavReports" xmlns:sys="clr-namespace:System;assembly=mscorlib">Reports</sys:String>
     <sys:String x:Key="NavSettings" xmlns:sys="clr-namespace:System;assembly=mscorlib">Settings</sys:String>
     <sys:String x:Key="NavUsers" xmlns:sys="clr-namespace:System;assembly=mscorlib">Users</sys:String>
+    <sys:String x:Key="AppBrandTitle" xmlns:sys="clr-namespace:System;assembly=mscorlib">POS</sys:String>
+    <sys:String x:Key="AppBrandSubtitle" xmlns:sys="clr-namespace:System;assembly=mscorlib">Offline Retail Suite</sys:String>
+    <sys:String x:Key="AppVersionLabel" xmlns:sys="clr-namespace:System;assembly=mscorlib">POS v1.0</sys:String>
+    <sys:String x:Key="SkuLabel" xmlns:sys="clr-namespace:System;assembly=mscorlib">SKU</sys:String>
     <sys:String x:Key="LanguageEnglish" xmlns:sys="clr-namespace:System;assembly=mscorlib">English</sys:String>
     <sys:String x:Key="LanguageArabic" xmlns:sys="clr-namespace:System;assembly=mscorlib">Arabic</sys:String>
     <sys:String x:Key="LoggedUser" xmlns:sys="clr-namespace:System;assembly=mscorlib">Logged User:</sys:String>
@@ -107,4 +111,20 @@
     <sys:String x:Key="PayPartial" xmlns:sys="clr-namespace:System;assembly=mscorlib">Pay Partial</sys:String>
     <sys:String x:Key="PrintA4" xmlns:sys="clr-namespace:System;assembly=mscorlib">Print A4</sys:String>
     <sys:String x:Key="PrintThermal" xmlns:sys="clr-namespace:System;assembly=mscorlib">Print 80mm</sys:String>
+    <sys:String x:Key="MsgSystemInitialized" xmlns:sys="clr-namespace:System;assembly=mscorlib">System initialized.</sys:String>
+    <sys:String x:Key="MsgSearchFocusRequested" xmlns:sys="clr-namespace:System;assembly=mscorlib">Search focus requested (F3).</sys:String>
+    <sys:String x:Key="MsgRecordsFetched" xmlns:sys="clr-namespace:System;assembly=mscorlib">{0} records fetched.</sys:String>
+    <sys:String x:Key="MsgDashboardLoaded" xmlns:sys="clr-namespace:System;assembly=mscorlib">Dashboard loaded.</sys:String>
+    <sys:String x:Key="MsgAccessDeniedUsersModule" xmlns:sys="clr-namespace:System;assembly=mscorlib">You are not allowed to access Users module.</sys:String>
+    <sys:String x:Key="MsgBarcodeNotFound" xmlns:sys="clr-namespace:System;assembly=mscorlib">Barcode not found in current search result.</sys:String>
+    <sys:String x:Key="MsgCartEmpty" xmlns:sys="clr-namespace:System;assembly=mscorlib">Cart is empty.</sys:String>
+    <sys:String x:Key="MsgInvoiceSaved" xmlns:sys="clr-namespace:System;assembly=mscorlib">Invoice #{0} saved successfully.</sys:String>
+    <sys:String x:Key="MsgSaveFailed" xmlns:sys="clr-namespace:System;assembly=mscorlib">Save failed: {0}</sys:String>
+    <sys:String x:Key="MsgSaleCanceled" xmlns:sys="clr-namespace:System;assembly=mscorlib">Sale canceled and cart cleared.</sys:String>
+    <sys:String x:Key="MsgLanguageArabic" xmlns:sys="clr-namespace:System;assembly=mscorlib">Switched to Arabic.</sys:String>
+    <sys:String x:Key="MsgLanguageEnglish" xmlns:sys="clr-namespace:System;assembly=mscorlib">Switched to English.</sys:String>
+    <sys:String x:Key="MsgLowStockSummary" xmlns:sys="clr-namespace:System;assembly=mscorlib">{0} items are near depletion.</sys:String>
+    <sys:String x:Key="MsgAddedToCart" xmlns:sys="clr-namespace:System;assembly=mscorlib">{0} added to cart.</sys:String>
+    <sys:String x:Key="MsgAddedToCartLowStock" xmlns:sys="clr-namespace:System;assembly=mscorlib">Added {0}. Warning: low stock ({1:0.###}).</sys:String>
+    <sys:String x:Key="MsgLowStockAlert" xmlns:sys="clr-namespace:System;assembly=mscorlib">Low stock alert: {0} products are near depletion.</sys:String>
 </ResourceDictionary>

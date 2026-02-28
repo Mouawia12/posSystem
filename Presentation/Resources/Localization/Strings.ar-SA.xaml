@@ -10,6 +10,10 @@
     <sys:String x:Key="NavReports">التقارير</sys:String>
     <sys:String x:Key="NavSettings">الإعدادات</sys:String>
     <sys:String x:Key="NavUsers">المستخدمون</sys:String>
+    <sys:String x:Key="AppBrandTitle">نقطة البيع</sys:String>
+    <sys:String x:Key="AppBrandSubtitle">منظومة المتجر غير المتصلة</sys:String>
+    <sys:String x:Key="AppVersionLabel">الإصدار 1.0</sys:String>
+    <sys:String x:Key="SkuLabel">رمز الصنف</sys:String>
     <sys:String x:Key="LanguageEnglish">الإنجليزية</sys:String>
     <sys:String x:Key="LanguageArabic">العربية</sys:String>
     <sys:String x:Key="LoggedUser">المستخدم الحالي:</sys:String>
@@ -108,4 +112,20 @@
     <sys:String x:Key="PayPartial">دفع جزئي</sys:String>
     <sys:String x:Key="PrintA4">طباعة A4</sys:String>
     <sys:String x:Key="PrintThermal">طباعة 80مم</sys:String>
+    <sys:String x:Key="MsgSystemInitialized">تم تهيئة النظام.</sys:String>
+    <sys:String x:Key="MsgSearchFocusRequested">تم طلب التركيز على البحث (F3).</sys:String>
+    <sys:String x:Key="MsgRecordsFetched">تم جلب {0} سجل.</sys:String>
+    <sys:String x:Key="MsgDashboardLoaded">تم تحميل لوحة التحكم.</sys:String>
+    <sys:String x:Key="MsgAccessDeniedUsersModule">غير مصرح لك بالدخول إلى وحدة المستخدمين.</sys:String>
+    <sys:String x:Key="MsgBarcodeNotFound">لم يتم العثور على الباركود ضمن نتائج البحث الحالية.</sys:String>
+    <sys:String x:Key="MsgCartEmpty">السلة فارغة.</sys:String>
+    <sys:String x:Key="MsgInvoiceSaved">تم حفظ الفاتورة رقم #{0} بنجاح.</sys:String>
+    <sys:String x:Key="MsgSaveFailed">فشل الحفظ: {0}</sys:String>
+    <sys:String x:Key="MsgSaleCanceled">تم إلغاء عملية البيع وتفريغ السلة.</sys:String>
+    <sys:String x:Key="MsgLanguageArabic">تم التحويل إلى العربية.</sys:String>
+    <sys:String x:Key="MsgLanguageEnglish">تم التحويل إلى الإنجليزية.</sys:String>
+    <sys:String x:Key="MsgLowStockSummary">يوجد {0} أصناف قاربت على النفاد.</sys:String>
+    <sys:String x:Key="MsgAddedToCart">تمت إضافة {0} إلى السلة.</sys:String>
+    <sys:String x:Key="MsgAddedToCartLowStock">تمت إضافة {0}. تنبيه: المخزون منخفض ({1:0.###}).</sys:String>
+    <sys:String x:Key="MsgLowStockAlert">تنبيه مخزون: يوجد {0} منتجات قاربت على النفاد.</sys:String>
 </ResourceDictionary>

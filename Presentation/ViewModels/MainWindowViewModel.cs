@@ -135,7 +135,7 @@ namespace Presentation.ViewModels
         public ObservableCollection<string> LowStockAlerts { get; } = [];
 
         public bool HasLowStockAlerts => LowStockAlerts.Count > 0;
-        public string LowStockAlertsSummary => $"{LowStockAlerts.Count} items are near depletion.";
+        public string LowStockAlertsSummary => Lf("MsgLowStockSummary", $"{LowStockAlerts.Count} items are near depletion.", LowStockAlerts.Count);
 
         public bool IsDashboardModule => ActiveModule == "DASHBOARD";
         public bool IsPosModule => ActiveModule == "POS";
@@ -259,7 +259,7 @@ namespace Presentation.ViewModels
             PrintInvoiceCommand = new AsyncRelayCommand(() => PrintLastInvoiceAsync(PrintTemplateType.A4));
             PrintThermalCommand = new AsyncRelayCommand(() => PrintLastInvoiceAsync(PrintTemplateType.Thermal80mm));
             CancelInvoiceCommand = new RelayCommand(CancelSale);
-            FocusSearchCommand = new RelayCommand(() => StatusMessage = "Search focus requested (F3).");
+            FocusSearchCommand = new RelayCommand(() => StatusMessage = L("MsgSearchFocusRequested", "Search focus requested (F3)."));
             SwitchToEnglishCommand = new RelayCommand(() => _localizationService.SetLanguage("en-US"));
             SwitchToArabicCommand = new RelayCommand(() => _localizationService.SetLanguage("ar-SA"));
 
@@ -301,7 +301,7 @@ namespace Presentation.ViewModels
             ApplyCurrencyState(SettingsCurrency);
             _ = InitializeCurrencyFromSettingsAsync();
             _ = ShowDashboardModuleAsync();
-            StatusMessage = "System initialized.";
+            StatusMessage = L("MsgSystemInitialized", "System initialized.");
         }
 
         public decimal Subtotal => CartItems.Sum(x => x.LineTotal);
@@ -318,7 +318,7 @@ namespace Presentation.ViewModels
         {
             if (!CanAccessUsersModule)
             {
-                StatusMessage = "You are not allowed to access Users module.";
+                StatusMessage = L("MsgAccessDeniedUsersModule", "You are not allowed to access Users module.");
                 return;
             }
 
@@ -335,7 +335,7 @@ namespace Presentation.ViewModels
             DashboardSalesToday = summary.SalesToday;
             DashboardDueMaintenance = summary.DueMaintenanceCount;
             DashboardActiveWarranties = summary.ActiveWarrantyCount;
-            StatusMessage = "Dashboard loaded.";
+            StatusMessage = L("MsgDashboardLoaded", "Dashboard loaded.");
         }
 
         private async Task InitializeCurrencyFromSettingsAsync()
@@ -354,7 +354,7 @@ namespace Presentation.ViewModels
                 var results = await _productSearchService.SearchAsync(SearchTerm, 200);
                 Products.Clear();
                 foreach (var item in results) Products.Add(item);
-                StatusMessage = $"{Products.Count} records fetched.";
+                StatusMessage = Lf("MsgRecordsFetched", $"{Products.Count} records fetched.", Products.Count);
                 await RefreshLowStockAlertsAsync();
             }
             finally { IsBusy = false; }
@@ -377,7 +377,7 @@ namespace Presentation.ViewModels
                 var result = await _productSearchService.SearchAsync(barcode, 20);
                 product = result.FirstOrDefault(x => string.Equals(x.SKU, barcode, StringComparison.OrdinalIgnoreCase));
             }
-            if (product is null) { StatusMessage = "Barcode not found in current search result."; return; }
+            if (product is null) { StatusMessage = L("MsgBarcodeNotFound", "Barcode not found in current search result."); return; }
             AddOrUpdateCartItem(product);
             BarcodeInput = string.Empty;
         }
@@ -394,11 +394,15 @@ namespace Presentation.ViewModels
 
             if (product.QuantityOnHand <= LowStockThreshold)
             {
-                StatusMessage = $"Added {product.Name}. Warning: low stock ({product.QuantityOnHand:0.###}).";
+                StatusMessage = Lf(
+                    "MsgAddedToCartLowStock",
+                    $"Added {product.Name}. Warning: low stock ({product.QuantityOnHand:0.###}).",
+                    product.Name,
+                    product.QuantityOnHand);
             }
             else
             {
-                StatusMessage = $"{product.Name} added to cart.";
+                StatusMessage = Lf("MsgAddedToCart", $"{product.Name} added to cart.", product.Name);
             }
         }
 
@@ -433,7 +437,7 @@ namespace Presentation.ViewModels
 
         private async Task SaveInvoiceAsync(decimal paymentAmount)
         {
-            if (IsBusy || CartItems.Count == 0) { if (CartItems.Count == 0) StatusMessage = "Cart is empty."; return; }
+            if (IsBusy || CartItems.Count == 0) { if (CartItems.Count == 0) StatusMessage = L("MsgCartEmpty", "Cart is empty."); return; }
             IsBusy = true;
             NotifyPaymentCommandsState();
             try
@@ -450,11 +454,11 @@ namespace Presentation.ViewModels
                 };
                 var invoiceId = await _invoiceService.CreateInvoiceAsync(request);
                 LastSavedInvoiceId = invoiceId;
-                StatusMessage = $"Invoice #{invoiceId} saved successfully.";
+                StatusMessage = Lf("MsgInvoiceSaved", $"Invoice #{invoiceId} saved successfully.", invoiceId);
                 CancelSale();
                 await RefreshLowStockAlertsAsync();
             }
-            catch (Exception ex) { StatusMessage = $"Save failed: {ex.Message}"; }
+            catch (Exception ex) { StatusMessage = Lf("MsgSaveFailed", $"Save failed: {ex.Message}", ex.Message); }
             finally { IsBusy = false; NotifyPaymentCommandsState(); }
         }
 
@@ -462,7 +466,7 @@ namespace Presentation.ViewModels
         {
             CartItems.Clear(); Discount = 0; Tax = 0; PaymentAmount = 0; SelectedCartItem = null;
             OnPropertyChanged(nameof(Subtotal)); OnPropertyChanged(nameof(Total)); NotifyPaymentCommandsState();
-            StatusMessage = "Sale canceled and cart cleared.";
+            StatusMessage = L("MsgSaleCanceled", "Sale canceled and cart cleared.");
         }
 
         private async Task LoadManagedProductsAsync()
@@ -539,7 +543,7 @@ namespace Presentation.ViewModels
         {
             if (!CanAccessUsersModule)
             {
-                StatusMessage = "You are not allowed to access Users module.";
+                StatusMessage = L("MsgAccessDeniedUsersModule", "You are not allowed to access Users module.");
                 return;
             }
 
@@ -799,7 +803,9 @@ namespace Presentation.ViewModels
         {
             ApplyLanguageState();
             ApplyCurrencyState(SettingsCurrency);
-            StatusMessage = _localizationService.CurrentCultureCode == "ar-SA" ? "Switched to Arabic." : "Switched to English.";
+            StatusMessage = _localizationService.CurrentCultureCode == "ar-SA"
+                ? L("MsgLanguageArabic", "Switched to Arabic.")
+                : L("MsgLanguageEnglish", "Switched to English.");
         }
 
         private void ApplyLanguageState() => FlowDirection = _localizationService.IsRightToLeft ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
@@ -845,7 +851,10 @@ namespace Presentation.ViewModels
 
             if (HasLowStockAlerts && IsPosModule)
             {
-                StatusMessage = $"Low stock alert: {LowStockAlerts.Count} products are near depletion.";
+                StatusMessage = Lf(
+                    "MsgLowStockAlert",
+                    $"Low stock alert: {LowStockAlerts.Count} products are near depletion.",
+                    LowStockAlerts.Count);
             }
         }
 
@@ -931,6 +940,18 @@ namespace Presentation.ViewModels
         {
             OnPropertyChanged(nameof(HasLowStockAlerts));
             OnPropertyChanged(nameof(LowStockAlertsSummary));
+        }
+
+        private static string L(string key, string fallback)
+        {
+            var value = System.Windows.Application.Current.TryFindResource(key) as string;
+            return string.IsNullOrWhiteSpace(value) ? fallback : value;
+        }
+
+        private static string Lf(string key, string fallbackFormat, params object[] args)
+        {
+            var format = L(key, fallbackFormat);
+            return string.Format(format, args);
         }
     }
 }

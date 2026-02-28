@@ -88,7 +88,7 @@
                             Padding="12"
                             CornerRadius="10"
                             Background="#12000000">
-                        <TextBlock Text="POS v1.0"
+                        <TextBlock Text="{DynamicResource AppVersionLabel}"
                                    Foreground="{DynamicResource AppSidebarMutedTextBrush}"
                                    FontSize="12" />
                     </Border>
@@ -96,11 +96,11 @@
                     <StackPanel DockPanel.Dock="Top">
                         <Border CornerRadius="14" Background="#1DFFFFFF" Padding="12" Margin="0,0,0,14">
                             <StackPanel>
-                                <TextBlock Text="POS"
+                                <TextBlock Text="{DynamicResource AppBrandTitle}"
                                            Foreground="{DynamicResource AppSidebarTextBrush}"
                                            FontSize="26"
                                            FontWeight="SemiBold" />
-                                <TextBlock Text="Offline Retail Suite"
+                                <TextBlock Text="{DynamicResource AppBrandSubtitle}"
                                            Foreground="{DynamicResource AppSidebarMutedTextBrush}"
                                            Margin="0,3,0,0"
                                            FontSize="12" />
@@ -331,7 +331,7 @@
                                   VirtualizingPanel.VirtualizationMode="Recycling"
                                   ScrollViewer.CanContentScroll="True">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="SKU" Binding="{Binding SKU}" Width="*" />
+                                <DataGridTextColumn Header="{DynamicResource SkuLabel}" Binding="{Binding SKU}" Width="*" />
                                 <DataGridTextColumn Header="{DynamicResource ProductName}" Binding="{Binding Name}" Width="2*" />
                                 <DataGridTextColumn Header="{DynamicResource SalePrice}" Binding="{Binding SalePrice, StringFormat=C2}" Width="*" />
                                 <DataGridTextColumn Header="{DynamicResource QtyOnHand}" Binding="{Binding QuantityOnHand}" Width="*" />
@@ -377,7 +377,7 @@
                                   VirtualizingPanel.IsVirtualizing="True"
                                   VirtualizingPanel.VirtualizationMode="Recycling">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="SKU" Binding="{Binding Sku}" Width="*" />
+                                <DataGridTextColumn Header="{DynamicResource SkuLabel}" Binding="{Binding Sku}" Width="*" />
                                 <DataGridTextColumn Header="{DynamicResource ProductName}" Binding="{Binding Name}" Width="2*" />
                                 <DataGridTextColumn Header="{DynamicResource Qty}" Binding="{Binding Quantity}" Width="*" />
                                 <DataGridTextColumn Header="{DynamicResource TotalDisplay}" Binding="{Binding LineTotal, StringFormat=C2}" Width="*" />
@@ -479,7 +479,7 @@
                                   VirtualizingPanel.IsVirtualizing="True"
                                   VirtualizingPanel.VirtualizationMode="Recycling">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="SKU" Binding="{Binding SKU}" Width="*" />
+                                <DataGridTextColumn Header="{DynamicResource SkuLabel}" Binding="{Binding SKU}" Width="*" />
                                 <DataGridTextColumn Header="{DynamicResource ProductName}" Binding="{Binding Name}" Width="2*" />
                                 <DataGridTextColumn Header="{DynamicResource CostPrice}" Binding="{Binding CostPrice, StringFormat=C2}" Width="*" />
                                 <DataGridTextColumn Header="{DynamicResource SalePrice}" Binding="{Binding SalePrice, StringFormat=C2}" Width="*" />
@@ -510,7 +510,7 @@
                                         <StackPanel>
                                             <TextBlock Text="{DynamicResource ProductDetailsSection}" FontWeight="SemiBold" Margin="0,0,0,8" />
 
-                                            <TextBlock Text="SKU" Margin="0,0,0,4" />
+                                            <TextBlock Text="{DynamicResource SkuLabel}" Margin="0,0,0,4" />
                                             <TextBox Height="34" Text="{Binding EditingProductSku, UpdateSourceTrigger=PropertyChanged}" />
 
                                             <TextBlock Text="{DynamicResource ProductName}" Margin="0,8,0,4" />
