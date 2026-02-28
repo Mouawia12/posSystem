@@ -19,6 +19,8 @@
     <sys:String x:Key="DashboardDueMaintenance" xmlns:sys="clr-namespace:System;assembly=mscorlib">Due Maintenance</sys:String>
     <sys:String x:Key="DashboardActiveWarranties" xmlns:sys="clr-namespace:System;assembly=mscorlib">Active Warranties</sys:String>
     <sys:String x:Key="Search" xmlns:sys="clr-namespace:System;assembly=mscorlib">Search</sys:String>
+    <sys:String x:Key="BarcodeInputLabel" xmlns:sys="clr-namespace:System;assembly=mscorlib">Barcode (Scan or Enter)</sys:String>
+    <sys:String x:Key="ProductSearchLabel" xmlns:sys="clr-namespace:System;assembly=mscorlib">Product Search</sys:String>
     <sys:String x:Key="New" xmlns:sys="clr-namespace:System;assembly=mscorlib">New</sys:String>
     <sys:String x:Key="Save" xmlns:sys="clr-namespace:System;assembly=mscorlib">Save</sys:String>
     <sys:String x:Key="Deactivate" xmlns:sys="clr-namespace:System;assembly=mscorlib">Deactivate</sys:String>
@@ -96,6 +98,8 @@
     <sys:String x:Key="Tax" xmlns:sys="clr-namespace:System;assembly=mscorlib">Tax</sys:String>
     <sys:String x:Key="PartialPayment" xmlns:sys="clr-namespace:System;assembly=mscorlib">Partial Payment</sys:String>
     <sys:String x:Key="TotalDisplay" xmlns:sys="clr-namespace:System;assembly=mscorlib">Total Display</sys:String>
+    <sys:String x:Key="SubtotalLabel" xmlns:sys="clr-namespace:System;assembly=mscorlib">Subtotal</sys:String>
+    <sys:String x:Key="TotalLabel" xmlns:sys="clr-namespace:System;assembly=mscorlib">Grand Total</sys:String>
     <sys:String x:Key="PayCash" xmlns:sys="clr-namespace:System;assembly=mscorlib">Pay Cash</sys:String>
     <sys:String x:Key="PayPartial" xmlns:sys="clr-namespace:System;assembly=mscorlib">Pay Partial</sys:String>
     <sys:String x:Key="PrintA4" xmlns:sys="clr-namespace:System;assembly=mscorlib">Print A4</sys:String>

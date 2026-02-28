@@ -20,6 +20,8 @@
     <sys:String x:Key="DashboardDueMaintenance">صيانة مستحقة</sys:String>
     <sys:String x:Key="DashboardActiveWarranties">ضمانات نشطة</sys:String>
     <sys:String x:Key="Search">بحث</sys:String>
+    <sys:String x:Key="BarcodeInputLabel">الباركود (سكان أو إدخال)</sys:String>
+    <sys:String x:Key="ProductSearchLabel">بحث عن منتج</sys:String>
     <sys:String x:Key="New">جديد</sys:String>
     <sys:String x:Key="Save">حفظ</sys:String>
     <sys:String x:Key="Deactivate">تعطيل</sys:String>
@@ -97,6 +99,8 @@
     <sys:String x:Key="Tax">الضريبة</sys:String>
     <sys:String x:Key="PartialPayment">دفع جزئي</sys:String>
     <sys:String x:Key="TotalDisplay">الإجمالي</sys:String>
+    <sys:String x:Key="SubtotalLabel">المجموع الفرعي</sys:String>
+    <sys:String x:Key="TotalLabel">الإجمالي النهائي</sys:String>
     <sys:String x:Key="PayCash">دفع نقدي</sys:String>
     <sys:String x:Key="PayPartial">دفع جزئي</sys:String>
     <sys:String x:Key="PrintA4">طباعة A4</sys:String>
