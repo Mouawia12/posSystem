@@ -50,6 +50,7 @@ namespace posSystem
                     services.AddScoped<IInvoiceService, InvoiceService>();
                     services.AddSingleton<IAuthenticationService, AuthenticationService>();
                     services.AddSingleton<IStartupPrerequisitesService, StartupPrerequisitesService>();
+                    services.AddSingleton<IDemoDataSeederService, DemoDataSeederService>();
                     services.AddScoped<IWarrantyPolicyService, WarrantyPolicyService>();
                     services.AddScoped<IMaintenanceScheduleGenerator, MaintenanceScheduleGenerator>();
                     services.AddSingleton<IUserContextService, UserContextService>();
@@ -94,7 +95,13 @@ namespace posSystem
 
             var authService = _host.Services.GetRequiredService<IAuthenticationService>();
             var userContext = _host.Services.GetRequiredService<IUserContextService>();
+            var demoSeeder = _host.Services.GetRequiredService<IDemoDataSeederService>();
             var bootstrapPassword = Environment.GetEnvironmentVariable("POS_DEFAULT_OWNER_PASSWORD") ?? "owner12345";
+            var shouldSeedDemo = e.Args.Contains("--seed-demo-data", StringComparer.OrdinalIgnoreCase)
+                || string.Equals(Environment.GetEnvironmentVariable("POS_SEED_DEMO_DATA"), "1", StringComparison.OrdinalIgnoreCase);
+            var forceSeedDemo = e.Args.Contains("--seed-demo-force", StringComparer.OrdinalIgnoreCase)
+                || string.Equals(Environment.GetEnvironmentVariable("POS_SEED_DEMO_FORCE"), "1", StringComparison.OrdinalIgnoreCase);
+            var seedOnly = e.Args.Contains("--seed-only", StringComparer.OrdinalIgnoreCase);
 
             await authService.EnsureDefaultOwnerAsync(bootstrapPassword);
             var login = await authService.AuthenticateAsync("owner", bootstrapPassword);
@@ -104,6 +111,13 @@ namespace posSystem
             }
 
             userContext.SetUser(login.UserId, login.Username, login.Role);
+            await demoSeeder.EnsureSeededAsync(forceSeedDemo || shouldSeedDemo);
+
+            if (seedOnly)
+            {
+                Shutdown();
+                return;
+            }
 
             _host.Services.GetRequiredService<MainWindow>().Show();
             startupStopwatch.Stop();

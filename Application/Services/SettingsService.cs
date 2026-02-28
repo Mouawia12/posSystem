@@ -40,7 +40,7 @@ namespace Application.Services
                 Phone = settings.Phone,
                 InvoicePrefix = settings.InvoicePrefix,
                 NextInvoiceNumber = settings.NextInvoiceNumber,
-                Currency = settings.Currency,
+                Currency = NormalizeCurrencyCode(settings.Currency),
                 PrinterName = settings.PrinterName
             };
         }
@@ -61,10 +61,15 @@ namespace Application.Services
             entity.Phone = settings.Phone?.Trim();
             entity.InvoicePrefix = settings.InvoicePrefix.Trim();
             entity.NextInvoiceNumber = settings.NextInvoiceNumber;
-            entity.Currency = settings.Currency.Trim();
+            entity.Currency = NormalizeCurrencyCode(settings.Currency);
             entity.PrinterName = settings.PrinterName?.Trim();
 
             await db.SaveChangesAsync(cancellationToken);
+        }
+
+        private static string NormalizeCurrencyCode(string? currencyCode)
+        {
+            return string.Equals(currencyCode, "SAR", StringComparison.OrdinalIgnoreCase) ? "SAR" : "USD";
         }
     }
 }

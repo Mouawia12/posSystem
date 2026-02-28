@@ -4,7 +4,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core.Enums;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 
 namespace Presentation.ViewModels
@@ -125,6 +127,7 @@ namespace Presentation.ViewModels
         public ObservableCollection<ReportTopProductDto> TopProductsReport { get; } = [];
         public ObservableCollection<UserManagementDto> ManagedUsers { get; } = [];
         public ObservableCollection<UserRole> AvailableUserRoles { get; } = [UserRole.Owner, UserRole.Manager, UserRole.Cashier];
+        public ObservableCollection<string> AvailableCurrencies { get; } = ["USD", "SAR"];
 
         public bool IsDashboardModule => ActiveModule == "DASHBOARD";
         public bool IsPosModule => ActiveModule == "POS";
@@ -286,6 +289,8 @@ namespace Presentation.ViewModels
             InitializeSecurityContext();
             _localizationService.LanguageChanged += OnLanguageChanged;
             ApplyLanguageState();
+            ApplyCurrencyState(SettingsCurrency);
+            _ = InitializeCurrencyFromSettingsAsync();
             _ = ShowDashboardModuleAsync();
             StatusMessage = "System initialized.";
         }
@@ -322,6 +327,13 @@ namespace Presentation.ViewModels
             DashboardDueMaintenance = summary.DueMaintenanceCount;
             DashboardActiveWarranties = summary.ActiveWarrantyCount;
             StatusMessage = "Dashboard loaded.";
+        }
+
+        private async Task InitializeCurrencyFromSettingsAsync()
+        {
+            var settings = await _settingsService.GetAsync();
+            SettingsCurrency = NormalizeCurrencyCode(settings.Currency);
+            ApplyCurrencyState(SettingsCurrency);
         }
 
         private async Task SearchAsync()
@@ -681,7 +693,8 @@ namespace Presentation.ViewModels
             SettingsPhone = settings.Phone ?? string.Empty;
             SettingsInvoicePrefix = settings.InvoicePrefix;
             SettingsNextInvoiceNumber = settings.NextInvoiceNumber;
-            SettingsCurrency = settings.Currency;
+            SettingsCurrency = NormalizeCurrencyCode(settings.Currency);
+            ApplyCurrencyState(SettingsCurrency);
             SettingsPrinterName = settings.PrinterName ?? string.Empty;
             StatusMessage = "Settings loaded.";
         }
@@ -694,6 +707,7 @@ namespace Presentation.ViewModels
                 return;
             }
 
+            var normalizedCurrency = NormalizeCurrencyCode(SettingsCurrency);
             await _settingsService.SaveAsync(new SettingsDto
             {
                 CompanyName = SettingsCompanyName,
@@ -701,10 +715,12 @@ namespace Presentation.ViewModels
                 Phone = string.IsNullOrWhiteSpace(SettingsPhone) ? null : SettingsPhone,
                 InvoicePrefix = SettingsInvoicePrefix,
                 NextInvoiceNumber = SettingsNextInvoiceNumber <= 0 ? 1 : SettingsNextInvoiceNumber,
-                Currency = string.IsNullOrWhiteSpace(SettingsCurrency) ? "USD" : SettingsCurrency,
+                Currency = normalizedCurrency,
                 PrinterName = string.IsNullOrWhiteSpace(SettingsPrinterName) ? null : SettingsPrinterName
             });
 
+            SettingsCurrency = normalizedCurrency;
+            ApplyCurrencyState(normalizedCurrency);
             StatusMessage = "Settings saved successfully.";
         }
 
@@ -755,10 +771,33 @@ namespace Presentation.ViewModels
         private void OnLanguageChanged()
         {
             ApplyLanguageState();
+            ApplyCurrencyState(SettingsCurrency);
             StatusMessage = _localizationService.CurrentCultureCode == "ar-SA" ? "Switched to Arabic." : "Switched to English.";
         }
 
         private void ApplyLanguageState() => FlowDirection = _localizationService.IsRightToLeft ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+        private static string NormalizeCurrencyCode(string? currencyCode)
+            => string.Equals(currencyCode, "SAR", StringComparison.OrdinalIgnoreCase) ? "SAR" : "USD";
+
+        private void ApplyCurrencyState(string currencyCode)
+        {
+            var normalized = NormalizeCurrencyCode(currencyCode);
+            var culture = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+            culture.NumberFormat.CurrencySymbol = normalized == "SAR" ? "ر.س" : "$";
+            culture.NumberFormat.CurrencyPositivePattern = 0;
+            culture.NumberFormat.CurrencyNegativePattern = 1;
+
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            Thread.CurrentThread.CurrentCulture = culture;
+
+            OnPropertyChanged(nameof(Subtotal));
+            OnPropertyChanged(nameof(Total));
+            OnPropertyChanged(nameof(ReportGrossSales));
+            OnPropertyChanged(nameof(ReportNetSales));
+            OnPropertyChanged(nameof(ReportProfit));
+            OnPropertyChanged(nameof(ReportTotalPayments));
+            OnPropertyChanged(nameof(DashboardSalesToday));
+        }
 
         private void InitializeSecurityContext()
         {
