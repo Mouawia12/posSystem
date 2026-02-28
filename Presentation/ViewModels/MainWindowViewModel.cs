@@ -177,6 +177,8 @@ namespace Presentation.ViewModels
         public IAsyncRelayCommand SaveManagedProductCommand { get; }
         public IRelayCommand NewManagedProductCommand { get; }
         public IAsyncRelayCommand DeactivateManagedProductCommand { get; }
+        public IAsyncRelayCommand ReactivateManagedProductCommand { get; }
+        public IAsyncRelayCommand DeleteManagedProductCommand { get; }
         public IAsyncRelayCommand StockInCommand { get; }
         public IAsyncRelayCommand StockOutCommand { get; }
 
@@ -184,10 +186,14 @@ namespace Presentation.ViewModels
         public IAsyncRelayCommand SaveManagedCustomerCommand { get; }
         public IRelayCommand NewManagedCustomerCommand { get; }
         public IAsyncRelayCommand DeactivateManagedCustomerCommand { get; }
+        public IAsyncRelayCommand ReactivateManagedCustomerCommand { get; }
+        public IAsyncRelayCommand DeleteManagedCustomerCommand { get; }
 
         public IAsyncRelayCommand LoadWarrantiesCommand { get; }
         public IAsyncRelayCommand RegisterWarrantyCommand { get; }
         public IAsyncRelayCommand CancelWarrantyCommand { get; }
+        public IAsyncRelayCommand ReactivateWarrantyCommand { get; }
+        public IAsyncRelayCommand DeleteWarrantyCommand { get; }
 
         public IAsyncRelayCommand LoadMaintenanceSchedulesCommand { get; }
         public IAsyncRelayCommand MarkMaintenanceDoneCommand { get; }
@@ -267,6 +273,8 @@ namespace Presentation.ViewModels
             SaveManagedProductCommand = new AsyncRelayCommand(SaveManagedProductAsync);
             NewManagedProductCommand = new RelayCommand(ResetManagedProductForm);
             DeactivateManagedProductCommand = new AsyncRelayCommand(DeactivateManagedProductAsync);
+            ReactivateManagedProductCommand = new AsyncRelayCommand(ReactivateManagedProductAsync);
+            DeleteManagedProductCommand = new AsyncRelayCommand(DeleteManagedProductAsync);
             StockInCommand = new AsyncRelayCommand(() => AdjustStockAsync(InventoryMovementType.In));
             StockOutCommand = new AsyncRelayCommand(() => AdjustStockAsync(InventoryMovementType.Out));
 
@@ -274,10 +282,14 @@ namespace Presentation.ViewModels
             SaveManagedCustomerCommand = new AsyncRelayCommand(SaveManagedCustomerAsync);
             NewManagedCustomerCommand = new RelayCommand(ResetManagedCustomerForm);
             DeactivateManagedCustomerCommand = new AsyncRelayCommand(DeactivateManagedCustomerAsync);
+            ReactivateManagedCustomerCommand = new AsyncRelayCommand(ReactivateManagedCustomerAsync);
+            DeleteManagedCustomerCommand = new AsyncRelayCommand(DeleteManagedCustomerAsync);
 
             LoadWarrantiesCommand = new AsyncRelayCommand(LoadWarrantiesAsync);
             RegisterWarrantyCommand = new AsyncRelayCommand(RegisterWarrantyAsync);
             CancelWarrantyCommand = new AsyncRelayCommand(CancelWarrantyAsync);
+            ReactivateWarrantyCommand = new AsyncRelayCommand(ReactivateWarrantyAsync);
+            DeleteWarrantyCommand = new AsyncRelayCommand(DeleteWarrantyAsync);
 
             LoadMaintenanceSchedulesCommand = new AsyncRelayCommand(LoadMaintenanceSchedulesAsync);
             MarkMaintenanceDoneCommand = new AsyncRelayCommand(() => SetMaintenanceStatusAsync(MaintenanceStatus.Done));
@@ -494,6 +506,37 @@ namespace Presentation.ViewModels
             StatusMessage = L("MsgProductDeactivated", "Product deactivated.");
         }
 
+        private async Task ReactivateManagedProductAsync()
+        {
+            if (SelectedManagedProduct is null) return;
+            try
+            {
+                await _productManagementService.ReactivateAsync(SelectedManagedProduct.Id);
+                await LoadManagedProductsAsync();
+                StatusMessage = L("MsgProductReactivated", "Product reactivated.");
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = Lf("MsgActionFailed", $"Action failed: {ex.Message}", ex.Message);
+            }
+        }
+
+        private async Task DeleteManagedProductAsync()
+        {
+            if (SelectedManagedProduct is null) return;
+            try
+            {
+                await _productManagementService.DeleteAsync(SelectedManagedProduct.Id);
+                await LoadManagedProductsAsync();
+                ResetManagedProductForm();
+                StatusMessage = L("MsgProductDeleted", "Product deleted.");
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = Lf("MsgActionFailed", $"Action failed: {ex.Message}", ex.Message);
+            }
+        }
+
         private async Task AdjustStockAsync(InventoryMovementType movementType)
         {
             if (SelectedManagedProduct is null) { StatusMessage = L("MsgSelectProductFirst", "Select a product first."); return; }
@@ -532,6 +575,37 @@ namespace Presentation.ViewModels
             await _customerManagementService.DeactivateAsync(SelectedManagedCustomer.Id);
             await LoadManagedCustomersAsync();
             StatusMessage = L("MsgCustomerDeactivated", "Customer deactivated.");
+        }
+
+        private async Task ReactivateManagedCustomerAsync()
+        {
+            if (SelectedManagedCustomer is null) return;
+            try
+            {
+                await _customerManagementService.ReactivateAsync(SelectedManagedCustomer.Id);
+                await LoadManagedCustomersAsync();
+                StatusMessage = L("MsgCustomerReactivated", "Customer reactivated.");
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = Lf("MsgActionFailed", $"Action failed: {ex.Message}", ex.Message);
+            }
+        }
+
+        private async Task DeleteManagedCustomerAsync()
+        {
+            if (SelectedManagedCustomer is null) return;
+            try
+            {
+                await _customerManagementService.DeleteAsync(SelectedManagedCustomer.Id);
+                await LoadManagedCustomersAsync();
+                ResetManagedCustomerForm();
+                StatusMessage = L("MsgCustomerDeleted", "Customer deleted.");
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = Lf("MsgActionFailed", $"Action failed: {ex.Message}", ex.Message);
+            }
         }
 
         private void ResetManagedCustomerForm()
@@ -646,6 +720,36 @@ namespace Presentation.ViewModels
             StatusMessage = L("MsgWarrantyCanceled", "Warranty canceled.");
         }
 
+        private async Task ReactivateWarrantyAsync()
+        {
+            if (SelectedWarranty is null) return;
+            try
+            {
+                await _warrantyManagementService.ReactivateWarrantyAsync(SelectedWarranty.WarrantyId);
+                await LoadWarrantiesAsync();
+                StatusMessage = L("MsgWarrantyReactivated", "Warranty reactivated.");
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = Lf("MsgActionFailed", $"Action failed: {ex.Message}", ex.Message);
+            }
+        }
+
+        private async Task DeleteWarrantyAsync()
+        {
+            if (SelectedWarranty is null) return;
+            try
+            {
+                await _warrantyManagementService.DeleteWarrantyAsync(SelectedWarranty.WarrantyId);
+                await LoadWarrantiesAsync();
+                StatusMessage = L("MsgWarrantyDeleted", "Warranty deleted.");
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = Lf("MsgActionFailed", $"Action failed: {ex.Message}", ex.Message);
+            }
+        }
+
         private async Task LoadMaintenanceSchedulesAsync()
         {
             var result = await _maintenanceManagementService.GetSchedulesAsync(MaintenanceSearchTerm);
@@ -686,34 +790,41 @@ namespace Presentation.ViewModels
 
         private async Task LoadReportsAsync()
         {
-            var from = ReportFromDate.Date;
-            var to = ReportToDate.Date.AddDays(1).AddTicks(-1);
-            if (to < from)
+            try
             {
-                StatusMessage = L("MsgReportDateRangeInvalid", "Report date range is invalid.");
-                return;
+                var from = ReportFromDate.Date;
+                var to = ReportToDate.Date.AddDays(1).AddTicks(-1);
+                if (to < from)
+                {
+                    StatusMessage = L("MsgReportDateRangeInvalid", "Report date range is invalid.");
+                    return;
+                }
+
+                var summary = await _reportingService.GetSummaryAsync(from, to);
+                ReportTotalInvoices = summary.TotalInvoices;
+                ReportGrossSales = summary.GrossSales;
+                ReportNetSales = summary.NetSales;
+                ReportProfit = summary.Profit;
+                ReportTotalPayments = summary.TotalPayments;
+
+                DailySalesReport.Clear();
+                foreach (var item in summary.DailySales)
+                {
+                    DailySalesReport.Add(item);
+                }
+
+                TopProductsReport.Clear();
+                foreach (var item in summary.TopProducts)
+                {
+                    TopProductsReport.Add(item);
+                }
+
+                StatusMessage = L("MsgReportsGenerated", "Reports generated successfully.");
             }
-
-            var summary = await _reportingService.GetSummaryAsync(from, to);
-            ReportTotalInvoices = summary.TotalInvoices;
-            ReportGrossSales = summary.GrossSales;
-            ReportNetSales = summary.NetSales;
-            ReportProfit = summary.Profit;
-            ReportTotalPayments = summary.TotalPayments;
-
-            DailySalesReport.Clear();
-            foreach (var item in summary.DailySales)
+            catch (Exception ex)
             {
-                DailySalesReport.Add(item);
+                StatusMessage = Lf("MsgActionFailed", $"Action failed: {ex.Message}", ex.Message);
             }
-
-            TopProductsReport.Clear();
-            foreach (var item in summary.TopProducts)
-            {
-                TopProductsReport.Add(item);
-            }
-
-            StatusMessage = L("MsgReportsGenerated", "Reports generated successfully.");
         }
 
         private async Task LoadSettingsAsync()

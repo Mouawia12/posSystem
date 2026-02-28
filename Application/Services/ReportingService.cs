@@ -21,29 +21,36 @@ namespace Application.Services
             var from = fromUtc.ToUniversalTime();
             var to = toUtc.ToUniversalTime();
 
-            var invoicesQuery = db.Invoices
+            var invoiceRows = await db.Invoices
                 .AsNoTracking()
                 .Where(x => x.CreatedAt >= from && x.CreatedAt <= to)
-                .Where(x => x.Status == InvoiceStatus.Paid || x.Status == InvoiceStatus.Partial);
+                .Where(x => x.Status == InvoiceStatus.Paid || x.Status == InvoiceStatus.Partial)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.CreatedAt,
+                    x.Subtotal,
+                    x.Discount,
+                    x.Tax,
+                    x.Total,
+                    x.Profit
+                })
+                .ToListAsync(cancellationToken);
 
-            var totalInvoices = await invoicesQuery.CountAsync(cancellationToken);
-            var grossSales = await invoicesQuery.SumAsync(x => (decimal?)x.Subtotal, cancellationToken) ?? 0m;
-            var discounts = await invoicesQuery.SumAsync(x => (decimal?)x.Discount, cancellationToken) ?? 0m;
-            var taxes = await invoicesQuery.SumAsync(x => (decimal?)x.Tax, cancellationToken) ?? 0m;
-            var netSales = await invoicesQuery.SumAsync(x => (decimal?)x.Total, cancellationToken) ?? 0m;
-            var profit = await invoicesQuery.SumAsync(x => (decimal?)x.Profit, cancellationToken) ?? 0m;
+            var totalInvoices = invoiceRows.Count;
+            var grossSales = invoiceRows.Sum(x => x.Subtotal);
+            var discounts = invoiceRows.Sum(x => x.Discount);
+            var taxes = invoiceRows.Sum(x => x.Tax);
+            var netSales = invoiceRows.Sum(x => x.Total);
+            var profit = invoiceRows.Sum(x => x.Profit);
 
             var payments = await db.Payments
                 .AsNoTracking()
                 .Where(x => x.PaidAt >= from && x.PaidAt <= to)
                 .SumAsync(x => (decimal?)x.Amount, cancellationToken) ?? 0m;
 
-            var dailySalesRaw = await invoicesQuery
-                .Select(x => new { Day = x.CreatedAt.Date, x.Subtotal, x.Total, x.Profit })
-                .ToListAsync(cancellationToken);
-
-            var dailySales = dailySalesRaw
-                .GroupBy(x => x.Day)
+            var dailySales = invoiceRows
+                .GroupBy(x => x.CreatedAt.Date)
                 .OrderBy(x => x.Key)
                 .Select(g => new ReportDailySalesDto
                 {
@@ -55,22 +62,33 @@ namespace Application.Services
                 })
                 .ToList();
 
-            var topProducts = await db.InvoiceItems
+            var invoiceIds = invoiceRows.Select(x => x.Id).ToHashSet();
+            var topProductsRows = await db.InvoiceItems
                 .AsNoTracking()
-                .Where(x => x.Invoice.CreatedAt >= from && x.Invoice.CreatedAt <= to)
-                .Where(x => x.Invoice.Status == InvoiceStatus.Paid || x.Invoice.Status == InvoiceStatus.Partial)
-                .GroupBy(x => new { x.ProductId, x.Product.Name })
+                .Where(x => invoiceIds.Contains(x.InvoiceId))
+                .Select(x => new
+                {
+                    x.ProductId,
+                    ProductName = x.Product.Name,
+                    x.Quantity,
+                    x.LineTotal,
+                    x.LineProfit
+                })
+                .ToListAsync(cancellationToken);
+
+            var topProducts = topProductsRows
+                .GroupBy(x => new { x.ProductId, x.ProductName })
                 .Select(g => new ReportTopProductDto
                 {
                     ProductId = g.Key.ProductId,
-                    ProductName = g.Key.Name,
+                    ProductName = g.Key.ProductName,
                     QuantitySold = g.Sum(x => x.Quantity),
                     SalesAmount = g.Sum(x => x.LineTotal),
                     ProfitAmount = g.Sum(x => x.LineProfit)
                 })
                 .OrderByDescending(x => x.SalesAmount)
                 .Take(10)
-                .ToListAsync(cancellationToken);
+                .ToList();
 
             return new ReportSummaryDto
             {

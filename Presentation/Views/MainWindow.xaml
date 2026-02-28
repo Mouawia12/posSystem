@@ -203,67 +203,182 @@
                   Visibility="{Binding IsDashboardModule, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Grid Margin="0,0,0,14">
+                <Border Background="White" CornerRadius="14" Padding="18" Margin="0,0,0,14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="{DynamicResource NavDashboard}" FontSize="26" FontWeight="SemiBold" Foreground="#1B2430" />
+                            <TextBlock Text="{Binding CompanyName}" Foreground="#607184" Margin="0,4,0,0" FontSize="13" />
+                            <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                                <Border Background="#EAF5FF" CornerRadius="10" Padding="10,6" Margin="0,0,8,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE8A1;" FontFamily="Segoe MDL2 Assets" Foreground="#0F62A5" Margin="0,0,6,0" />
+                                        <TextBlock Text="{DynamicResource DashboardSalesToday}" Foreground="#0F62A5" FontWeight="SemiBold" FontSize="12" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Background="#EDF8EE" CornerRadius="10" Padding="10,6">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE14C;" FontFamily="Segoe MDL2 Assets" Foreground="#2D7A46" Margin="0,0,6,0" />
+                                        <TextBlock Text="{DynamicResource DashboardInvoicesToday}" Foreground="#2D7A46" FontWeight="SemiBold" FontSize="12" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Border Grid.Column="1" CornerRadius="12" Padding="12" Margin="12,0,0,0">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#0C587A" Offset="0" />
+                                    <GradientStop Color="#174F91" Offset="1" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource DashboardSalesToday}" Foreground="#BDE3FF" FontSize="12" />
+                                <TextBlock FontSize="24" FontWeight="SemiBold" Foreground="White" Margin="0,4,0,0">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                            <Binding Path="DashboardSalesToday" />
+                                            <Binding Path="SettingsCurrency" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                <Rectangle Height="1" Fill="#3AA8DA" Margin="0,10,0,10" />
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <TextBlock Text="{Binding DashboardInvoicesToday}" Foreground="White" FontWeight="SemiBold" />
+                                    <TextBlock Text="  " />
+                                    <TextBlock Text="{DynamicResource DashboardInvoicesToday}" Foreground="#BDE3FF" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <Grid Grid.Row="1" Margin="0,0,0,14">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Column="0" Background="White" CornerRadius="10" Padding="14" Margin="0,0,10,0">
-                        <StackPanel>
-                            <TextBlock Text="{DynamicResource DashboardProducts}" Foreground="#6B7785" />
-                            <TextBlock Text="{Binding DashboardTotalProducts}" FontSize="24" FontWeight="SemiBold" />
-                        </StackPanel>
+                    <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="14" Margin="0,0,10,0" BorderBrush="#E6EBF2" BorderThickness="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <DockPanel>
+                                <StackPanel DockPanel.Dock="Left">
+                                    <TextBlock Text="{DynamicResource DashboardProducts}" Foreground="#5D7084" FontSize="12" />
+                                    <TextBlock Text="{Binding DashboardTotalProducts}" FontSize="28" FontWeight="SemiBold" Foreground="#1C2833" />
+                                </StackPanel>
+                                <Border Width="34" Height="34" CornerRadius="17" Background="#EAF4FF" HorizontalAlignment="Right">
+                                    <TextBlock Text="&#xE8CC;" FontFamily="Segoe MDL2 Assets" Foreground="#2972B6" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" />
+                                </Border>
+                            </DockPanel>
+                            <Viewbox Grid.Row="2" Height="34" Stretch="Fill">
+                                <Canvas Width="120" Height="34">
+                                    <Path Stroke="#2B76BE" StrokeThickness="2.4" Data="M0,28 C12,18 22,22 36,10 C50,4 62,16 78,12 C92,9 104,6 120,2" />
+                                </Canvas>
+                            </Viewbox>
+                        </Grid>
                     </Border>
-                    <Border Grid.Column="1" Background="White" CornerRadius="10" Padding="14" Margin="0,0,10,0">
-                        <StackPanel>
-                            <TextBlock Text="{DynamicResource DashboardCustomers}" Foreground="#6B7785" />
-                            <TextBlock Text="{Binding DashboardActiveCustomers}" FontSize="24" FontWeight="SemiBold" />
-                        </StackPanel>
+                    <Border Grid.Column="1" Background="White" CornerRadius="12" Padding="14" Margin="0,0,10,0" BorderBrush="#E6EBF2" BorderThickness="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <DockPanel>
+                                <StackPanel DockPanel.Dock="Left">
+                                    <TextBlock Text="{DynamicResource DashboardCustomers}" Foreground="#5D7084" FontSize="12" />
+                                    <TextBlock Text="{Binding DashboardActiveCustomers}" FontSize="28" FontWeight="SemiBold" Foreground="#1C2833" />
+                                </StackPanel>
+                                <Border Width="34" Height="34" CornerRadius="17" Background="#EEF8F0" HorizontalAlignment="Right">
+                                    <TextBlock Text="&#xE716;" FontFamily="Segoe MDL2 Assets" Foreground="#2D7A46" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" />
+                                </Border>
+                            </DockPanel>
+                            <Viewbox Grid.Row="2" Height="34" Stretch="Fill">
+                                <Canvas Width="120" Height="34">
+                                    <Path Stroke="#2D7A46" StrokeThickness="2.4" Data="M0,26 C14,20 26,18 40,14 C54,9 70,7 84,9 C96,10 106,8 120,3" />
+                                </Canvas>
+                            </Viewbox>
+                        </Grid>
                     </Border>
-                    <Border Grid.Column="2" Background="White" CornerRadius="10" Padding="14">
-                        <StackPanel>
-                            <TextBlock Text="{DynamicResource DashboardSalesToday}" Foreground="#6B7785" />
-                            <TextBlock FontSize="24" FontWeight="SemiBold">
-                                <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
-                                        <Binding Path="DashboardSalesToday" />
-                                        <Binding Path="SettingsCurrency" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </StackPanel>
+                    <Border Grid.Column="2" Background="White" CornerRadius="12" Padding="14" BorderBrush="#E6EBF2" BorderThickness="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <DockPanel>
+                                <StackPanel DockPanel.Dock="Left">
+                                    <TextBlock Text="{DynamicResource DashboardSalesToday}" Foreground="#5D7084" FontSize="12" />
+                                    <TextBlock FontSize="28" FontWeight="SemiBold" Foreground="#1C2833">
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                                <Binding Path="DashboardSalesToday" />
+                                                <Binding Path="SettingsCurrency" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </StackPanel>
+                                <Border Width="34" Height="34" CornerRadius="17" Background="#FFF3E9" HorizontalAlignment="Right">
+                                    <TextBlock Text="&#xEAFD;" FontFamily="Segoe MDL2 Assets" Foreground="#B56A24" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" />
+                                </Border>
+                            </DockPanel>
+                            <Viewbox Grid.Row="2" Height="34" Stretch="Fill">
+                                <Canvas Width="120" Height="34">
+                                    <Path Stroke="#B56A24" StrokeThickness="2.4" Data="M0,29 C13,26 28,22 42,18 C54,15 70,13 82,10 C94,8 106,5 120,2" />
+                                </Canvas>
+                            </Viewbox>
+                        </Grid>
                     </Border>
                 </Grid>
 
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Column="0" Background="White" CornerRadius="10" Padding="14" Margin="0,0,10,0">
-                        <StackPanel>
-                            <TextBlock Text="{DynamicResource DashboardInvoicesToday}" Foreground="#6B7785" />
-                            <TextBlock Text="{Binding DashboardInvoicesToday}" FontSize="24" FontWeight="SemiBold" />
-                        </StackPanel>
+                    <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="14" Margin="0,0,10,0" BorderBrush="#E6EBF2" BorderThickness="1">
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Left">
+                                <TextBlock Text="{DynamicResource DashboardInvoicesToday}" Foreground="#5D7084" FontSize="12" />
+                                <TextBlock Text="{Binding DashboardInvoicesToday}" FontSize="28" FontWeight="SemiBold" Foreground="#1C2833" />
+                            </StackPanel>
+                            <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" Foreground="#3D88D6" FontSize="20" VerticalAlignment="Top" />
+                        </DockPanel>
                     </Border>
-                    <Border Grid.Column="1" Background="White" CornerRadius="10" Padding="14" Margin="0,0,10,0">
-                        <StackPanel>
-                            <TextBlock Text="{DynamicResource DashboardDueMaintenance}" Foreground="#6B7785" />
-                            <TextBlock Text="{Binding DashboardDueMaintenance}" FontSize="24" FontWeight="SemiBold" />
-                        </StackPanel>
+                    <Border Grid.Column="1" Background="White" CornerRadius="12" Padding="14" Margin="0,0,10,0" BorderBrush="#E6EBF2" BorderThickness="1">
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Left">
+                                <TextBlock Text="{DynamicResource DashboardDueMaintenance}" Foreground="#5D7084" FontSize="12" />
+                                <TextBlock Text="{Binding DashboardDueMaintenance}" FontSize="28" FontWeight="SemiBold" Foreground="#1C2833" />
+                            </StackPanel>
+                            <TextBlock Text="&#xE90F;" FontFamily="Segoe MDL2 Assets" Foreground="#7864D8" FontSize="20" VerticalAlignment="Top" />
+                        </DockPanel>
                     </Border>
-                    <Border Grid.Column="2" Background="White" CornerRadius="10" Padding="14">
-                        <StackPanel>
-                            <TextBlock Text="{DynamicResource DashboardActiveWarranties}" Foreground="#6B7785" />
-                            <TextBlock Text="{Binding DashboardActiveWarranties}" FontSize="24" FontWeight="SemiBold" />
-                        </StackPanel>
+                    <Border Grid.Column="2" Background="White" CornerRadius="12" Padding="14" BorderBrush="#E6EBF2" BorderThickness="1">
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Left">
+                                <TextBlock Text="{DynamicResource DashboardActiveWarranties}" Foreground="#5D7084" FontSize="12" />
+                                <TextBlock Text="{Binding DashboardActiveWarranties}" FontSize="28" FontWeight="SemiBold" Foreground="#1C2833" />
+                            </StackPanel>
+                            <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" Foreground="#2E8B89" FontSize="20" VerticalAlignment="Top" />
+                        </DockPanel>
                     </Border>
                 </Grid>
             </Grid>
@@ -495,9 +610,11 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="220" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="130" />
-                            <ColumnDefinition Width="130" />
-                            <ColumnDefinition Width="130" />
+                            <ColumnDefinition Width="118" />
+                            <ColumnDefinition Width="118" />
+                            <ColumnDefinition Width="118" />
+                            <ColumnDefinition Width="118" />
+                            <ColumnDefinition Width="118" />
                         </Grid.ColumnDefinitions>
 
                         <TextBox Grid.Column="0"
@@ -524,6 +641,16 @@
                                 Margin="12,0,0,0"
                                 Content="{DynamicResource Deactivate}"
                                 Command="{Binding DeactivateManagedProductCommand}" />
+                        <Button Grid.Column="5"
+                                Height="36"
+                                Margin="12,0,0,0"
+                                Content="{DynamicResource Reactivate}"
+                                Command="{Binding ReactivateManagedProductCommand}" />
+                        <Button Grid.Column="6"
+                                Height="36"
+                                Margin="12,0,0,0"
+                                Content="{DynamicResource Delete}"
+                                Command="{Binding DeleteManagedProductCommand}" />
                     </Grid>
                 </Border>
 
@@ -670,9 +797,11 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="220" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="130" />
-                            <ColumnDefinition Width="130" />
-                            <ColumnDefinition Width="130" />
+                            <ColumnDefinition Width="118" />
+                            <ColumnDefinition Width="118" />
+                            <ColumnDefinition Width="118" />
+                            <ColumnDefinition Width="118" />
+                            <ColumnDefinition Width="118" />
                         </Grid.ColumnDefinitions>
 
                         <TextBox Grid.Column="0"
@@ -699,6 +828,16 @@
                                 Margin="12,0,0,0"
                                 Content="{DynamicResource Deactivate}"
                                 Command="{Binding DeactivateManagedCustomerCommand}" />
+                        <Button Grid.Column="5"
+                                Height="36"
+                                Margin="12,0,0,0"
+                                Content="{DynamicResource Reactivate}"
+                                Command="{Binding ReactivateManagedCustomerCommand}" />
+                        <Button Grid.Column="6"
+                                Height="36"
+                                Margin="12,0,0,0"
+                                Content="{DynamicResource Delete}"
+                                Command="{Binding DeleteManagedCustomerCommand}" />
                     </Grid>
                 </Border>
 
@@ -776,13 +915,18 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="220" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="140" />
-                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="120" />
                         </Grid.ColumnDefinitions>
                         <TextBox Grid.Column="0" Height="36" Margin="0,0,12,0" Text="{Binding WarrantySearchTerm, UpdateSourceTrigger=PropertyChanged}" />
                         <Button Grid.Column="1" Height="36" Content="{DynamicResource Search}" Command="{Binding LoadWarrantiesCommand}" />
                         <Button Grid.Column="2" Height="36" Margin="12,0,0,0" Content="{DynamicResource RegisterWarranty}" Command="{Binding RegisterWarrantyCommand}" />
                         <Button Grid.Column="3" Height="36" Margin="12,0,0,0" Content="{DynamicResource CancelWarranty}" Command="{Binding CancelWarrantyCommand}" />
+                        <Button Grid.Column="4" Height="36" Margin="12,0,0,0" Content="{DynamicResource Reactivate}" Command="{Binding ReactivateWarrantyCommand}" />
+                        <Button Grid.Column="5" Height="36" Margin="12,0,0,0" Content="{DynamicResource Delete}" Command="{Binding DeleteWarrantyCommand}" />
                     </Grid>
                 </Border>
 

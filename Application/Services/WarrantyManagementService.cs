@@ -144,5 +144,30 @@ namespace Application.Services
             warranty.Status = WarrantyStatus.Canceled;
             await db.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task ReactivateWarrantyAsync(long warrantyId, CancellationToken cancellationToken = default)
+        {
+            await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+            var warranty = await db.Warranties.FirstOrDefaultAsync(x => x.Id == warrantyId, cancellationToken)
+                ?? throw new InvalidOperationException("Warranty not found.");
+
+            if (warranty.EndDate.Date < DateTime.UtcNow.Date)
+            {
+                throw new InvalidOperationException("Cannot reactivate an expired warranty.");
+            }
+
+            warranty.Status = WarrantyStatus.Active;
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteWarrantyAsync(long warrantyId, CancellationToken cancellationToken = default)
+        {
+            await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+            var warranty = await db.Warranties.FirstOrDefaultAsync(x => x.Id == warrantyId, cancellationToken)
+                ?? throw new InvalidOperationException("Warranty not found.");
+
+            db.Warranties.Remove(warranty);
+            await db.SaveChangesAsync(cancellationToken);
+        }
     }
 }

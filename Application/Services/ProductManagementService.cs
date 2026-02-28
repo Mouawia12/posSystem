@@ -135,5 +135,37 @@ namespace Application.Services
             product.IsActive = false;
             await db.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task ReactivateAsync(long productId, CancellationToken cancellationToken = default)
+        {
+            await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+            var product = await db.Products.FirstOrDefaultAsync(x => x.Id == productId, cancellationToken)
+                ?? throw new InvalidOperationException("Product not found.");
+
+            product.IsActive = true;
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteAsync(long productId, CancellationToken cancellationToken = default)
+        {
+            await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+            var product = await db.Products.FirstOrDefaultAsync(x => x.Id == productId, cancellationToken)
+                ?? throw new InvalidOperationException("Product not found.");
+
+            var hasInvoices = await db.InvoiceItems.AnyAsync(x => x.ProductId == productId, cancellationToken);
+            if (hasInvoices)
+            {
+                throw new InvalidOperationException("Cannot delete product with invoice history.");
+            }
+
+            var hasMovements = await db.InventoryMovements.AnyAsync(x => x.ProductId == productId, cancellationToken);
+            if (hasMovements)
+            {
+                throw new InvalidOperationException("Cannot delete product with stock movements.");
+            }
+
+            db.Products.Remove(product);
+            await db.SaveChangesAsync(cancellationToken);
+        }
     }
 }

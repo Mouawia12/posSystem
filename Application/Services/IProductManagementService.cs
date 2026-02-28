@@ -8,5 +8,7 @@ namespace Application.Services
         Task<long> UpsertAsync(UpsertProductRequestDto request, CancellationToken cancellationToken = default);
         Task AdjustStockAsync(AdjustStockRequestDto request, CancellationToken cancellationToken = default);
         Task DeactivateAsync(long productId, CancellationToken cancellationToken = default);
+        Task ReactivateAsync(long productId, CancellationToken cancellationToken = default);
+        Task DeleteAsync(long productId, CancellationToken cancellationToken = default);
     }
 }

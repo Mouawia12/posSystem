@@ -81,5 +81,47 @@ namespace Application.Services
             customer.Notes = $"{customer.Notes} [DEACTIVATED {DateTime.UtcNow:u}]".Trim();
             await db.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task ReactivateAsync(long customerId, CancellationToken cancellationToken = default)
+        {
+            await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+            var customer = await db.Customers.FirstOrDefaultAsync(x => x.Id == customerId, cancellationToken)
+                ?? throw new InvalidOperationException("Customer not found.");
+
+            if (!string.IsNullOrWhiteSpace(customer.Notes))
+            {
+                var markerIndex = customer.Notes.IndexOf("[DEACTIVATED ", StringComparison.Ordinal);
+                if (markerIndex >= 0)
+                {
+                    customer.Notes = customer.Notes[..markerIndex].Trim();
+                    if (string.IsNullOrWhiteSpace(customer.Notes))
+                    {
+                        customer.Notes = null;
+                    }
+                }
+            }
+
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task DeleteAsync(long customerId, CancellationToken cancellationToken = default)
+        {
+            await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+            var customer = await db.Customers.FirstOrDefaultAsync(x => x.Id == customerId, cancellationToken)
+                ?? throw new InvalidOperationException("Customer not found.");
+
+            var hasInvoices = await db.Invoices.AnyAsync(x => x.CustomerId == customerId, cancellationToken);
+            var hasDevices = await db.Devices.AnyAsync(x => x.CustomerId == customerId, cancellationToken);
+            var hasWarranties = await db.Warranties.AnyAsync(x => x.CustomerId == customerId, cancellationToken);
+            var hasPlans = await db.MaintenancePlans.AnyAsync(x => x.CustomerId == customerId, cancellationToken);
+
+            if (hasInvoices || hasDevices || hasWarranties || hasPlans)
+            {
+                throw new InvalidOperationException("Cannot delete customer with related records.");
+            }
+
+            db.Customers.Remove(customer);
+            await db.SaveChangesAsync(cancellationToken);
+        }
     }
 }

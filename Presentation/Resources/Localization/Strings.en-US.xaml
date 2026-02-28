@@ -28,6 +28,8 @@
     <sys:String x:Key="New" xmlns:sys="clr-namespace:System;assembly=mscorlib">New</sys:String>
     <sys:String x:Key="Save" xmlns:sys="clr-namespace:System;assembly=mscorlib">Save</sys:String>
     <sys:String x:Key="Deactivate" xmlns:sys="clr-namespace:System;assembly=mscorlib">Deactivate</sys:String>
+    <sys:String x:Key="Reactivate" xmlns:sys="clr-namespace:System;assembly=mscorlib">Reactivate</sys:String>
+    <sys:String x:Key="Delete" xmlns:sys="clr-namespace:System;assembly=mscorlib">Delete</sys:String>
     <sys:String x:Key="AddItem" xmlns:sys="clr-namespace:System;assembly=mscorlib">Add Item</sys:String>
     <sys:String x:Key="ProductName" xmlns:sys="clr-namespace:System;assembly=mscorlib">Name</sys:String>
     <sys:String x:Key="CostPrice" xmlns:sys="clr-namespace:System;assembly=mscorlib">Cost Price</sys:String>
@@ -131,6 +133,8 @@
     <sys:String x:Key="MsgProductSkuNameRequired" xmlns:sys="clr-namespace:System;assembly=mscorlib">SKU and Name are required.</sys:String>
     <sys:String x:Key="MsgProductSaved" xmlns:sys="clr-namespace:System;assembly=mscorlib">Product saved successfully.</sys:String>
     <sys:String x:Key="MsgProductDeactivated" xmlns:sys="clr-namespace:System;assembly=mscorlib">Product deactivated.</sys:String>
+    <sys:String x:Key="MsgProductReactivated" xmlns:sys="clr-namespace:System;assembly=mscorlib">Product reactivated.</sys:String>
+    <sys:String x:Key="MsgProductDeleted" xmlns:sys="clr-namespace:System;assembly=mscorlib">Product deleted.</sys:String>
     <sys:String x:Key="MsgSelectProductFirst" xmlns:sys="clr-namespace:System;assembly=mscorlib">Select a product first.</sys:String>
     <sys:String x:Key="MsgQuantityGreaterThanZero" xmlns:sys="clr-namespace:System;assembly=mscorlib">Quantity must be greater than zero.</sys:String>
     <sys:String x:Key="MsgStockUpdated" xmlns:sys="clr-namespace:System;assembly=mscorlib">Stock updated.</sys:String>
@@ -138,6 +142,8 @@
     <sys:String x:Key="MsgCustomerNamePhoneRequired" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer name and phone are required.</sys:String>
     <sys:String x:Key="MsgCustomerSaved" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer saved successfully.</sys:String>
     <sys:String x:Key="MsgCustomerDeactivated" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer deactivated.</sys:String>
+    <sys:String x:Key="MsgCustomerReactivated" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer reactivated.</sys:String>
+    <sys:String x:Key="MsgCustomerDeleted" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer deleted.</sys:String>
     <sys:String x:Key="MsgUsersLoaded" xmlns:sys="clr-namespace:System;assembly=mscorlib">{0} users loaded.</sys:String>
     <sys:String x:Key="MsgAccessDeniedManageUsers" xmlns:sys="clr-namespace:System;assembly=mscorlib">You are not allowed to manage users.</sys:String>
     <sys:String x:Key="MsgUsernameRequired" xmlns:sys="clr-namespace:System;assembly=mscorlib">Username is required.</sys:String>
@@ -148,6 +154,8 @@
     <sys:String x:Key="MsgWarrantyRequiredFields" xmlns:sys="clr-namespace:System;assembly=mscorlib">CustomerId, InvoiceId and Serial Number are required.</sys:String>
     <sys:String x:Key="MsgWarrantyRegistered" xmlns:sys="clr-namespace:System;assembly=mscorlib">Warranty #{0} registered.</sys:String>
     <sys:String x:Key="MsgWarrantyCanceled" xmlns:sys="clr-namespace:System;assembly=mscorlib">Warranty canceled.</sys:String>
+    <sys:String x:Key="MsgWarrantyReactivated" xmlns:sys="clr-namespace:System;assembly=mscorlib">Warranty reactivated.</sys:String>
+    <sys:String x:Key="MsgWarrantyDeleted" xmlns:sys="clr-namespace:System;assembly=mscorlib">Warranty deleted.</sys:String>
     <sys:String x:Key="MsgMaintenanceSchedulesLoaded" xmlns:sys="clr-namespace:System;assembly=mscorlib">{0} maintenance schedules loaded.</sys:String>
     <sys:String x:Key="MsgMaintenanceMarked" xmlns:sys="clr-namespace:System;assembly=mscorlib">Maintenance marked as {0}.</sys:String>
     <sys:String x:Key="MsgSelectScheduleProvideWorkType" xmlns:sys="clr-namespace:System;assembly=mscorlib">Select schedule and provide work type.</sys:String>
@@ -165,4 +173,5 @@
     <sys:String x:Key="MsgNoSavedInvoiceForPrinting" xmlns:sys="clr-namespace:System;assembly=mscorlib">No saved invoice available for printing.</sys:String>
     <sys:String x:Key="MsgInvoiceSentToPrinter" xmlns:sys="clr-namespace:System;assembly=mscorlib">Invoice sent to printer.</sys:String>
     <sys:String x:Key="MsgPrintingCanceledOrFailed" xmlns:sys="clr-namespace:System;assembly=mscorlib">Printing was canceled or failed.</sys:String>
+    <sys:String x:Key="MsgActionFailed" xmlns:sys="clr-namespace:System;assembly=mscorlib">Action failed: {0}</sys:String>
 </ResourceDictionary>
