@@ -1,4 +1,5 @@
 using Application.DTOs;
+using Application.BusinessRules;
 using Core.Entities;
 using Core.Enums;
 using Infrastructure.Data;
@@ -9,10 +10,14 @@ namespace Application.Services
     public sealed class MaintenanceManagementService : IMaintenanceManagementService
     {
         private readonly IDbContextFactory<PosDbContext> _dbContextFactory;
+        private readonly IWarrantyPolicyService _warrantyPolicyService;
 
-        public MaintenanceManagementService(IDbContextFactory<PosDbContext> dbContextFactory)
+        public MaintenanceManagementService(
+            IDbContextFactory<PosDbContext> dbContextFactory,
+            IWarrantyPolicyService warrantyPolicyService)
         {
             _dbContextFactory = dbContextFactory;
+            _warrantyPolicyService = warrantyPolicyService;
         }
 
         public async Task<IReadOnlyList<MaintenanceScheduleManagementDto>> GetSchedulesAsync(string? searchTerm = null, CancellationToken cancellationToken = default)
@@ -55,10 +60,23 @@ namespace Application.Services
         public async Task SetScheduleStatusAsync(long scheduleId, MaintenanceStatus status, CancellationToken cancellationToken = default)
         {
             await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
-            var schedule = await db.MaintenanceSchedules.FirstOrDefaultAsync(x => x.Id == scheduleId, cancellationToken)
+            var schedule = await db.MaintenanceSchedules
+                .Include(x => x.Plan)
+                .FirstOrDefaultAsync(x => x.Id == scheduleId, cancellationToken)
                 ?? throw new InvalidOperationException("Schedule not found.");
 
             schedule.Status = status;
+
+            var warranty = await db.Warranties
+                .FirstOrDefaultAsync(
+                    x => x.DeviceId == schedule.Plan.DeviceId && x.Status == WarrantyStatus.Active,
+                    cancellationToken);
+
+            if (warranty is not null)
+            {
+                _warrantyPolicyService.ApplyMaintenanceImpact(warranty, status, DateTime.UtcNow);
+            }
+
             await db.SaveChangesAsync(cancellationToken);
         }
 

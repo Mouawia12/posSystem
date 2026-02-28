@@ -19,5 +19,21 @@ namespace Application.Services
                 CreatedAt = DateTime.UtcNow
             };
         }
+
+        public void ApplyMaintenanceImpact(Warranty warranty, MaintenanceStatus maintenanceStatus, DateTime affectedAtUtc)
+        {
+            if (maintenanceStatus != MaintenanceStatus.Skipped || warranty.Status != WarrantyStatus.Active)
+            {
+                return;
+            }
+
+            var effectiveDate = affectedAtUtc.Date;
+            if (effectiveDate < warranty.EndDate)
+            {
+                warranty.EndDate = effectiveDate;
+            }
+
+            warranty.Status = WarrantyStatus.Canceled;
+        }
     }
 }

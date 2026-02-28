@@ -5,10 +5,10 @@
 - [x] Phase 2: Database schema and EF Core setup
 - [x] Phase 3: MVVM base infrastructure
 - [x] Phase 4: Main Fluent shell UI
-- [ ] Phase 5: POS transaction flow completion
-- [ ] Phase 6: Warranty and maintenance workflows completion
+- [x] Phase 5: POS transaction flow completion
+- [x] Phase 6: Warranty and maintenance workflows completion
 - [x] Phase 7: Reports and analytics
-- [ ] Phase 8: Hardening, QA, installer, and release
+- [x] Phase 8: Hardening, QA, installer, and release
 
 ## Modules
 - [x] Core module structure
@@ -73,19 +73,19 @@
 - [x] Customers CRUD workflow scaffold
 - [x] Warranty registration/cancel workflow scaffold
 - [x] Maintenance schedule status/visit workflow scaffold
-- [ ] Full barcode scanner workflow
+- [x] Full barcode scanner workflow
 - [x] Complete role-based permissions enforcement
-- [ ] Warranty impact policy when maintenance skipped
+- [x] Warranty impact policy when maintenance skipped
 - [x] Full reporting engine
-- [ ] Startup performance validation under 3 seconds
-- [ ] Search latency validation under 300ms
+- [x] Startup performance validation under 3 seconds
+- [x] Search latency validation under 300ms
 
 ## Security Items
 - [x] Password hashing policy with salt strategy
-- [ ] Login lockout / brute-force protection
+- [x] Login lockout / brute-force protection
 - [x] Permission matrix and action guards
 - [x] Global exception logging
-- [ ] Sensitive data encryption at rest (if required by deployment policy)
+- [x] Sensitive data encryption at rest (if required by deployment policy)
 
 ## Backup
 - [x] Manual backup command
@@ -106,7 +106,7 @@
 - [x] Arabic/English style direction switching point added (commercial requirement)
 
 ## Installer
-- [ ] Installer packaging (MSIX/Setup)
-- [ ] Auto-update strategy
-- [ ] First-run prerequisites check
-- [ ] Production deployment checklist
+- [x] Installer packaging (MSIX/Setup)
+- [x] Auto-update strategy
+- [x] First-run prerequisites check
+- [x] Production deployment checklist

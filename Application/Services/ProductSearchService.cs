@@ -1,6 +1,10 @@
 using Application.DTOs;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Shared.Constants;
+using Shared.Helpers;
+using System.Diagnostics;
+using System.IO;
 
 namespace Application.Services
 {
@@ -15,6 +19,7 @@ namespace Application.Services
 
         public async Task<IReadOnlyList<ProductSearchDto>> SearchAsync(string searchTerm, int take = 100, CancellationToken cancellationToken = default)
         {
+            var stopwatch = Stopwatch.StartNew();
             var normalized = searchTerm?.Trim() ?? string.Empty;
             var cappedTake = Math.Clamp(take, 1, 300);
 
@@ -26,7 +31,7 @@ namespace Application.Services
                 query = query.Where(x => x.Name.Contains(normalized) || x.SKU.Contains(normalized));
             }
 
-            return await query
+            var result = await query
                 .OrderBy(x => x.Name)
                 .Take(cappedTake)
                 .Select(x => new ProductSearchDto
@@ -38,6 +43,16 @@ namespace Application.Services
                     QuantityOnHand = x.QuantityOnHand
                 })
                 .ToListAsync(cancellationToken);
+
+            stopwatch.Stop();
+            if (stopwatch.ElapsedMilliseconds > PerformanceTargets.SearchMilliseconds)
+            {
+                File.AppendAllText(
+                    AppPaths.GetLogPath(),
+                    $"{DateTime.UtcNow:u} PERF WARNING: Product search took {stopwatch.ElapsedMilliseconds} ms (target <= {PerformanceTargets.SearchMilliseconds} ms). Term='{normalized}', take={cappedTake}.{Environment.NewLine}");
+            }
+
+            return result;
         }
     }
 }

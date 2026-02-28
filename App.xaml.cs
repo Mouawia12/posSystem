@@ -1,6 +1,5 @@
 using Application.Services;
 using Application.BusinessRules;
-using Core.Enums;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +9,9 @@ using Microsoft.Extensions.Hosting;
 using Presentation.Resources.Localization;
 using Presentation.ViewModels;
 using Presentation.Views;
+using Shared.Constants;
 using Shared.Helpers;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 
@@ -47,6 +48,8 @@ namespace posSystem
                     services.AddScoped<IBackupRestoreService, BackupRestoreService>();
                     services.AddScoped<IPrintingService, PrintingService>();
                     services.AddScoped<IInvoiceService, InvoiceService>();
+                    services.AddSingleton<IAuthenticationService, AuthenticationService>();
+                    services.AddSingleton<IStartupPrerequisitesService, StartupPrerequisitesService>();
                     services.AddScoped<IWarrantyPolicyService, WarrantyPolicyService>();
                     services.AddScoped<IMaintenanceScheduleGenerator, MaintenanceScheduleGenerator>();
                     services.AddSingleton<IUserContextService, UserContextService>();
@@ -72,6 +75,7 @@ namespace posSystem
 
         protected override async void OnStartup(StartupEventArgs e)
         {
+            var startupStopwatch = Stopwatch.StartNew();
             await _host.StartAsync();
 
             using (var scope = _host.Services.CreateScope())
@@ -81,10 +85,34 @@ namespace posSystem
                 await db.Database.MigrateAsync();
             }
 
+            var prerequisitesService = _host.Services.GetRequiredService<IStartupPrerequisitesService>();
+            var prerequisiteResult = await prerequisitesService.ValidateAndPrepareAsync();
+            if (!prerequisiteResult.Passed)
+            {
+                throw new InvalidOperationException(string.Join(" | ", prerequisiteResult.Messages));
+            }
+
+            var authService = _host.Services.GetRequiredService<IAuthenticationService>();
             var userContext = _host.Services.GetRequiredService<IUserContextService>();
-            userContext.SetUser(1, "owner", UserRole.Owner);
+            var bootstrapPassword = Environment.GetEnvironmentVariable("POS_DEFAULT_OWNER_PASSWORD") ?? "owner12345";
+
+            await authService.EnsureDefaultOwnerAsync(bootstrapPassword);
+            var login = await authService.AuthenticateAsync("owner", bootstrapPassword);
+            if (!login.Succeeded)
+            {
+                throw new InvalidOperationException($"Startup authentication failed: {login.Message}");
+            }
+
+            userContext.SetUser(login.UserId, login.Username, login.Role);
 
             _host.Services.GetRequiredService<MainWindow>().Show();
+            startupStopwatch.Stop();
+            if (startupStopwatch.Elapsed > TimeSpan.FromSeconds(PerformanceTargets.AppStartupSeconds))
+            {
+                File.AppendAllText(
+                    AppPaths.GetLogPath(),
+                    $"{DateTime.UtcNow:u} PERF WARNING: Startup took {startupStopwatch.Elapsed.TotalMilliseconds:F0} ms (target <= {PerformanceTargets.AppStartupSeconds * 1000} ms).{Environment.NewLine}");
+            }
             base.OnStartup(e);
         }
 
