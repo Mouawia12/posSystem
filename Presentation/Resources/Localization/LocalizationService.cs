@@ -1,5 +1,6 @@
 using Application.Services;
 using System.Globalization;
+using System.Threading;
 using System.Windows;
 
 namespace Presentation.Resources.Localization
@@ -26,16 +27,26 @@ namespace Presentation.Resources.Localization
                 ? "ar-SA"
                 : "en-US";
 
-            var culture = CultureInfo.GetCultureInfo(next);
+            var culture = CreateCultureWithLatinDigits(next);
             CultureInfo.CurrentCulture = culture;
             CultureInfo.CurrentUICulture = culture;
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
 
             var source = next == "ar-SA" ? ArSaDictionary : EnUsDictionary;
             ReplaceLocalizationDictionary(source);
             CurrentCultureCode = next;
             LanguageChanged?.Invoke();
+        }
+
+        private static CultureInfo CreateCultureWithLatinDigits(string cultureCode)
+        {
+            var culture = (CultureInfo)CultureInfo.GetCultureInfo(cultureCode).Clone();
+            culture.NumberFormat.NativeDigits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+            culture.NumberFormat.DigitSubstitution = DigitShapes.None;
+            return culture;
         }
 
         private static void ReplaceLocalizationDictionary(string source)

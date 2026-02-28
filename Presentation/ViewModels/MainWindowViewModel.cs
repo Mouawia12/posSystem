@@ -1245,12 +1245,16 @@ namespace Presentation.ViewModels
         {
             var normalized = NormalizeCurrencyCode(currencyCode);
             var culture = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+            culture.NumberFormat.NativeDigits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+            culture.NumberFormat.DigitSubstitution = DigitShapes.None;
             culture.NumberFormat.CurrencySymbol = normalized == "SAR" ? "ر.س" : "$";
             culture.NumberFormat.CurrencyPositivePattern = 0;
             culture.NumberFormat.CurrencyNegativePattern = 1;
 
             CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
             Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
 
             OnPropertyChanged(nameof(Subtotal));
             OnPropertyChanged(nameof(Total));
