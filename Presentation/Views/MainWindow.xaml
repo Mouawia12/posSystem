@@ -21,6 +21,7 @@
     </ui:FluentWindow.InputBindings>
     <ui:FluentWindow.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:CurrencyDisplayConverter x:Key="CurrencyDisplayConverter" />
         <Style x:Key="SidebarNavButtonStyle" TargetType="Button">
             <Setter Property="Height" Value="44" />
             <Setter Property="Margin" Value="0,0,0,8" />
@@ -227,7 +228,14 @@
                     <Border Grid.Column="2" Background="White" CornerRadius="10" Padding="14">
                         <StackPanel>
                             <TextBlock Text="{DynamicResource DashboardSalesToday}" Foreground="#6B7785" />
-                            <TextBlock Text="{Binding DashboardSalesToday, StringFormat={}{0:C2}}" FontSize="24" FontWeight="SemiBold" />
+                            <TextBlock FontSize="24" FontWeight="SemiBold">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                        <Binding Path="DashboardSalesToday" />
+                                        <Binding Path="SettingsCurrency" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </StackPanel>
                     </Border>
                 </Grid>
@@ -331,10 +339,32 @@
                                   VirtualizingPanel.VirtualizationMode="Recycling"
                                   ScrollViewer.CanContentScroll="True">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="{DynamicResource SkuLabel}" Binding="{Binding SKU}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource ProductName}" Binding="{Binding Name}" Width="2*" />
-                                <DataGridTextColumn Header="{DynamicResource SalePrice}" Binding="{Binding SalePrice, StringFormat=C2}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource QtyOnHand}" Binding="{Binding QuantityOnHand}" Width="*" />
+                                <DataGridTextColumn Binding="{Binding SKU}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource SkuLabel}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Name}" Width="2*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource ProductName}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource SalePrice}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                    <DataGridTextColumn.Binding>
+                                        <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                            <Binding Path="SalePrice" />
+                                            <Binding Path="DataContext.SettingsCurrency" RelativeSource="{RelativeSource AncestorType=ui:FluentWindow}" />
+                                        </MultiBinding>
+                                    </DataGridTextColumn.Binding>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding QuantityOnHand}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource QtyOnHand}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -377,10 +407,32 @@
                                   VirtualizingPanel.IsVirtualizing="True"
                                   VirtualizingPanel.VirtualizationMode="Recycling">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="{DynamicResource SkuLabel}" Binding="{Binding Sku}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource ProductName}" Binding="{Binding Name}" Width="2*" />
-                                <DataGridTextColumn Header="{DynamicResource Qty}" Binding="{Binding Quantity}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource TotalDisplay}" Binding="{Binding LineTotal, StringFormat=C2}" Width="*" />
+                                <DataGridTextColumn Binding="{Binding Sku}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource SkuLabel}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Name}" Width="2*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource ProductName}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Quantity}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource Qty}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource TotalDisplay}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                    <DataGridTextColumn.Binding>
+                                        <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                            <Binding Path="LineTotal" />
+                                            <Binding Path="DataContext.SettingsCurrency" RelativeSource="{RelativeSource AncestorType=ui:FluentWindow}" />
+                                        </MultiBinding>
+                                    </DataGridTextColumn.Binding>
+                                </DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>
 
@@ -405,9 +457,23 @@
                         <TextBox Text="{Binding PaymentAmount, UpdateSourceTrigger=PropertyChanged}" Height="34" IsEnabled="{Binding CanProcessSales}" />
 
                         <TextBlock Text="{DynamicResource SubtotalLabel}" Margin="0,12,0,2" Foreground="#5E6A79" />
-                        <TextBlock Text="{Binding Subtotal, StringFormat={}{0:C2}, FallbackValue=0}" FontWeight="SemiBold" Margin="0,0,0,6" />
+                        <TextBlock FontWeight="SemiBold" Margin="0,0,0,6">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                    <Binding Path="Subtotal" />
+                                    <Binding Path="SettingsCurrency" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
                         <TextBlock Text="{DynamicResource TotalLabel}" Foreground="#5E6A79" />
-                        <TextBlock Text="{Binding Total, StringFormat={}{0:C2}, FallbackValue=0}" FontSize="18" FontWeight="Bold" />
+                        <TextBlock FontSize="18" FontWeight="Bold">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                    <Binding Path="Total" />
+                                    <Binding Path="SettingsCurrency" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
 
                         <Button Content="{DynamicResource PayCash}" Height="42" Margin="0,12,0,8" Command="{Binding PayCashCommand}" />
                         <Button Content="{DynamicResource PayPartial}" Height="42" Command="{Binding PayPartialCommand}" />
@@ -479,11 +545,43 @@
                                   VirtualizingPanel.IsVirtualizing="True"
                                   VirtualizingPanel.VirtualizationMode="Recycling">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="{DynamicResource SkuLabel}" Binding="{Binding SKU}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource ProductName}" Binding="{Binding Name}" Width="2*" />
-                                <DataGridTextColumn Header="{DynamicResource CostPrice}" Binding="{Binding CostPrice, StringFormat=C2}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource SalePrice}" Binding="{Binding SalePrice, StringFormat=C2}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource QtyOnHand}" Binding="{Binding QuantityOnHand}" Width="*" />
+                                <DataGridTextColumn Binding="{Binding SKU}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource SkuLabel}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Name}" Width="2*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource ProductName}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource CostPrice}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                    <DataGridTextColumn.Binding>
+                                        <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                            <Binding Path="CostPrice" />
+                                            <Binding Path="DataContext.SettingsCurrency" RelativeSource="{RelativeSource AncestorType=ui:FluentWindow}" />
+                                        </MultiBinding>
+                                    </DataGridTextColumn.Binding>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource SalePrice}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                    <DataGridTextColumn.Binding>
+                                        <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                            <Binding Path="SalePrice" />
+                                            <Binding Path="DataContext.SettingsCurrency" RelativeSource="{RelativeSource AncestorType=ui:FluentWindow}" />
+                                        </MultiBinding>
+                                    </DataGridTextColumn.Binding>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding QuantityOnHand}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource QtyOnHand}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Border>
@@ -622,9 +720,21 @@
                                   VirtualizingPanel.IsVirtualizing="True"
                                   VirtualizingPanel.VirtualizationMode="Recycling">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="{DynamicResource CustomerName}" Binding="{Binding FullName}" Width="2*" />
-                                <DataGridTextColumn Header="{DynamicResource Phone}" Binding="{Binding Phone}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource Location}" Binding="{Binding Location}" Width="*" />
+                                <DataGridTextColumn Binding="{Binding FullName}" Width="2*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource CustomerName}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Phone}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource Phone}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Location}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource Location}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Border>
@@ -694,11 +804,31 @@
                                   VirtualizingPanel.IsVirtualizing="True"
                                   VirtualizingPanel.VirtualizationMode="Recycling">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="{DynamicResource SerialNo}" Binding="{Binding SerialNumber}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource CustomerName}" Binding="{Binding CustomerName}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource DeviceType}" Binding="{Binding DeviceType}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource WarrantyEnd}" Binding="{Binding EndDate}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource WarrantyStatus}" Binding="{Binding Status}" Width="*" />
+                                <DataGridTextColumn Binding="{Binding SerialNumber}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource SerialNo}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding CustomerName}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource CustomerName}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding DeviceType}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource DeviceType}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding EndDate}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource WarrantyEnd}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Status}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource WarrantyStatus}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Border>
@@ -764,11 +894,31 @@
                                   VirtualizingPanel.IsVirtualizing="True"
                                   VirtualizingPanel.VirtualizationMode="Recycling">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="{DynamicResource SerialNo}" Binding="{Binding SerialNumber}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource CustomerName}" Binding="{Binding CustomerName}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource DueDate}" Binding="{Binding DueDate}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource PeriodMonths}" Binding="{Binding PeriodMonths}" Width="*" />
-                                <DataGridTextColumn Header="{DynamicResource MaintenanceStatus}" Binding="{Binding Status}" Width="*" />
+                                <DataGridTextColumn Binding="{Binding SerialNumber}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource SerialNo}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding CustomerName}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource CustomerName}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding DueDate}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource DueDate}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding PeriodMonths}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource PeriodMonths}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Status}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource MaintenanceStatus}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Border>
@@ -833,25 +983,53 @@
                     <Border Grid.Column="1" Background="White" CornerRadius="10" Padding="12" Margin="0,0,10,0">
                         <StackPanel>
                             <TextBlock Text="{DynamicResource GrossSales}" Foreground="#6B7785" />
-                            <TextBlock Text="{Binding ReportGrossSales, StringFormat={}{0:C2}}" FontSize="22" FontWeight="SemiBold" />
+                            <TextBlock FontSize="22" FontWeight="SemiBold">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                        <Binding Path="ReportGrossSales" />
+                                        <Binding Path="SettingsCurrency" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </StackPanel>
                     </Border>
                     <Border Grid.Column="2" Background="White" CornerRadius="10" Padding="12" Margin="0,0,10,0">
                         <StackPanel>
                             <TextBlock Text="{DynamicResource NetSales}" Foreground="#6B7785" />
-                            <TextBlock Text="{Binding ReportNetSales, StringFormat={}{0:C2}}" FontSize="22" FontWeight="SemiBold" />
+                            <TextBlock FontSize="22" FontWeight="SemiBold">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                        <Binding Path="ReportNetSales" />
+                                        <Binding Path="SettingsCurrency" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </StackPanel>
                     </Border>
                     <Border Grid.Column="3" Background="White" CornerRadius="10" Padding="12" Margin="0,0,10,0">
                         <StackPanel>
                             <TextBlock Text="{DynamicResource Profit}" Foreground="#6B7785" />
-                            <TextBlock Text="{Binding ReportProfit, StringFormat={}{0:C2}}" FontSize="22" FontWeight="SemiBold" />
+                            <TextBlock FontSize="22" FontWeight="SemiBold">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                        <Binding Path="ReportProfit" />
+                                        <Binding Path="SettingsCurrency" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </StackPanel>
                     </Border>
                     <Border Grid.Column="4" Background="White" CornerRadius="10" Padding="12">
                         <StackPanel>
                             <TextBlock Text="{DynamicResource Payments}" Foreground="#6B7785" />
-                            <TextBlock Text="{Binding ReportTotalPayments, StringFormat={}{0:C2}}" FontSize="22" FontWeight="SemiBold" />
+                            <TextBlock FontSize="22" FontWeight="SemiBold">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                        <Binding Path="ReportTotalPayments" />
+                                        <Binding Path="SettingsCurrency" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </StackPanel>
                     </Border>
                 </Grid>
@@ -876,11 +1054,49 @@
                                       VirtualizingPanel.IsVirtualizing="True"
                                       VirtualizingPanel.VirtualizationMode="Recycling">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="{DynamicResource Date}" Binding="{Binding Date}" Width="*" />
-                                    <DataGridTextColumn Header="{DynamicResource TotalInvoices}" Binding="{Binding InvoiceCount}" Width="*" />
-                                    <DataGridTextColumn Header="{DynamicResource GrossSales}" Binding="{Binding GrossSales, StringFormat=C2}" Width="*" />
-                                    <DataGridTextColumn Header="{DynamicResource NetSales}" Binding="{Binding NetSales, StringFormat=C2}" Width="*" />
-                                    <DataGridTextColumn Header="{DynamicResource Profit}" Binding="{Binding Profit, StringFormat=C2}" Width="*" />
+                                    <DataGridTextColumn Binding="{Binding Date}" Width="*">
+                                        <DataGridTextColumn.HeaderTemplate>
+                                            <DataTemplate><TextBlock Text="{DynamicResource Date}" /></DataTemplate>
+                                        </DataGridTextColumn.HeaderTemplate>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Binding="{Binding InvoiceCount}" Width="*">
+                                        <DataGridTextColumn.HeaderTemplate>
+                                            <DataTemplate><TextBlock Text="{DynamicResource TotalInvoices}" /></DataTemplate>
+                                        </DataGridTextColumn.HeaderTemplate>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Width="*">
+                                        <DataGridTextColumn.HeaderTemplate>
+                                            <DataTemplate><TextBlock Text="{DynamicResource GrossSales}" /></DataTemplate>
+                                        </DataGridTextColumn.HeaderTemplate>
+                                        <DataGridTextColumn.Binding>
+                                            <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                                <Binding Path="GrossSales" />
+                                                <Binding Path="DataContext.SettingsCurrency" RelativeSource="{RelativeSource AncestorType=ui:FluentWindow}" />
+                                            </MultiBinding>
+                                        </DataGridTextColumn.Binding>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Width="*">
+                                        <DataGridTextColumn.HeaderTemplate>
+                                            <DataTemplate><TextBlock Text="{DynamicResource NetSales}" /></DataTemplate>
+                                        </DataGridTextColumn.HeaderTemplate>
+                                        <DataGridTextColumn.Binding>
+                                            <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                                <Binding Path="NetSales" />
+                                                <Binding Path="DataContext.SettingsCurrency" RelativeSource="{RelativeSource AncestorType=ui:FluentWindow}" />
+                                            </MultiBinding>
+                                        </DataGridTextColumn.Binding>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Width="*">
+                                        <DataGridTextColumn.HeaderTemplate>
+                                            <DataTemplate><TextBlock Text="{DynamicResource Profit}" /></DataTemplate>
+                                        </DataGridTextColumn.HeaderTemplate>
+                                        <DataGridTextColumn.Binding>
+                                            <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                                <Binding Path="Profit" />
+                                                <Binding Path="DataContext.SettingsCurrency" RelativeSource="{RelativeSource AncestorType=ui:FluentWindow}" />
+                                            </MultiBinding>
+                                        </DataGridTextColumn.Binding>
+                                    </DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>
@@ -900,10 +1116,38 @@
                                       VirtualizingPanel.IsVirtualizing="True"
                                       VirtualizingPanel.VirtualizationMode="Recycling">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="{DynamicResource ProductName}" Binding="{Binding ProductName}" Width="2*" />
-                                    <DataGridTextColumn Header="{DynamicResource Qty}" Binding="{Binding QuantitySold}" Width="*" />
-                                    <DataGridTextColumn Header="{DynamicResource NetSales}" Binding="{Binding SalesAmount, StringFormat=C2}" Width="*" />
-                                    <DataGridTextColumn Header="{DynamicResource Profit}" Binding="{Binding ProfitAmount, StringFormat=C2}" Width="*" />
+                                    <DataGridTextColumn Binding="{Binding ProductName}" Width="2*">
+                                        <DataGridTextColumn.HeaderTemplate>
+                                            <DataTemplate><TextBlock Text="{DynamicResource ProductName}" /></DataTemplate>
+                                        </DataGridTextColumn.HeaderTemplate>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Binding="{Binding QuantitySold}" Width="*">
+                                        <DataGridTextColumn.HeaderTemplate>
+                                            <DataTemplate><TextBlock Text="{DynamicResource Qty}" /></DataTemplate>
+                                        </DataGridTextColumn.HeaderTemplate>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Width="*">
+                                        <DataGridTextColumn.HeaderTemplate>
+                                            <DataTemplate><TextBlock Text="{DynamicResource NetSales}" /></DataTemplate>
+                                        </DataGridTextColumn.HeaderTemplate>
+                                        <DataGridTextColumn.Binding>
+                                            <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                                <Binding Path="SalesAmount" />
+                                                <Binding Path="DataContext.SettingsCurrency" RelativeSource="{RelativeSource AncestorType=ui:FluentWindow}" />
+                                            </MultiBinding>
+                                        </DataGridTextColumn.Binding>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Width="*">
+                                        <DataGridTextColumn.HeaderTemplate>
+                                            <DataTemplate><TextBlock Text="{DynamicResource Profit}" /></DataTemplate>
+                                        </DataGridTextColumn.HeaderTemplate>
+                                        <DataGridTextColumn.Binding>
+                                            <MultiBinding Converter="{StaticResource CurrencyDisplayConverter}">
+                                                <Binding Path="ProfitAmount" />
+                                                <Binding Path="DataContext.SettingsCurrency" RelativeSource="{RelativeSource AncestorType=ui:FluentWindow}" />
+                                            </MultiBinding>
+                                        </DataGridTextColumn.Binding>
+                                    </DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </StackPanel>
@@ -1052,9 +1296,21 @@
                                   VirtualizingPanel.IsVirtualizing="True"
                                   VirtualizingPanel.VirtualizationMode="Recycling">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="{DynamicResource Username}" Binding="{Binding Username}" Width="2*" />
-                                <DataGridTextColumn Header="{DynamicResource Role}" Binding="{Binding Role}" Width="*" />
-                                <DataGridCheckBoxColumn Header="{DynamicResource IsActive}" Binding="{Binding IsActive}" Width="*" />
+                                <DataGridTextColumn Binding="{Binding Username}" Width="2*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource Username}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Role}" Width="*">
+                                    <DataGridTextColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource Role}" /></DataTemplate>
+                                    </DataGridTextColumn.HeaderTemplate>
+                                </DataGridTextColumn>
+                                <DataGridCheckBoxColumn Binding="{Binding IsActive}" Width="*">
+                                    <DataGridCheckBoxColumn.HeaderTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource IsActive}" /></DataTemplate>
+                                    </DataGridCheckBoxColumn.HeaderTemplate>
+                                </DataGridCheckBoxColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Border>

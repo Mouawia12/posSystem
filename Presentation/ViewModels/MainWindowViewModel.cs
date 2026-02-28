@@ -474,16 +474,16 @@ namespace Presentation.ViewModels
             var result = await _productManagementService.GetProductsAsync(ProductsSearchTerm);
             ManagedProducts.Clear();
             foreach (var item in result) ManagedProducts.Add(item);
-            StatusMessage = $"{ManagedProducts.Count} products loaded for management.";
+            StatusMessage = Lf("MsgProductsLoaded", $"{ManagedProducts.Count} products loaded for management.", ManagedProducts.Count);
         }
 
         private async Task SaveManagedProductAsync()
         {
-            if (string.IsNullOrWhiteSpace(EditingProductSku) || string.IsNullOrWhiteSpace(EditingProductName)) { StatusMessage = "SKU and Name are required."; return; }
+            if (string.IsNullOrWhiteSpace(EditingProductSku) || string.IsNullOrWhiteSpace(EditingProductName)) { StatusMessage = L("MsgProductSkuNameRequired", "SKU and Name are required."); return; }
             await _productManagementService.UpsertAsync(new UpsertProductRequestDto { Id = EditingProductId, SKU = EditingProductSku, Name = EditingProductName, CostPrice = EditingProductCostPrice, SalePrice = EditingProductSalePrice, IsActive = EditingProductIsActive });
             await LoadManagedProductsAsync();
             ResetManagedProductForm();
-            StatusMessage = "Product saved successfully.";
+            StatusMessage = L("MsgProductSaved", "Product saved successfully.");
         }
 
         private async Task DeactivateManagedProductAsync()
@@ -491,17 +491,17 @@ namespace Presentation.ViewModels
             if (SelectedManagedProduct is null) return;
             await _productManagementService.DeactivateAsync(SelectedManagedProduct.Id);
             await LoadManagedProductsAsync();
-            StatusMessage = "Product deactivated.";
+            StatusMessage = L("MsgProductDeactivated", "Product deactivated.");
         }
 
         private async Task AdjustStockAsync(InventoryMovementType movementType)
         {
-            if (SelectedManagedProduct is null) { StatusMessage = "Select a product first."; return; }
-            if (StockMovementQuantity <= 0) { StatusMessage = "Quantity must be greater than zero."; return; }
+            if (SelectedManagedProduct is null) { StatusMessage = L("MsgSelectProductFirst", "Select a product first."); return; }
+            if (StockMovementQuantity <= 0) { StatusMessage = L("MsgQuantityGreaterThanZero", "Quantity must be greater than zero."); return; }
             await _productManagementService.AdjustStockAsync(new AdjustStockRequestDto { ProductId = SelectedManagedProduct.Id, MovementType = movementType, Quantity = StockMovementQuantity, Reason = StockMovementReason });
             await LoadManagedProductsAsync();
             await RefreshLowStockAlertsAsync();
-            StatusMessage = "Stock updated.";
+            StatusMessage = L("MsgStockUpdated", "Stock updated.");
         }
 
         private void ResetManagedProductForm()
@@ -514,16 +514,16 @@ namespace Presentation.ViewModels
             var result = await _customerManagementService.GetCustomersAsync(CustomersSearchTerm);
             ManagedCustomers.Clear();
             foreach (var item in result) ManagedCustomers.Add(item);
-            StatusMessage = $"{ManagedCustomers.Count} customers loaded.";
+            StatusMessage = Lf("MsgCustomersLoaded", $"{ManagedCustomers.Count} customers loaded.", ManagedCustomers.Count);
         }
 
         private async Task SaveManagedCustomerAsync()
         {
-            if (string.IsNullOrWhiteSpace(EditingCustomerFullName) || string.IsNullOrWhiteSpace(EditingCustomerPhone)) { StatusMessage = "Customer name and phone are required."; return; }
+            if (string.IsNullOrWhiteSpace(EditingCustomerFullName) || string.IsNullOrWhiteSpace(EditingCustomerPhone)) { StatusMessage = L("MsgCustomerNamePhoneRequired", "Customer name and phone are required."); return; }
             await _customerManagementService.UpsertAsync(new UpsertCustomerRequestDto { Id = EditingCustomerId, FullName = EditingCustomerFullName, Phone = EditingCustomerPhone, Location = string.IsNullOrWhiteSpace(EditingCustomerLocation) ? null : EditingCustomerLocation, Notes = string.IsNullOrWhiteSpace(EditingCustomerNotes) ? null : EditingCustomerNotes, IsActive = true });
             await LoadManagedCustomersAsync();
             ResetManagedCustomerForm();
-            StatusMessage = "Customer saved successfully.";
+            StatusMessage = L("MsgCustomerSaved", "Customer saved successfully.");
         }
 
         private async Task DeactivateManagedCustomerAsync()
@@ -531,7 +531,7 @@ namespace Presentation.ViewModels
             if (SelectedManagedCustomer is null) return;
             await _customerManagementService.DeactivateAsync(SelectedManagedCustomer.Id);
             await LoadManagedCustomersAsync();
-            StatusMessage = "Customer deactivated.";
+            StatusMessage = L("MsgCustomerDeactivated", "Customer deactivated.");
         }
 
         private void ResetManagedCustomerForm()
@@ -550,26 +550,26 @@ namespace Presentation.ViewModels
             var result = await _userManagementService.GetUsersAsync(UsersSearchTerm);
             ManagedUsers.Clear();
             foreach (var item in result) ManagedUsers.Add(item);
-            StatusMessage = $"{ManagedUsers.Count} users loaded.";
+            StatusMessage = Lf("MsgUsersLoaded", $"{ManagedUsers.Count} users loaded.", ManagedUsers.Count);
         }
 
         private async Task SaveManagedUserAsync()
         {
             if (!CanAccessUsersModule)
             {
-                StatusMessage = "You are not allowed to manage users.";
+                StatusMessage = L("MsgAccessDeniedManageUsers", "You are not allowed to manage users.");
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(EditingUsername))
             {
-                StatusMessage = "Username is required.";
+                StatusMessage = L("MsgUsernameRequired", "Username is required.");
                 return;
             }
 
             if (EditingUserId is null && string.IsNullOrWhiteSpace(EditingUserPassword))
             {
-                StatusMessage = "Password is required for new user.";
+                StatusMessage = L("MsgPasswordRequiredForNewUser", "Password is required for new user.");
                 return;
             }
 
@@ -584,7 +584,7 @@ namespace Presentation.ViewModels
 
             await LoadManagedUsersAsync();
             ResetManagedUserForm();
-            StatusMessage = "User saved successfully.";
+            StatusMessage = L("MsgUserSaved", "User saved successfully.");
         }
 
         private async Task DeactivateManagedUserAsync()
@@ -596,7 +596,7 @@ namespace Presentation.ViewModels
 
             await _userManagementService.DeactivateAsync(SelectedManagedUser.Id);
             await LoadManagedUsersAsync();
-            StatusMessage = "User deactivated.";
+            StatusMessage = L("MsgUserDeactivated", "User deactivated.");
         }
 
         private void ResetManagedUserForm()
@@ -613,14 +613,14 @@ namespace Presentation.ViewModels
             var result = await _warrantyManagementService.GetWarrantiesAsync(WarrantySearchTerm);
             Warranties.Clear();
             foreach (var item in result) Warranties.Add(item);
-            StatusMessage = $"{Warranties.Count} warranties loaded.";
+            StatusMessage = Lf("MsgWarrantiesLoaded", $"{Warranties.Count} warranties loaded.", Warranties.Count);
         }
 
         private async Task RegisterWarrantyAsync()
         {
             if (WarrantyCustomerId <= 0 || WarrantyInvoiceId <= 0 || string.IsNullOrWhiteSpace(WarrantySerialNumber))
             {
-                StatusMessage = "CustomerId, InvoiceId and Serial Number are required.";
+                StatusMessage = L("MsgWarrantyRequiredFields", "CustomerId, InvoiceId and Serial Number are required.");
                 return;
             }
 
@@ -635,7 +635,7 @@ namespace Presentation.ViewModels
             });
 
             await LoadWarrantiesAsync();
-            StatusMessage = $"Warranty #{id} registered.";
+            StatusMessage = Lf("MsgWarrantyRegistered", $"Warranty #{id} registered.", id);
         }
 
         private async Task CancelWarrantyAsync()
@@ -643,7 +643,7 @@ namespace Presentation.ViewModels
             if (SelectedWarranty is null) return;
             await _warrantyManagementService.CancelWarrantyAsync(SelectedWarranty.WarrantyId);
             await LoadWarrantiesAsync();
-            StatusMessage = "Warranty canceled.";
+            StatusMessage = L("MsgWarrantyCanceled", "Warranty canceled.");
         }
 
         private async Task LoadMaintenanceSchedulesAsync()
@@ -651,7 +651,7 @@ namespace Presentation.ViewModels
             var result = await _maintenanceManagementService.GetSchedulesAsync(MaintenanceSearchTerm);
             MaintenanceSchedules.Clear();
             foreach (var item in result) MaintenanceSchedules.Add(item);
-            StatusMessage = $"{MaintenanceSchedules.Count} maintenance schedules loaded.";
+            StatusMessage = Lf("MsgMaintenanceSchedulesLoaded", $"{MaintenanceSchedules.Count} maintenance schedules loaded.", MaintenanceSchedules.Count);
         }
 
         private async Task SetMaintenanceStatusAsync(MaintenanceStatus status)
@@ -659,14 +659,14 @@ namespace Presentation.ViewModels
             if (SelectedMaintenanceSchedule is null) return;
             await _maintenanceManagementService.SetScheduleStatusAsync(SelectedMaintenanceSchedule.ScheduleId, status);
             await LoadMaintenanceSchedulesAsync();
-            StatusMessage = $"Maintenance marked as {status}.";
+            StatusMessage = Lf("MsgMaintenanceMarked", $"Maintenance marked as {status}.", status);
         }
 
         private async Task AddMaintenanceVisitAsync()
         {
             if (SelectedMaintenanceSchedule is null || string.IsNullOrWhiteSpace(MaintenanceWorkType))
             {
-                StatusMessage = "Select schedule and provide work type.";
+                StatusMessage = L("MsgSelectScheduleProvideWorkType", "Select schedule and provide work type.");
                 return;
             }
 
@@ -681,7 +681,7 @@ namespace Presentation.ViewModels
             });
 
             await LoadMaintenanceSchedulesAsync();
-            StatusMessage = "Maintenance visit added.";
+            StatusMessage = L("MsgMaintenanceVisitAdded", "Maintenance visit added.");
         }
 
         private async Task LoadReportsAsync()
@@ -690,7 +690,7 @@ namespace Presentation.ViewModels
             var to = ReportToDate.Date.AddDays(1).AddTicks(-1);
             if (to < from)
             {
-                StatusMessage = "Report date range is invalid.";
+                StatusMessage = L("MsgReportDateRangeInvalid", "Report date range is invalid.");
                 return;
             }
 
@@ -713,7 +713,7 @@ namespace Presentation.ViewModels
                 TopProductsReport.Add(item);
             }
 
-            StatusMessage = "Reports generated successfully.";
+            StatusMessage = L("MsgReportsGenerated", "Reports generated successfully.");
         }
 
         private async Task LoadSettingsAsync()
@@ -727,14 +727,14 @@ namespace Presentation.ViewModels
             SettingsCurrency = NormalizeCurrencyCode(settings.Currency);
             ApplyCurrencyState(SettingsCurrency);
             SettingsPrinterName = settings.PrinterName ?? string.Empty;
-            StatusMessage = "Settings loaded.";
+            StatusMessage = L("MsgSettingsLoaded", "Settings loaded.");
         }
 
         private async Task SaveSettingsAsync()
         {
             if (string.IsNullOrWhiteSpace(SettingsCompanyName) || string.IsNullOrWhiteSpace(SettingsInvoicePrefix))
             {
-                StatusMessage = "Company Name and Invoice Prefix are required.";
+                StatusMessage = L("MsgSettingsCompanyAndPrefixRequired", "Company Name and Invoice Prefix are required.");
                 return;
             }
 
@@ -752,7 +752,7 @@ namespace Presentation.ViewModels
 
             SettingsCurrency = normalizedCurrency;
             ApplyCurrencyState(normalizedCurrency);
-            StatusMessage = "Settings saved successfully.";
+            StatusMessage = L("MsgSettingsSaved", "Settings saved successfully.");
         }
 
         private async Task CreateBackupAsync()
@@ -760,49 +760,54 @@ namespace Presentation.ViewModels
             var path = await _backupRestoreService.CreateBackupAsync(string.IsNullOrWhiteSpace(BackupFilePath) ? null : BackupFilePath);
             LastBackupFilePath = path;
             BackupFilePath = path;
-            StatusMessage = $"Backup created: {path}";
+            StatusMessage = Lf("MsgBackupCreated", $"Backup created: {path}", path);
         }
 
         private async Task RestoreBackupAsync()
         {
             if (string.IsNullOrWhiteSpace(BackupFilePath))
             {
-                StatusMessage = "Backup file path is required.";
+                StatusMessage = L("MsgBackupPathRequired", "Backup file path is required.");
                 return;
             }
 
             await _backupRestoreService.RestoreBackupAsync(BackupFilePath);
-            StatusMessage = "Database restored from backup successfully.";
+            StatusMessage = L("MsgBackupRestored", "Database restored from backup successfully.");
         }
 
         private async Task VerifyBackupAsync()
         {
             if (string.IsNullOrWhiteSpace(BackupFilePath))
             {
-                StatusMessage = "Backup file path is required.";
+                StatusMessage = L("MsgBackupPathRequired", "Backup file path is required.");
                 return;
             }
 
             var valid = await _backupRestoreService.VerifyDatabaseAsync(BackupFilePath);
-            StatusMessage = valid ? "Backup integrity is valid." : "Backup integrity check failed.";
+            StatusMessage = valid
+                ? L("MsgBackupIntegrityValid", "Backup integrity is valid.")
+                : L("MsgBackupIntegrityFailed", "Backup integrity check failed.");
         }
 
         private async Task PrintLastInvoiceAsync(PrintTemplateType templateType)
         {
             if (LastSavedInvoiceId is null || LastSavedInvoiceId <= 0)
             {
-                StatusMessage = "No saved invoice available for printing.";
+                StatusMessage = L("MsgNoSavedInvoiceForPrinting", "No saved invoice available for printing.");
                 return;
             }
 
             var printed = await _printingService.PrintInvoiceAsync(LastSavedInvoiceId.Value, templateType, SettingsPrinterName);
-            StatusMessage = printed ? "Invoice sent to printer." : "Printing was canceled or failed.";
+            StatusMessage = printed
+                ? L("MsgInvoiceSentToPrinter", "Invoice sent to printer.")
+                : L("MsgPrintingCanceledOrFailed", "Printing was canceled or failed.");
         }
 
         private void OnLanguageChanged()
         {
             ApplyLanguageState();
             ApplyCurrencyState(SettingsCurrency);
+            OnPropertyChanged(nameof(LowStockAlertsSummary));
             StatusMessage = _localizationService.CurrentCultureCode == "ar-SA"
                 ? L("MsgLanguageArabic", "Switched to Arabic.")
                 : L("MsgLanguageEnglish", "Switched to English.");

@@ -127,4 +127,42 @@
     <sys:String x:Key="MsgAddedToCart" xmlns:sys="clr-namespace:System;assembly=mscorlib">{0} added to cart.</sys:String>
     <sys:String x:Key="MsgAddedToCartLowStock" xmlns:sys="clr-namespace:System;assembly=mscorlib">Added {0}. Warning: low stock ({1:0.###}).</sys:String>
     <sys:String x:Key="MsgLowStockAlert" xmlns:sys="clr-namespace:System;assembly=mscorlib">Low stock alert: {0} products are near depletion.</sys:String>
+    <sys:String x:Key="MsgProductsLoaded" xmlns:sys="clr-namespace:System;assembly=mscorlib">{0} products loaded for management.</sys:String>
+    <sys:String x:Key="MsgProductSkuNameRequired" xmlns:sys="clr-namespace:System;assembly=mscorlib">SKU and Name are required.</sys:String>
+    <sys:String x:Key="MsgProductSaved" xmlns:sys="clr-namespace:System;assembly=mscorlib">Product saved successfully.</sys:String>
+    <sys:String x:Key="MsgProductDeactivated" xmlns:sys="clr-namespace:System;assembly=mscorlib">Product deactivated.</sys:String>
+    <sys:String x:Key="MsgSelectProductFirst" xmlns:sys="clr-namespace:System;assembly=mscorlib">Select a product first.</sys:String>
+    <sys:String x:Key="MsgQuantityGreaterThanZero" xmlns:sys="clr-namespace:System;assembly=mscorlib">Quantity must be greater than zero.</sys:String>
+    <sys:String x:Key="MsgStockUpdated" xmlns:sys="clr-namespace:System;assembly=mscorlib">Stock updated.</sys:String>
+    <sys:String x:Key="MsgCustomersLoaded" xmlns:sys="clr-namespace:System;assembly=mscorlib">{0} customers loaded.</sys:String>
+    <sys:String x:Key="MsgCustomerNamePhoneRequired" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer name and phone are required.</sys:String>
+    <sys:String x:Key="MsgCustomerSaved" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer saved successfully.</sys:String>
+    <sys:String x:Key="MsgCustomerDeactivated" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer deactivated.</sys:String>
+    <sys:String x:Key="MsgUsersLoaded" xmlns:sys="clr-namespace:System;assembly=mscorlib">{0} users loaded.</sys:String>
+    <sys:String x:Key="MsgAccessDeniedManageUsers" xmlns:sys="clr-namespace:System;assembly=mscorlib">You are not allowed to manage users.</sys:String>
+    <sys:String x:Key="MsgUsernameRequired" xmlns:sys="clr-namespace:System;assembly=mscorlib">Username is required.</sys:String>
+    <sys:String x:Key="MsgPasswordRequiredForNewUser" xmlns:sys="clr-namespace:System;assembly=mscorlib">Password is required for new user.</sys:String>
+    <sys:String x:Key="MsgUserSaved" xmlns:sys="clr-namespace:System;assembly=mscorlib">User saved successfully.</sys:String>
+    <sys:String x:Key="MsgUserDeactivated" xmlns:sys="clr-namespace:System;assembly=mscorlib">User deactivated.</sys:String>
+    <sys:String x:Key="MsgWarrantiesLoaded" xmlns:sys="clr-namespace:System;assembly=mscorlib">{0} warranties loaded.</sys:String>
+    <sys:String x:Key="MsgWarrantyRequiredFields" xmlns:sys="clr-namespace:System;assembly=mscorlib">CustomerId, InvoiceId and Serial Number are required.</sys:String>
+    <sys:String x:Key="MsgWarrantyRegistered" xmlns:sys="clr-namespace:System;assembly=mscorlib">Warranty #{0} registered.</sys:String>
+    <sys:String x:Key="MsgWarrantyCanceled" xmlns:sys="clr-namespace:System;assembly=mscorlib">Warranty canceled.</sys:String>
+    <sys:String x:Key="MsgMaintenanceSchedulesLoaded" xmlns:sys="clr-namespace:System;assembly=mscorlib">{0} maintenance schedules loaded.</sys:String>
+    <sys:String x:Key="MsgMaintenanceMarked" xmlns:sys="clr-namespace:System;assembly=mscorlib">Maintenance marked as {0}.</sys:String>
+    <sys:String x:Key="MsgSelectScheduleProvideWorkType" xmlns:sys="clr-namespace:System;assembly=mscorlib">Select schedule and provide work type.</sys:String>
+    <sys:String x:Key="MsgMaintenanceVisitAdded" xmlns:sys="clr-namespace:System;assembly=mscorlib">Maintenance visit added.</sys:String>
+    <sys:String x:Key="MsgReportDateRangeInvalid" xmlns:sys="clr-namespace:System;assembly=mscorlib">Report date range is invalid.</sys:String>
+    <sys:String x:Key="MsgReportsGenerated" xmlns:sys="clr-namespace:System;assembly=mscorlib">Reports generated successfully.</sys:String>
+    <sys:String x:Key="MsgSettingsLoaded" xmlns:sys="clr-namespace:System;assembly=mscorlib">Settings loaded.</sys:String>
+    <sys:String x:Key="MsgSettingsCompanyAndPrefixRequired" xmlns:sys="clr-namespace:System;assembly=mscorlib">Company Name and Invoice Prefix are required.</sys:String>
+    <sys:String x:Key="MsgSettingsSaved" xmlns:sys="clr-namespace:System;assembly=mscorlib">Settings saved successfully.</sys:String>
+    <sys:String x:Key="MsgBackupCreated" xmlns:sys="clr-namespace:System;assembly=mscorlib">Backup created: {0}</sys:String>
+    <sys:String x:Key="MsgBackupPathRequired" xmlns:sys="clr-namespace:System;assembly=mscorlib">Backup file path is required.</sys:String>
+    <sys:String x:Key="MsgBackupRestored" xmlns:sys="clr-namespace:System;assembly=mscorlib">Database restored from backup successfully.</sys:String>
+    <sys:String x:Key="MsgBackupIntegrityValid" xmlns:sys="clr-namespace:System;assembly=mscorlib">Backup integrity is valid.</sys:String>
+    <sys:String x:Key="MsgBackupIntegrityFailed" xmlns:sys="clr-namespace:System;assembly=mscorlib">Backup integrity check failed.</sys:String>
+    <sys:String x:Key="MsgNoSavedInvoiceForPrinting" xmlns:sys="clr-namespace:System;assembly=mscorlib">No saved invoice available for printing.</sys:String>
+    <sys:String x:Key="MsgInvoiceSentToPrinter" xmlns:sys="clr-namespace:System;assembly=mscorlib">Invoice sent to printer.</sys:String>
+    <sys:String x:Key="MsgPrintingCanceledOrFailed" xmlns:sys="clr-namespace:System;assembly=mscorlib">Printing was canceled or failed.</sys:String>
 </ResourceDictionary>
