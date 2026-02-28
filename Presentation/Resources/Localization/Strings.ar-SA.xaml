@@ -35,6 +35,8 @@
     <sys:String x:Key="QtyMinus">تقليل</sys:String>
     <sys:String x:Key="Remove">حذف</sys:String>
     <sys:String x:Key="ProductEditor">محرر المنتج</sys:String>
+    <sys:String x:Key="SelectProductHint">اختر منتجًا من القائمة أو أنشئ منتجًا جديدًا.</sys:String>
+    <sys:String x:Key="ProductDetailsSection">بيانات المنتج</sys:String>
     <sys:String x:Key="ProductActive">منتج نشط</sys:String>
     <sys:String x:Key="CustomerEditor">محرر العميل</sys:String>
     <sys:String x:Key="CustomerName">اسم العميل</sys:String>

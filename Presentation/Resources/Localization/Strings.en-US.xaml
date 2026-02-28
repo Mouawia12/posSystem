@@ -34,6 +34,8 @@
     <sys:String x:Key="QtyMinus" xmlns:sys="clr-namespace:System;assembly=mscorlib">Qty -</sys:String>
     <sys:String x:Key="Remove" xmlns:sys="clr-namespace:System;assembly=mscorlib">Remove</sys:String>
     <sys:String x:Key="ProductEditor" xmlns:sys="clr-namespace:System;assembly=mscorlib">Product Editor</sys:String>
+    <sys:String x:Key="SelectProductHint" xmlns:sys="clr-namespace:System;assembly=mscorlib">Select a product from the list or create a new one.</sys:String>
+    <sys:String x:Key="ProductDetailsSection" xmlns:sys="clr-namespace:System;assembly=mscorlib">Product Details</sys:String>
     <sys:String x:Key="ProductActive" xmlns:sys="clr-namespace:System;assembly=mscorlib">Active Product</sys:String>
     <sys:String x:Key="CustomerEditor" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer Editor</sys:String>
     <sys:String x:Key="CustomerName" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer Name</sys:String>
