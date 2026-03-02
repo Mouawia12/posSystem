@@ -31,6 +31,7 @@ namespace Application.Services
                 .AsNoTracking()
                 .Include(x => x.Device)
                 .Include(x => x.Customer)
+                .Include(x => x.Invoice)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
@@ -39,7 +40,9 @@ namespace Application.Services
                 query = query.Where(x =>
                     x.Device.SerialNumber.Contains(normalized) ||
                     x.Customer.FullName.Contains(normalized) ||
-                    x.Device.Model.Contains(normalized));
+                    x.Customer.Phone.Contains(normalized) ||
+                    x.Device.Model.Contains(normalized) ||
+                    x.Invoice.InvoiceNumber.Contains(normalized));
             }
 
             return await query
@@ -54,10 +57,17 @@ namespace Application.Services
                     SerialNumber = x.Device.SerialNumber,
                     CustomerId = x.CustomerId,
                     CustomerName = x.Customer.FullName,
+                    CustomerPhone = x.Customer.Phone,
+                    CustomerLocation = x.Customer.Location ?? string.Empty,
                     InvoiceId = x.InvoiceId,
+                    InvoiceNumber = x.Invoice.InvoiceNumber,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate,
-                    Status = x.Status
+                    Status = x.Status == WarrantyStatus.Canceled
+                        ? WarrantyStatus.Canceled
+                        : x.EndDate.Date < DateTime.UtcNow.Date
+                            ? WarrantyStatus.Expired
+                            : WarrantyStatus.Active
                 })
                 .ToListAsync(cancellationToken);
         }

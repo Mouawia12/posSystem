@@ -117,6 +117,75 @@ namespace Application.Services
                 }, cancellationToken);
             }
 
+            if (request.CustomerId is not null)
+            {
+                var soldAtUtc = DateTime.UtcNow;
+                var customerId = request.CustomerId.Value;
+                var serialSeed = 1;
+
+                foreach (var item in request.Items)
+                {
+                    if (!productMap.TryGetValue(item.ProductId, out var product))
+                    {
+                        continue;
+                    }
+
+                    var unitCount = (int)decimal.Truncate(item.Quantity);
+                    if (unitCount <= 0)
+                    {
+                        continue;
+                    }
+
+                    for (var i = 0; i < unitCount; i++)
+                    {
+                        var serialNumber = $"{invoiceNumber}-{product.SKU}-{serialSeed}";
+                        serialSeed += 1;
+
+                        var device = new Device
+                        {
+                            DeviceType = product.Name,
+                            Model = product.Name,
+                            SerialNumber = serialNumber,
+                            CustomerId = customerId,
+                            SoldInvoiceId = invoice.Id,
+                            SoldAt = soldAtUtc,
+                            CreatedAt = DateTime.UtcNow
+                        };
+
+                        await db.Devices.AddAsync(device, cancellationToken);
+                        await db.SaveChangesAsync(cancellationToken);
+
+                        var warranty = _warrantyPolicyService.BuildDefaultWarranty(device, customerId, invoice.Id, soldAtUtc);
+                        await db.Warranties.AddAsync(warranty, cancellationToken);
+
+                        var plan = new MaintenancePlan
+                        {
+                            DeviceId = device.Id,
+                            CustomerId = customerId,
+                            StartDate = soldAtUtc.Date,
+                            EndDate = soldAtUtc.Date.AddYears(6),
+                            CreatedAt = DateTime.UtcNow
+                        };
+
+                        await db.MaintenancePlans.AddAsync(plan, cancellationToken);
+                        await db.SaveChangesAsync(cancellationToken);
+
+                        var schedules = _maintenanceScheduleGenerator.Generate(plan.StartDate, plan.EndDate)
+                            .Select(x => new MaintenanceSchedule
+                            {
+                                PlanId = plan.Id,
+                                DueDate = x.DueDate,
+                                PeriodMonths = x.PeriodMonths,
+                                Status = MaintenanceStatus.Due,
+                                CreatedAt = DateTime.UtcNow
+                            })
+                            .ToList();
+
+                        await db.MaintenanceSchedules.AddRangeAsync(schedules, cancellationToken);
+                    }
+                }
+            }
+
             settings.NextInvoiceNumber += 1;
 
             await db.SaveChangesAsync(cancellationToken);

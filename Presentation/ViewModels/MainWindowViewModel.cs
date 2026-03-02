@@ -54,6 +54,7 @@ namespace Presentation.ViewModels
 
         [ObservableProperty] private string _searchTerm = string.Empty;
         [ObservableProperty] private string _barcodeInput = string.Empty;
+        [ObservableProperty] private string _posCustomerLookup = string.Empty;
         [ObservableProperty] private decimal _discount;
         [ObservableProperty] private decimal _tax;
         [ObservableProperty] private decimal _paymentAmount;
@@ -199,6 +200,7 @@ namespace Presentation.ViewModels
         public IAsyncRelayCommand LoadWarrantiesCommand { get; }
         public IAsyncRelayCommand RegisterWarrantyCommand { get; }
         public IAsyncRelayCommand CancelWarrantyCommand { get; }
+        public IAsyncRelayCommand CancelWarrantyExternalInstallCommand { get; }
         public IAsyncRelayCommand ReactivateWarrantyCommand { get; }
         public IAsyncRelayCommand DeleteWarrantyCommand { get; }
 
@@ -206,6 +208,7 @@ namespace Presentation.ViewModels
         public IAsyncRelayCommand MarkMaintenanceDoneCommand { get; }
         public IAsyncRelayCommand MarkMaintenanceSkippedCommand { get; }
         public IAsyncRelayCommand AddMaintenanceVisitCommand { get; }
+        public IRelayCommand ExportServiceReportCommand { get; }
         public IAsyncRelayCommand LoadReportsCommand { get; }
         public IRelayCommand PrintReportCommand { get; }
         public IRelayCommand ExportReportCommand { get; }
@@ -297,6 +300,7 @@ namespace Presentation.ViewModels
             LoadWarrantiesCommand = new AsyncRelayCommand(LoadWarrantiesAsync);
             RegisterWarrantyCommand = new AsyncRelayCommand(RegisterWarrantyAsync);
             CancelWarrantyCommand = new AsyncRelayCommand(CancelWarrantyAsync);
+            CancelWarrantyExternalInstallCommand = new AsyncRelayCommand(CancelWarrantyExternalInstallAsync);
             ReactivateWarrantyCommand = new AsyncRelayCommand(ReactivateWarrantyAsync);
             DeleteWarrantyCommand = new AsyncRelayCommand(DeleteWarrantyAsync);
 
@@ -304,6 +308,7 @@ namespace Presentation.ViewModels
             MarkMaintenanceDoneCommand = new AsyncRelayCommand(() => SetMaintenanceStatusAsync(MaintenanceStatus.Done));
             MarkMaintenanceSkippedCommand = new AsyncRelayCommand(() => SetMaintenanceStatusAsync(MaintenanceStatus.Skipped));
             AddMaintenanceVisitCommand = new AsyncRelayCommand(AddMaintenanceVisitAsync);
+            ExportServiceReportCommand = new RelayCommand(ExportServiceReportCsv);
             LoadReportsCommand = new AsyncRelayCommand(LoadReportsAsync);
             PrintReportCommand = new RelayCommand(PrintReport);
             ExportReportCommand = new RelayCommand(ExportReportHtml);
@@ -465,10 +470,17 @@ namespace Presentation.ViewModels
             NotifyPaymentCommandsState();
             try
             {
+                var resolvedCustomerId = await ResolvePosCustomerIdAsync();
+                if (!string.IsNullOrWhiteSpace(PosCustomerLookup) && resolvedCustomerId is null)
+                {
+                    StatusMessage = "Customer was not found. Enter a valid customer ID, phone, or exact name.";
+                    return;
+                }
+
                 var request = new CreateInvoiceRequestDto
                 {
                     UserId = _userContextService.UserId,
-                    CustomerId = null,
+                    CustomerId = resolvedCustomerId,
                     Discount = Discount,
                     Tax = Tax,
                     PaymentAmount = Math.Max(0m, paymentAmount),
@@ -477,7 +489,9 @@ namespace Presentation.ViewModels
                 };
                 var invoiceId = await _invoiceService.CreateInvoiceAsync(request);
                 LastSavedInvoiceId = invoiceId;
-                StatusMessage = Lf("MsgInvoiceSaved", $"Invoice #{invoiceId} saved successfully.", invoiceId);
+                StatusMessage = resolvedCustomerId is null
+                    ? Lf("MsgInvoiceSaved", $"Invoice #{invoiceId} saved successfully.", invoiceId)
+                    : $"Invoice #{invoiceId} saved and warranty/maintenance schedules were created automatically.";
                 CancelSale();
                 await RefreshLowStockAlertsAsync();
             }
@@ -490,6 +504,40 @@ namespace Presentation.ViewModels
             CartItems.Clear(); Discount = 0; Tax = 0; PaymentAmount = 0; SelectedCartItem = null;
             OnPropertyChanged(nameof(Subtotal)); OnPropertyChanged(nameof(Total)); NotifyPaymentCommandsState();
             StatusMessage = L("MsgSaleCanceled", "Sale canceled and cart cleared.");
+        }
+
+        private async Task<long?> ResolvePosCustomerIdAsync()
+        {
+            if (string.IsNullOrWhiteSpace(PosCustomerLookup))
+            {
+                return null;
+            }
+
+            var lookup = PosCustomerLookup.Trim();
+            if (long.TryParse(lookup, out var customerIdFromId))
+            {
+                var byId = await _customerManagementService.GetCustomersAsync(lookup);
+                var exactById = byId.FirstOrDefault(x => x.Id == customerIdFromId);
+                if (exactById is not null)
+                {
+                    return exactById.Id;
+                }
+            }
+
+            var result = await _customerManagementService.GetCustomersAsync(lookup);
+            var exactByPhone = result.FirstOrDefault(x => string.Equals(x.Phone, lookup, StringComparison.OrdinalIgnoreCase));
+            if (exactByPhone is not null)
+            {
+                return exactByPhone.Id;
+            }
+
+            var exactByName = result.FirstOrDefault(x => string.Equals(x.FullName, lookup, StringComparison.OrdinalIgnoreCase));
+            if (exactByName is not null)
+            {
+                return exactByName.Id;
+            }
+
+            return null;
         }
 
         private async Task LoadManagedProductsAsync()
@@ -731,6 +779,14 @@ namespace Presentation.ViewModels
             StatusMessage = L("MsgWarrantyCanceled", "Warranty canceled.");
         }
 
+        private async Task CancelWarrantyExternalInstallAsync()
+        {
+            if (SelectedWarranty is null) return;
+            await _warrantyManagementService.CancelWarrantyAsync(SelectedWarranty.WarrantyId);
+            await LoadWarrantiesAsync();
+            StatusMessage = "Warranty canceled due to external installation.";
+        }
+
         private async Task ReactivateWarrantyAsync()
         {
             if (SelectedWarranty is null) return;
@@ -774,7 +830,9 @@ namespace Presentation.ViewModels
             if (SelectedMaintenanceSchedule is null) return;
             await _maintenanceManagementService.SetScheduleStatusAsync(SelectedMaintenanceSchedule.ScheduleId, status);
             await LoadMaintenanceSchedulesAsync();
-            StatusMessage = Lf("MsgMaintenanceMarked", $"Maintenance marked as {status}.", status);
+            StatusMessage = status == MaintenanceStatus.Skipped
+                ? "Maintenance marked as Skipped. Warranty was canceled due to non-compliance with scheduled maintenance."
+                : Lf("MsgMaintenanceMarked", $"Maintenance marked as {status}.", status);
         }
 
         private async Task AddMaintenanceVisitAsync()
@@ -797,6 +855,69 @@ namespace Presentation.ViewModels
 
             await LoadMaintenanceSchedulesAsync();
             StatusMessage = L("MsgMaintenanceVisitAdded", "Maintenance visit added.");
+        }
+
+        private void ExportServiceReportCsv()
+        {
+            try
+            {
+                var fileName = $"service-report-{DateTime.Now:yyyyMMdd-HHmmss}.csv";
+                var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), fileName);
+
+                var builder = new StringBuilder();
+                builder.AppendLine("Section,RecordId,InvoiceNumber,Customer,Phone,Location,DeviceType,Model,SerialNumber,Date,PeriodMonths,Coverage,Status,Notes");
+
+                foreach (var warranty in Warranties)
+                {
+                    builder.AppendLine(string.Join(",",
+                        Csv("Warranty"),
+                        Csv(warranty.WarrantyId.ToString(CultureInfo.InvariantCulture)),
+                        Csv(warranty.InvoiceNumber),
+                        Csv(warranty.CustomerName),
+                        Csv(warranty.CustomerPhone),
+                        Csv(warranty.CustomerLocation),
+                        Csv(warranty.DeviceType),
+                        Csv(warranty.Model),
+                        Csv(warranty.SerialNumber),
+                        Csv(warranty.EndDate.ToLocalTime().ToString("yyyy-MM-dd")),
+                        Csv(string.Empty),
+                        Csv(warranty.IsOutOfWarranty ? "Out of Warranty" : "Under Warranty"),
+                        Csv(warranty.Status.ToString()),
+                        Csv(string.Empty)));
+                }
+
+                foreach (var schedule in MaintenanceSchedules)
+                {
+                    builder.AppendLine(string.Join(",",
+                        Csv("Maintenance"),
+                        Csv(schedule.ScheduleId.ToString(CultureInfo.InvariantCulture)),
+                        Csv(schedule.InvoiceNumber),
+                        Csv(schedule.CustomerName),
+                        Csv(schedule.CustomerPhone),
+                        Csv(schedule.CustomerLocation),
+                        Csv(schedule.DeviceType),
+                        Csv(schedule.Model),
+                        Csv(schedule.SerialNumber),
+                        Csv(schedule.DueDate.ToLocalTime().ToString("yyyy-MM-dd")),
+                        Csv(schedule.PeriodMonths.ToString(CultureInfo.InvariantCulture)),
+                        Csv(schedule.IsWithinWarranty ? "Under Warranty" : "Out of Warranty (Paid)"),
+                        Csv(schedule.Status.ToString()),
+                        Csv(schedule.RequiredMaintenanceType)));
+                }
+
+                File.WriteAllText(filePath, builder.ToString(), Encoding.UTF8);
+                StatusMessage = $"Service report exported: {filePath}";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = Lf("MsgActionFailed", $"Action failed: {ex.Message}", ex.Message);
+            }
+        }
+
+        private static string Csv(string? value)
+        {
+            var safe = value ?? string.Empty;
+            return $"\"{safe.Replace("\"", "\"\"")}\"";
         }
 
         private async Task LoadReportsAsync()
@@ -1367,6 +1488,28 @@ namespace Presentation.ViewModels
             EditingUserPassword = string.Empty;
             EditingUserRole = value.Role;
             EditingUserIsActive = value.IsActive;
+        }
+
+        partial void OnSelectedWarrantyChanged(WarrantyManagementDto? value)
+        {
+            if (value is null) return;
+            WarrantyCustomerId = value.CustomerId;
+            WarrantyInvoiceId = value.InvoiceId;
+            WarrantyDeviceType = value.DeviceType;
+            WarrantyModel = value.Model;
+            WarrantySerialNumber = value.SerialNumber;
+            WarrantySoldAt = value.StartDate;
+        }
+
+        partial void OnSelectedMaintenanceScheduleChanged(MaintenanceScheduleManagementDto? value)
+        {
+            if (value is null) return;
+            MaintenanceWorkType = value.RequiredMaintenanceType;
+            MaintenanceWarrantyCovered = value.IsWithinWarranty;
+            if (!value.IsWithinWarranty && MaintenanceVisitCost <= 0)
+            {
+                MaintenanceVisitCost = 0;
+            }
         }
 
         private void OnLowStockAlertsChanged(object? sender, NotifyCollectionChangedEventArgs e)

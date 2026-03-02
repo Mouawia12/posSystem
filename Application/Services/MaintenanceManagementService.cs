@@ -28,6 +28,7 @@ namespace Application.Services
                 .AsNoTracking()
                 .Include(x => x.Plan)
                     .ThenInclude(x => x.Device)
+                        .ThenInclude(x => x.SoldInvoice)
                 .Include(x => x.Plan)
                     .ThenInclude(x => x.Customer)
                 .AsQueryable();
@@ -37,7 +38,10 @@ namespace Application.Services
                 var normalized = searchTerm.Trim();
                 query = query.Where(x =>
                     x.Plan.Device.SerialNumber.Contains(normalized) ||
-                    x.Plan.Customer.FullName.Contains(normalized));
+                    x.Plan.Customer.FullName.Contains(normalized) ||
+                    x.Plan.Customer.Phone.Contains(normalized) ||
+                    x.Plan.Device.Model.Contains(normalized) ||
+                    (x.Plan.Device.SoldInvoice != null && x.Plan.Device.SoldInvoice.InvoiceNumber.Contains(normalized)));
             }
 
             return await query
@@ -48,10 +52,18 @@ namespace Application.Services
                     ScheduleId = x.Id,
                     PlanId = x.PlanId,
                     DeviceId = x.Plan.DeviceId,
+                    InvoiceId = x.Plan.Device.SoldInvoiceId ?? 0,
+                    InvoiceNumber = x.Plan.Device.SoldInvoice != null ? x.Plan.Device.SoldInvoice.InvoiceNumber : string.Empty,
+                    DeviceType = x.Plan.Device.DeviceType,
+                    Model = x.Plan.Device.Model,
                     SerialNumber = x.Plan.Device.SerialNumber,
                     CustomerName = x.Plan.Customer.FullName,
+                    CustomerPhone = x.Plan.Customer.Phone,
+                    CustomerLocation = x.Plan.Customer.Location ?? string.Empty,
                     DueDate = x.DueDate,
                     PeriodMonths = x.PeriodMonths,
+                    RequiredMaintenanceType = $"Periodic maintenance - {x.PeriodMonths} months",
+                    IsWithinWarranty = x.DueDate.Date <= x.Plan.StartDate.AddYears(2).Date,
                     Status = x.Status
                 })
                 .ToListAsync(cancellationToken);
@@ -83,16 +95,27 @@ namespace Application.Services
         public async Task<long> AddVisitAsync(AddMaintenanceVisitRequestDto request, CancellationToken cancellationToken = default)
         {
             await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
-            var schedule = await db.MaintenanceSchedules.FirstOrDefaultAsync(x => x.Id == request.ScheduleId, cancellationToken)
+            var schedule = await db.MaintenanceSchedules
+                .Include(x => x.Plan)
+                .FirstOrDefaultAsync(x => x.Id == request.ScheduleId, cancellationToken)
                 ?? throw new InvalidOperationException("Schedule not found.");
+
+            var warranty = await db.Warranties
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.DeviceId == schedule.Plan.DeviceId, cancellationToken);
+
+            var visitDate = request.VisitDate.ToUniversalTime();
+            var isWithinWarrantyWindow = warranty is not null
+                && warranty.Status == WarrantyStatus.Active
+                && visitDate.Date <= warranty.EndDate.Date;
 
             var visit = new MaintenanceVisit
             {
                 ScheduleId = request.ScheduleId,
-                VisitDate = request.VisitDate.ToUniversalTime(),
+                VisitDate = visitDate,
                 WorkType = request.WorkType.Trim(),
                 Notes = request.Notes?.Trim(),
-                WarrantyCovered = request.WarrantyCovered,
+                WarrantyCovered = request.WarrantyCovered && isWithinWarrantyWindow,
                 CostAmount = request.CostAmount,
                 CreatedAt = DateTime.UtcNow
             };

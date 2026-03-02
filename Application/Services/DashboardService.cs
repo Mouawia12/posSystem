@@ -32,7 +32,7 @@ namespace Application.Services
             var dueMaintenanceTask = db.MaintenanceSchedules.AsNoTracking()
                 .CountAsync(x => x.Status == MaintenanceStatus.Due, cancellationToken);
             var activeWarrantyTask = db.Warranties.AsNoTracking()
-                .CountAsync(x => x.Status == WarrantyStatus.Active, cancellationToken);
+                .CountAsync(x => x.Status == WarrantyStatus.Active && x.EndDate >= startOfToday, cancellationToken);
 
             await Task.WhenAll(
                 totalProductsTask,
