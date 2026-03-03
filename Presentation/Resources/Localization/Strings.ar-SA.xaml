@@ -26,6 +26,7 @@
     <sys:String x:Key="Search">بحث</sys:String>
     <sys:String x:Key="BarcodeInputLabel">الباركود (سكان أو إدخال)</sys:String>
     <sys:String x:Key="ProductSearchLabel">بحث عن منتج</sys:String>
+    <sys:String x:Key="PosCustomerLookupLabel">العميل (الرقم/الجوال/الاسم)</sys:String>
     <sys:String x:Key="New">جديد</sys:String>
     <sys:String x:Key="Save">حفظ</sys:String>
     <sys:String x:Key="Deactivate">تعطيل</sys:String>
@@ -48,9 +49,11 @@
     <sys:String x:Key="CustomerName">اسم العميل</sys:String>
     <sys:String x:Key="CustomerId">رقم العميل</sys:String>
     <sys:String x:Key="InvoiceId">رقم الفاتورة</sys:String>
+    <sys:String x:Key="InvoiceNumber">الفاتورة</sys:String>
     <sys:String x:Key="DeviceType">نوع الجهاز</sys:String>
     <sys:String x:Key="Model">الموديل</sys:String>
     <sys:String x:Key="SerialNo">الرقم التسلسلي</sys:String>
+    <sys:String x:Key="SaleDate">تاريخ البيع</sys:String>
     <sys:String x:Key="WarrantyStatus">حالة الضمان</sys:String>
     <sys:String x:Key="WarrantyEnd">نهاية الضمان</sys:String>
     <sys:String x:Key="RegisterWarranty">تسجيل ضمان</sys:String>
@@ -61,6 +64,8 @@
     <sys:String x:Key="MarkDone">تم التنفيذ</sys:String>
     <sys:String x:Key="MarkSkipped">تم التخطي</sys:String>
     <sys:String x:Key="AddVisit">إضافة زيارة</sys:String>
+    <sys:String x:Key="RequiredMaintenance">الصيانة المطلوبة</sys:String>
+    <sys:String x:Key="UnderWarranty">داخل الضمان</sys:String>
     <sys:String x:Key="WorkType">نوع العمل</sys:String>
     <sys:String x:Key="CostAmount">التكلفة</sys:String>
     <sys:String x:Key="WarrantyCovered">مشمول بالضمان</sys:String>
@@ -69,6 +74,8 @@
     <sys:String x:Key="GenerateReport">توليد التقرير</sys:String>
     <sys:String x:Key="PrintReport">طباعة التقرير</sys:String>
     <sys:String x:Key="DownloadReport">تحميل التقرير</sys:String>
+    <sys:String x:Key="ExportCsv">تصدير CSV</sys:String>
+    <sys:String x:Key="CancelExternalInstall">إلغاء (تركيب خارجي)</sys:String>
     <sys:String x:Key="ReportPeriod">الفترة</sys:String>
     <sys:String x:Key="ReportGeneratedAt">تاريخ الإنشاء</sys:String>
     <sys:String x:Key="ReportSummarySection">الملخص</sys:String>
@@ -185,4 +192,13 @@
     <sys:String x:Key="MsgInvoiceSentToPrinter">تم إرسال الفاتورة إلى الطابعة.</sys:String>
     <sys:String x:Key="MsgPrintingCanceledOrFailed">تم إلغاء الطباعة أو فشلت العملية.</sys:String>
     <sys:String x:Key="MsgActionFailed">فشل تنفيذ العملية: {0}</sys:String>
+    <sys:String x:Key="MsgCustomerLookupNotFound">لم يتم العثور على العميل. أدخل رقم عميل صحيح أو جوالًا أو اسمًا مطابقًا.</sys:String>
+    <sys:String x:Key="MsgWarrantyCanceledExternalInstall">تم إلغاء الضمان بسبب تركيب خارجي.</sys:String>
+    <sys:String x:Key="MsgMaintenanceSkippedWarrantyCanceled">تم تعليم الصيانة كـ تخطي. تم إلغاء الضمان بسبب عدم الالتزام بالصيانة الدورية.</sys:String>
+    <sys:String x:Key="MsgServiceReportExported">تم تصدير تقرير الخدمة: {0}</sys:String>
+    <sys:String x:Key="CsvCoverageUnderWarranty">داخل الضمان</sys:String>
+    <sys:String x:Key="CsvCoverageOutWarranty">خارج الضمان</sys:String>
+    <sys:String x:Key="CsvCoverageOutWarrantyPaid">خارج الضمان (مدفوع)</sys:String>
+    <sys:String x:Key="WarrantyRulesHint">قواعد الضمان: سنتان من تاريخ البيع. يُلغى الضمان إذا تم التركيب من طرف خارجي أو عند التخلف عن الصيانة الدورية. بعد 24 شهر تستمر الصيانة كخدمة مدفوعة حتى 6 سنوات.</sys:String>
+    <sys:String x:Key="MaintenanceRulesHint">تتم جدولة الزيارات تلقائيًا عند 3/6/9/12/15/18/21/24 شهرًا، ثم كل 6 أشهر حتى السنة السادسة. ما بعد الشهر 24 يكون خارج الضمان (مدفوع).</sys:String>
 </ResourceDictionary>

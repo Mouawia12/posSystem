@@ -473,7 +473,7 @@ namespace Presentation.ViewModels
                 var resolvedCustomerId = await ResolvePosCustomerIdAsync();
                 if (!string.IsNullOrWhiteSpace(PosCustomerLookup) && resolvedCustomerId is null)
                 {
-                    StatusMessage = "Customer was not found. Enter a valid customer ID, phone, or exact name.";
+                    StatusMessage = L("MsgCustomerLookupNotFound", "Customer was not found. Enter a valid customer ID, phone, or exact name.");
                     return;
                 }
 
@@ -784,7 +784,7 @@ namespace Presentation.ViewModels
             if (SelectedWarranty is null) return;
             await _warrantyManagementService.CancelWarrantyAsync(SelectedWarranty.WarrantyId);
             await LoadWarrantiesAsync();
-            StatusMessage = "Warranty canceled due to external installation.";
+            StatusMessage = L("MsgWarrantyCanceledExternalInstall", "Warranty canceled due to external installation.");
         }
 
         private async Task ReactivateWarrantyAsync()
@@ -831,7 +831,7 @@ namespace Presentation.ViewModels
             await _maintenanceManagementService.SetScheduleStatusAsync(SelectedMaintenanceSchedule.ScheduleId, status);
             await LoadMaintenanceSchedulesAsync();
             StatusMessage = status == MaintenanceStatus.Skipped
-                ? "Maintenance marked as Skipped. Warranty was canceled due to non-compliance with scheduled maintenance."
+                ? L("MsgMaintenanceSkippedWarrantyCanceled", "Maintenance marked as Skipped. Warranty was canceled due to non-compliance with scheduled maintenance.")
                 : Lf("MsgMaintenanceMarked", $"Maintenance marked as {status}.", status);
         }
 
@@ -881,7 +881,9 @@ namespace Presentation.ViewModels
                         Csv(warranty.SerialNumber),
                         Csv(warranty.EndDate.ToLocalTime().ToString("yyyy-MM-dd")),
                         Csv(string.Empty),
-                        Csv(warranty.IsOutOfWarranty ? "Out of Warranty" : "Under Warranty"),
+                        Csv(warranty.IsOutOfWarranty
+                            ? L("CsvCoverageOutWarranty", "Out of Warranty")
+                            : L("CsvCoverageUnderWarranty", "Under Warranty")),
                         Csv(warranty.Status.ToString()),
                         Csv(string.Empty)));
                 }
@@ -900,13 +902,15 @@ namespace Presentation.ViewModels
                         Csv(schedule.SerialNumber),
                         Csv(schedule.DueDate.ToLocalTime().ToString("yyyy-MM-dd")),
                         Csv(schedule.PeriodMonths.ToString(CultureInfo.InvariantCulture)),
-                        Csv(schedule.IsWithinWarranty ? "Under Warranty" : "Out of Warranty (Paid)"),
+                        Csv(schedule.IsWithinWarranty
+                            ? L("CsvCoverageUnderWarranty", "Under Warranty")
+                            : L("CsvCoverageOutWarrantyPaid", "Out of Warranty (Paid)")),
                         Csv(schedule.Status.ToString()),
                         Csv(schedule.RequiredMaintenanceType)));
                 }
 
                 File.WriteAllText(filePath, builder.ToString(), Encoding.UTF8);
-                StatusMessage = $"Service report exported: {filePath}";
+                StatusMessage = Lf("MsgServiceReportExported", "Service report exported: {0}", filePath);
             }
             catch (Exception ex)
             {

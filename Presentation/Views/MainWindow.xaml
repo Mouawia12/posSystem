@@ -57,6 +57,26 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="ActionToolbarButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="36" />
+            <Setter Property="MinWidth" Value="126" />
+            <Setter Property="Margin" Value="8,0,0,0" />
+            <Setter Property="Padding" Value="12,0" />
+        </Style>
+        <Style x:Key="EllipsisTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="CompactFieldLabelStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="0,0,0,4" />
+            <Setter Property="Foreground" Value="#4E5D6C" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+        <Style x:Key="CompactFieldInputStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Margin" Value="0,0,0,10" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
     </ui:FluentWindow.Resources>
 
     <Grid Background="{DynamicResource AppSurfaceBrush}">
@@ -439,7 +459,7 @@
                             </StackPanel>
 
                             <StackPanel Grid.Column="1" Margin="0,0,12,0">
-                                <TextBlock Text="Customer (ID/Phone/Name)" Margin="0,0,0,4" Foreground="#5E6A79" FontSize="12" />
+                                <TextBlock Text="{DynamicResource PosCustomerLookupLabel}" Margin="0,0,0,4" Foreground="#5E6A79" FontSize="12" />
                                 <TextBox Height="38"
                                          Padding="12,8"
                                          VerticalContentAlignment="Center"
@@ -635,58 +655,30 @@
                 </Grid.RowDefinitions>
 
                 <Border Background="White" CornerRadius="10" Padding="14" Margin="0,0,0,14">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="220" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="118" />
-                            <ColumnDefinition Width="118" />
-                            <ColumnDefinition Width="118" />
-                            <ColumnDefinition Width="118" />
-                            <ColumnDefinition Width="118" />
-                        </Grid.ColumnDefinitions>
-
-                        <TextBox Grid.Column="0"
-                                 Height="36"
+                    <DockPanel LastChildFill="True">
+                        <WrapPanel DockPanel.Dock="Right"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Orientation="Horizontal">
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Search}" Command="{Binding LoadManagedProductsCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource New}" Command="{Binding NewManagedProductCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Save}" Command="{Binding SaveManagedProductCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Deactivate}" Command="{Binding DeactivateManagedProductCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Reactivate}" Command="{Binding ReactivateManagedProductCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Delete}" Command="{Binding DeleteManagedProductCommand}" />
+                        </WrapPanel>
+                        <TextBox Height="36"
+                                 Width="280"
                                  Margin="0,0,12,0"
                                  VerticalContentAlignment="Center"
                                  Text="{Binding ProductsSearchTerm, UpdateSourceTrigger=PropertyChanged}" />
-                        <Button Grid.Column="1"
-                                Height="36"
-                                Content="{DynamicResource Search}"
-                                Command="{Binding LoadManagedProductsCommand}" />
-                        <Button Grid.Column="2"
-                                Height="36"
-                                Margin="12,0,0,0"
-                                Content="{DynamicResource New}"
-                                Command="{Binding NewManagedProductCommand}" />
-                        <Button Grid.Column="3"
-                                Height="36"
-                                Margin="12,0,0,0"
-                                Content="{DynamicResource Save}"
-                                Command="{Binding SaveManagedProductCommand}" />
-                        <Button Grid.Column="4"
-                                Height="36"
-                                Margin="12,0,0,0"
-                                Content="{DynamicResource Deactivate}"
-                                Command="{Binding DeactivateManagedProductCommand}" />
-                        <Button Grid.Column="5"
-                                Height="36"
-                                Margin="12,0,0,0"
-                                Content="{DynamicResource Reactivate}"
-                                Command="{Binding ReactivateManagedProductCommand}" />
-                        <Button Grid.Column="6"
-                                Height="36"
-                                Margin="12,0,0,0"
-                                Content="{DynamicResource Delete}"
-                                Command="{Binding DeleteManagedProductCommand}" />
-                    </Grid>
+                    </DockPanel>
                 </Border>
 
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="1.15*" />
+                        <ColumnDefinition Width="1.7*" />
+                        <ColumnDefinition Width="1.3*" />
                     </Grid.ColumnDefinitions>
 
                     <Border Background="White" CornerRadius="10" Padding="14" Margin="0,0,14,0">
@@ -822,58 +814,30 @@
                 </Grid.RowDefinitions>
 
                 <Border Background="White" CornerRadius="10" Padding="14" Margin="0,0,0,14">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="220" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="118" />
-                            <ColumnDefinition Width="118" />
-                            <ColumnDefinition Width="118" />
-                            <ColumnDefinition Width="118" />
-                            <ColumnDefinition Width="118" />
-                        </Grid.ColumnDefinitions>
-
-                        <TextBox Grid.Column="0"
-                                 Height="36"
+                    <DockPanel LastChildFill="True">
+                        <WrapPanel DockPanel.Dock="Right"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Orientation="Horizontal">
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Search}" Command="{Binding LoadManagedCustomersCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource New}" Command="{Binding NewManagedCustomerCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Save}" Command="{Binding SaveManagedCustomerCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Deactivate}" Command="{Binding DeactivateManagedCustomerCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Reactivate}" Command="{Binding ReactivateManagedCustomerCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Delete}" Command="{Binding DeleteManagedCustomerCommand}" />
+                        </WrapPanel>
+                        <TextBox Height="36"
+                                 Width="280"
                                  Margin="0,0,12,0"
                                  VerticalContentAlignment="Center"
                                  Text="{Binding CustomersSearchTerm, UpdateSourceTrigger=PropertyChanged}" />
-                        <Button Grid.Column="1"
-                                Height="36"
-                                Content="{DynamicResource Search}"
-                                Command="{Binding LoadManagedCustomersCommand}" />
-                        <Button Grid.Column="2"
-                                Height="36"
-                                Margin="12,0,0,0"
-                                Content="{DynamicResource New}"
-                                Command="{Binding NewManagedCustomerCommand}" />
-                        <Button Grid.Column="3"
-                                Height="36"
-                                Margin="12,0,0,0"
-                                Content="{DynamicResource Save}"
-                                Command="{Binding SaveManagedCustomerCommand}" />
-                        <Button Grid.Column="4"
-                                Height="36"
-                                Margin="12,0,0,0"
-                                Content="{DynamicResource Deactivate}"
-                                Command="{Binding DeactivateManagedCustomerCommand}" />
-                        <Button Grid.Column="5"
-                                Height="36"
-                                Margin="12,0,0,0"
-                                Content="{DynamicResource Reactivate}"
-                                Command="{Binding ReactivateManagedCustomerCommand}" />
-                        <Button Grid.Column="6"
-                                Height="36"
-                                Margin="12,0,0,0"
-                                Content="{DynamicResource Delete}"
-                                Command="{Binding DeleteManagedCustomerCommand}" />
-                    </Grid>
+                    </DockPanel>
                 </Border>
 
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="1.15*" />
+                        <ColumnDefinition Width="1.7*" />
+                        <ColumnDefinition Width="1.3*" />
                     </Grid.ColumnDefinitions>
 
                     <Border Background="White" CornerRadius="10" Padding="14" Margin="0,0,14,0">
@@ -940,24 +904,24 @@
                 </Grid.RowDefinitions>
 
                 <Border Background="White" CornerRadius="10" Padding="14" Margin="0,0,0,14">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="300" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="160" />
-                            <ColumnDefinition Width="170" />
-                            <ColumnDefinition Width="130" />
-                            <ColumnDefinition Width="130" />
-                            <ColumnDefinition Width="130" />
-                        </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" Height="36" Margin="0,0,12,0" Text="{Binding WarrantySearchTerm, UpdateSourceTrigger=PropertyChanged}" />
-                        <Button Grid.Column="1" Height="36" Content="{DynamicResource Search}" Command="{Binding LoadWarrantiesCommand}" />
-                        <Button Grid.Column="2" Height="36" Margin="12,0,0,0" Content="{DynamicResource RegisterWarranty}" Command="{Binding RegisterWarrantyCommand}" />
-                        <Button Grid.Column="3" Height="36" Margin="12,0,0,0" Content="Cancel (External Install)" Command="{Binding CancelWarrantyExternalInstallCommand}" />
-                        <Button Grid.Column="4" Height="36" Margin="12,0,0,0" Content="{DynamicResource Reactivate}" Command="{Binding ReactivateWarrantyCommand}" />
-                        <Button Grid.Column="5" Height="36" Margin="12,0,0,0" Content="{DynamicResource Delete}" Command="{Binding DeleteWarrantyCommand}" />
-                        <Button Grid.Column="6" Height="36" Margin="12,0,0,0" Content="Export CSV" Command="{Binding ExportServiceReportCommand}" />
-                    </Grid>
+                    <DockPanel LastChildFill="True">
+                        <WrapPanel DockPanel.Dock="Right"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Orientation="Horizontal">
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Search}" Command="{Binding LoadWarrantiesCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource RegisterWarranty}" Command="{Binding RegisterWarrantyCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource CancelExternalInstall}" Command="{Binding CancelWarrantyExternalInstallCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Reactivate}" Command="{Binding ReactivateWarrantyCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Delete}" Command="{Binding DeleteWarrantyCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource ExportCsv}" Command="{Binding ExportServiceReportCommand}" />
+                        </WrapPanel>
+                        <TextBox Height="36"
+                                 Width="320"
+                                 Margin="0,0,12,0"
+                                 VerticalContentAlignment="Center"
+                                 Text="{Binding WarrantySearchTerm, UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
                 </Border>
 
                 <Grid Grid.Row="1">
@@ -985,7 +949,7 @@
                                 </DataGridTextColumn>
                                 <DataGridTextColumn Binding="{Binding InvoiceNumber}" Width="*">
                                     <DataGridTextColumn.HeaderTemplate>
-                                        <DataTemplate><TextBlock Text="Invoice" /></DataTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource InvoiceNumber}" Style="{StaticResource EllipsisTextBlockStyle}" /></DataTemplate>
                                     </DataGridTextColumn.HeaderTemplate>
                                 </DataGridTextColumn>
                                 <DataGridTextColumn Binding="{Binding CustomerName}" Width="*">
@@ -998,11 +962,6 @@
                                         <DataTemplate><TextBlock Text="{DynamicResource Phone}" /></DataTemplate>
                                     </DataGridTextColumn.HeaderTemplate>
                                 </DataGridTextColumn>
-                                <DataGridTextColumn Binding="{Binding DeviceType}" Width="*">
-                                    <DataGridTextColumn.HeaderTemplate>
-                                        <DataTemplate><TextBlock Text="{DynamicResource DeviceType}" /></DataTemplate>
-                                    </DataGridTextColumn.HeaderTemplate>
-                                </DataGridTextColumn>
                                 <DataGridTextColumn Binding="{Binding Model}" Width="*">
                                     <DataGridTextColumn.HeaderTemplate>
                                         <DataTemplate><TextBlock Text="{DynamicResource Model}" /></DataTemplate>
@@ -1010,7 +969,7 @@
                                 </DataGridTextColumn>
                                 <DataGridTextColumn Binding="{Binding StartDate}" Width="*">
                                     <DataGridTextColumn.HeaderTemplate>
-                                        <DataTemplate><TextBlock Text="Sale Date" /></DataTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource SaleDate}" Style="{StaticResource EllipsisTextBlockStyle}" /></DataTemplate>
                                     </DataGridTextColumn.HeaderTemplate>
                                 </DataGridTextColumn>
                                 <DataGridTextColumn Binding="{Binding EndDate}" Width="*">
@@ -1041,13 +1000,13 @@
                             <TextBox Height="34" Margin="0,4,0,0" Text="{Binding WarrantyModel, UpdateSourceTrigger=PropertyChanged}" />
                             <TextBlock Text="{DynamicResource SerialNo}" Margin="0,8,0,0" />
                             <TextBox Height="34" Margin="0,4,0,0" Text="{Binding WarrantySerialNumber, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock Text="Sale Date" Margin="0,8,0,0" />
+                            <TextBlock Text="{DynamicResource SaleDate}" Margin="0,8,0,0" />
                             <DatePicker Height="34" Margin="0,4,0,0" SelectedDate="{Binding WarrantySoldAt}" />
                             <Border Background="#F7F9FC" CornerRadius="8" Padding="10" Margin="0,10,0,0">
                                 <TextBlock TextWrapping="Wrap"
                                            FontSize="12"
                                            Foreground="#4F5F71"
-                                           Text="Warranty rules: 2 years from sale date. Warranty is canceled if installation is done by customer/third-party or if periodic maintenance is skipped. After 24 months, service continues as paid maintenance up to 6 years." />
+                                           Text="{DynamicResource WarrantyRulesHint}" />
                             </Border>
                         </StackPanel>
                     </Border>
@@ -1062,22 +1021,23 @@
                 </Grid.RowDefinitions>
 
                 <Border Background="White" CornerRadius="10" Padding="14" Margin="0,0,0,14">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="300" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="140" />
-                            <ColumnDefinition Width="140" />
-                            <ColumnDefinition Width="140" />
-                            <ColumnDefinition Width="120" />
-                        </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" Height="36" Margin="0,0,12,0" Text="{Binding MaintenanceSearchTerm, UpdateSourceTrigger=PropertyChanged}" />
-                        <Button Grid.Column="1" Height="36" Content="{DynamicResource Search}" Command="{Binding LoadMaintenanceSchedulesCommand}" />
-                        <Button Grid.Column="2" Height="36" Margin="12,0,0,0" Content="{DynamicResource MarkDone}" Command="{Binding MarkMaintenanceDoneCommand}" />
-                        <Button Grid.Column="3" Height="36" Margin="12,0,0,0" Content="{DynamicResource MarkSkipped}" Command="{Binding MarkMaintenanceSkippedCommand}" />
-                        <Button Grid.Column="4" Height="36" Margin="12,0,0,0" Content="{DynamicResource AddVisit}" Command="{Binding AddMaintenanceVisitCommand}" />
-                        <Button Grid.Column="5" Height="36" Margin="12,0,0,0" Content="Export CSV" Command="{Binding ExportServiceReportCommand}" />
-                    </Grid>
+                    <DockPanel LastChildFill="True">
+                        <WrapPanel DockPanel.Dock="Right"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Orientation="Horizontal">
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Search}" Command="{Binding LoadMaintenanceSchedulesCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource MarkDone}" Command="{Binding MarkMaintenanceDoneCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource MarkSkipped}" Command="{Binding MarkMaintenanceSkippedCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource AddVisit}" Command="{Binding AddMaintenanceVisitCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource ExportCsv}" Command="{Binding ExportServiceReportCommand}" />
+                        </WrapPanel>
+                        <TextBox Height="36"
+                                 Width="320"
+                                 Margin="0,0,12,0"
+                                 VerticalContentAlignment="Center"
+                                 Text="{Binding MaintenanceSearchTerm, UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
                 </Border>
 
                 <Grid Grid.Row="1">
@@ -1105,17 +1065,12 @@
                                 </DataGridTextColumn>
                                 <DataGridTextColumn Binding="{Binding InvoiceNumber}" Width="*">
                                     <DataGridTextColumn.HeaderTemplate>
-                                        <DataTemplate><TextBlock Text="Invoice" /></DataTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource InvoiceNumber}" Style="{StaticResource EllipsisTextBlockStyle}" /></DataTemplate>
                                     </DataGridTextColumn.HeaderTemplate>
                                 </DataGridTextColumn>
                                 <DataGridTextColumn Binding="{Binding CustomerName}" Width="*">
                                     <DataGridTextColumn.HeaderTemplate>
                                         <DataTemplate><TextBlock Text="{DynamicResource CustomerName}" /></DataTemplate>
-                                    </DataGridTextColumn.HeaderTemplate>
-                                </DataGridTextColumn>
-                                <DataGridTextColumn Binding="{Binding CustomerPhone}" Width="*">
-                                    <DataGridTextColumn.HeaderTemplate>
-                                        <DataTemplate><TextBlock Text="{DynamicResource Phone}" /></DataTemplate>
                                     </DataGridTextColumn.HeaderTemplate>
                                 </DataGridTextColumn>
                                 <DataGridTextColumn Binding="{Binding Model}" Width="*">
@@ -1135,12 +1090,12 @@
                                 </DataGridTextColumn>
                                 <DataGridTextColumn Binding="{Binding RequiredMaintenanceType}" Width="*">
                                     <DataGridTextColumn.HeaderTemplate>
-                                        <DataTemplate><TextBlock Text="Required Maintenance" /></DataTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource RequiredMaintenance}" Style="{StaticResource EllipsisTextBlockStyle}" /></DataTemplate>
                                     </DataGridTextColumn.HeaderTemplate>
                                 </DataGridTextColumn>
                                 <DataGridCheckBoxColumn Binding="{Binding IsWithinWarranty}" Width="*">
                                     <DataGridCheckBoxColumn.HeaderTemplate>
-                                        <DataTemplate><TextBlock Text="Under Warranty" /></DataTemplate>
+                                        <DataTemplate><TextBlock Text="{DynamicResource UnderWarranty}" Style="{StaticResource EllipsisTextBlockStyle}" /></DataTemplate>
                                     </DataGridCheckBoxColumn.HeaderTemplate>
                                 </DataGridCheckBoxColumn>
                                 <DataGridTextColumn Binding="{Binding Status}" Width="*">
@@ -1167,7 +1122,7 @@
                                 <TextBlock TextWrapping="Wrap"
                                            FontSize="12"
                                            Foreground="#4F5F71"
-                                           Text="Periodic visits are auto-scheduled at 3/6/9/12/15/18/21/24 months, then every 6 months until year 6. Visits after month 24 are paid (out of warranty)." />
+                                           Text="{DynamicResource MaintenanceRulesHint}" />
                             </Border>
                         </StackPanel>
                     </Border>
@@ -1397,79 +1352,85 @@
             <Grid Grid.Row="1"
                   Visibility="{Binding IsSettingsModule, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Border Background="White" CornerRadius="10" Padding="18">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1.2*" />
-                            <ColumnDefinition Width="1*" />
-                        </Grid.ColumnDefinitions>
-
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  CanContentScroll="True">
                         <StackPanel>
                             <TextBlock Text="{DynamicResource SettingsTitle}" FontSize="22" FontWeight="SemiBold" />
                             <TextBlock Text="{DynamicResource SettingsSubtitle}" Foreground="#6B7785" Margin="0,4,0,14" />
 
-                            <TextBlock Text="{DynamicResource CompanyName}" />
-                            <TextBox Height="36" Margin="0,6,0,0" Text="{Binding SettingsCompanyName, UpdateSourceTrigger=PropertyChanged}" />
+                            <Border Background="#F8FAFC" BorderBrush="#E7ECF2" BorderThickness="1" CornerRadius="10" Padding="14">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="{DynamicResource Address}" Margin="0,10,0,0" />
-                            <TextBox Height="36" Margin="0,6,0,0" Text="{Binding SettingsAddress, UpdateSourceTrigger=PropertyChanged}" />
+                                    <StackPanel Margin="0,0,10,0">
+                                        <TextBlock Style="{StaticResource CompactFieldLabelStyle}" Text="{DynamicResource CompanyName}" />
+                                        <TextBox Style="{StaticResource CompactFieldInputStyle}" Text="{Binding SettingsCompanyName, UpdateSourceTrigger=PropertyChanged}" />
 
-                            <TextBlock Text="{DynamicResource Phone}" Margin="0,10,0,0" />
-                            <TextBox Height="36" Margin="0,6,0,0" Text="{Binding SettingsPhone, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
+                                        <TextBlock Style="{StaticResource CompactFieldLabelStyle}" Text="{DynamicResource Address}" />
+                                        <TextBox Style="{StaticResource CompactFieldInputStyle}" Text="{Binding SettingsAddress, UpdateSourceTrigger=PropertyChanged}" />
 
-                        <StackPanel Grid.Column="1" Margin="18,0,0,0">
-                            <TextBlock Text="{DynamicResource InvoicePrefix}" />
-                            <TextBox Height="36" Margin="0,6,0,0" Text="{Binding SettingsInvoicePrefix, UpdateSourceTrigger=PropertyChanged}" />
+                                        <TextBlock Style="{StaticResource CompactFieldLabelStyle}" Text="{DynamicResource Phone}" />
+                                        <TextBox Style="{StaticResource CompactFieldInputStyle}" Text="{Binding SettingsPhone, UpdateSourceTrigger=PropertyChanged}" />
+                                    </StackPanel>
 
-                            <TextBlock Text="{DynamicResource NextInvoiceNumber}" Margin="0,10,0,0" />
-                            <TextBox Height="36" Margin="0,6,0,0" Text="{Binding SettingsNextInvoiceNumber, UpdateSourceTrigger=PropertyChanged}" />
+                                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                        <TextBlock Style="{StaticResource CompactFieldLabelStyle}" Text="{DynamicResource InvoicePrefix}" />
+                                        <TextBox Style="{StaticResource CompactFieldInputStyle}" Text="{Binding SettingsInvoicePrefix, UpdateSourceTrigger=PropertyChanged}" />
 
-                            <TextBlock Text="{DynamicResource Currency}" Margin="0,10,0,0" />
-                            <ComboBox Height="36"
-                                      Margin="0,6,0,0"
-                                      ItemsSource="{Binding AvailableCurrencies}"
-                                      SelectedItem="{Binding SettingsCurrency}" />
+                                        <TextBlock Style="{StaticResource CompactFieldLabelStyle}" Text="{DynamicResource NextInvoiceNumber}" />
+                                        <TextBox Style="{StaticResource CompactFieldInputStyle}" Text="{Binding SettingsNextInvoiceNumber, UpdateSourceTrigger=PropertyChanged}" />
 
-                            <TextBlock Text="{DynamicResource PrinterName}" Margin="0,10,0,0" />
-                            <TextBox Height="36" Margin="0,6,0,0" Text="{Binding SettingsPrinterName, UpdateSourceTrigger=PropertyChanged}" />
+                                        <TextBlock Style="{StaticResource CompactFieldLabelStyle}" Text="{DynamicResource Currency}" />
+                                        <ComboBox Height="34"
+                                                  Margin="0,0,0,10"
+                                                  ItemsSource="{Binding AvailableCurrencies}"
+                                                  SelectedItem="{Binding SettingsCurrency}" />
 
-                            <Button Height="40"
-                                    Margin="0,18,0,0"
+                                        <TextBlock Style="{StaticResource CompactFieldLabelStyle}" Text="{DynamicResource PrinterName}" />
+                                        <TextBox Style="{StaticResource CompactFieldInputStyle}" Text="{Binding SettingsPrinterName, UpdateSourceTrigger=PropertyChanged}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <Button Width="180"
+                                    Height="38"
+                                    Margin="0,12,0,0"
+                                    HorizontalAlignment="Right"
                                     Content="{DynamicResource SaveSettings}"
                                     Command="{Binding SaveSettingsCommand}" />
 
-                            <Separator Margin="0,16,0,14" />
-                            <TextBlock Text="{DynamicResource BackupSection}" FontWeight="SemiBold" />
-                            <TextBlock Text="{DynamicResource BackupFilePath}" Margin="0,10,0,0" />
-                            <TextBox Height="36" Margin="0,6,0,0" Text="{Binding BackupFilePath, UpdateSourceTrigger=PropertyChanged}" />
+                            <Border Background="#F8FAFC" BorderBrush="#E7ECF2" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,14,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource BackupSection}" FontWeight="SemiBold" FontSize="16" />
+                                    <TextBlock Style="{StaticResource CompactFieldLabelStyle}" Text="{DynamicResource BackupFilePath}" Margin="0,10,0,4" />
+                                    <TextBox Style="{StaticResource CompactFieldInputStyle}" Text="{Binding BackupFilePath, UpdateSourceTrigger=PropertyChanged}" />
 
-                            <Grid Margin="0,10,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Button Grid.Column="0"
-                                        Height="34"
-                                        Margin="0,0,8,0"
-                                        Content="{DynamicResource CreateBackup}"
-                                        Command="{Binding CreateBackupCommand}" />
-                                <Button Grid.Column="1"
-                                        Height="34"
-                                        Margin="0,0,8,0"
-                                        Content="{DynamicResource RestoreBackup}"
-                                        Command="{Binding RestoreBackupCommand}" />
-                                <Button Grid.Column="2"
-                                        Height="34"
-                                        Content="{DynamicResource VerifyBackup}"
-                                        Command="{Binding VerifyBackupCommand}" />
-                            </Grid>
+                                    <WrapPanel Margin="0,2,0,0">
+                                        <Button Style="{StaticResource ActionToolbarButtonStyle}"
+                                                Margin="0,0,8,0"
+                                                Content="{DynamicResource CreateBackup}"
+                                                Command="{Binding CreateBackupCommand}" />
+                                        <Button Style="{StaticResource ActionToolbarButtonStyle}"
+                                                Margin="0,0,8,0"
+                                                Content="{DynamicResource RestoreBackup}"
+                                                Command="{Binding RestoreBackupCommand}" />
+                                        <Button Style="{StaticResource ActionToolbarButtonStyle}"
+                                                Margin="0,0,0,0"
+                                                Content="{DynamicResource VerifyBackup}"
+                                                Command="{Binding VerifyBackupCommand}" />
+                                    </WrapPanel>
 
-                            <TextBlock Margin="0,10,0,0"
-                                       Foreground="#6B7785"
-                                       Text="{Binding LastBackupFilePath}" />
+                                    <TextBlock Margin="0,10,0,0"
+                                               Foreground="#6B7785"
+                                               Text="{Binding LastBackupFilePath}" />
+                                </StackPanel>
+                            </Border>
                         </StackPanel>
-                    </Grid>
+                    </ScrollViewer>
                 </Border>
             </Grid>
 
@@ -1481,40 +1442,22 @@
                 </Grid.RowDefinitions>
 
                 <Border Background="White" CornerRadius="10" Padding="14" Margin="0,0,0,14">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="220" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="130" />
-                            <ColumnDefinition Width="130" />
-                            <ColumnDefinition Width="130" />
-                        </Grid.ColumnDefinitions>
-
-                        <TextBox Grid.Column="0"
-                                 Height="36"
+                    <DockPanel LastChildFill="True">
+                        <WrapPanel DockPanel.Dock="Right"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Orientation="Horizontal">
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Search}" Command="{Binding LoadManagedUsersCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource New}" Command="{Binding NewManagedUserCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Save}" Command="{Binding SaveManagedUserCommand}" />
+                            <Button Style="{StaticResource ActionToolbarButtonStyle}" Content="{DynamicResource Deactivate}" Command="{Binding DeactivateManagedUserCommand}" />
+                        </WrapPanel>
+                        <TextBox Height="36"
+                                 Width="280"
                                  Margin="0,0,12,0"
                                  VerticalContentAlignment="Center"
                                  Text="{Binding UsersSearchTerm, UpdateSourceTrigger=PropertyChanged}" />
-                        <Button Grid.Column="1"
-                                Height="36"
-                                Content="{DynamicResource Search}"
-                                Command="{Binding LoadManagedUsersCommand}" />
-                        <Button Grid.Column="2"
-                                Height="36"
-                                Margin="12,0,0,0"
-                                Content="{DynamicResource New}"
-                                Command="{Binding NewManagedUserCommand}" />
-                        <Button Grid.Column="3"
-                                Height="36"
-                                Margin="12,0,0,0"
-                                Content="{DynamicResource Save}"
-                                Command="{Binding SaveManagedUserCommand}" />
-                        <Button Grid.Column="4"
-                                Height="36"
-                                Margin="12,0,0,0"
-                                Content="{DynamicResource Deactivate}"
-                                Command="{Binding DeactivateManagedUserCommand}" />
-                    </Grid>
+                    </DockPanel>
                 </Border>
 
                 <Grid Grid.Row="1">
@@ -1555,25 +1498,59 @@
                     </Border>
 
                     <Border Grid.Column="1" Background="White" CornerRadius="10" Padding="14">
-                        <StackPanel>
-                            <TextBlock Text="{DynamicResource UserEditor}" FontSize="18" FontWeight="SemiBold" />
-                            <Separator Margin="0,8,0,12" />
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      CanContentScroll="True">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource UserEditor}" FontSize="18" FontWeight="SemiBold" />
+                                <Separator Margin="0,8,0,12" />
 
-                            <TextBlock Text="{DynamicResource Username}" Margin="0,0,0,4" />
-                            <TextBox Height="34" Text="{Binding EditingUsername, UpdateSourceTrigger=PropertyChanged}" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="120" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
 
-                            <TextBlock Text="{DynamicResource Password}" Margin="0,8,0,4" />
-                            <TextBox Height="34" Text="{Binding EditingUserPassword, UpdateSourceTrigger=PropertyChanged}" />
+                                    <TextBlock Grid.Row="0" Grid.Column="0"
+                                               Style="{StaticResource CompactFieldLabelStyle}"
+                                               VerticalAlignment="Center"
+                                               Text="{DynamicResource Username}" />
+                                    <TextBox Grid.Row="0" Grid.Column="1"
+                                             Style="{StaticResource CompactFieldInputStyle}"
+                                             Text="{Binding EditingUsername, UpdateSourceTrigger=PropertyChanged}" />
 
-                            <TextBlock Text="{DynamicResource Role}" Margin="0,8,0,4" />
-                            <ComboBox Height="34"
-                                      ItemsSource="{Binding AvailableUserRoles}"
-                                      SelectedItem="{Binding EditingUserRole}" />
+                                    <TextBlock Grid.Row="1" Grid.Column="0"
+                                               Style="{StaticResource CompactFieldLabelStyle}"
+                                               VerticalAlignment="Center"
+                                               Text="{DynamicResource Password}" />
+                                    <TextBox Grid.Row="1" Grid.Column="1"
+                                             Style="{StaticResource CompactFieldInputStyle}"
+                                             Text="{Binding EditingUserPassword, UpdateSourceTrigger=PropertyChanged}" />
 
-                            <CheckBox Margin="0,10,0,0"
-                                      IsChecked="{Binding EditingUserIsActive}"
-                                      Content="{DynamicResource IsActive}" />
-                        </StackPanel>
+                                    <TextBlock Grid.Row="2" Grid.Column="0"
+                                               Style="{StaticResource CompactFieldLabelStyle}"
+                                               VerticalAlignment="Center"
+                                               Text="{DynamicResource Role}" />
+                                    <ComboBox Grid.Row="2" Grid.Column="1"
+                                              Height="34"
+                                              Margin="0,0,0,10"
+                                              ItemsSource="{Binding AvailableUserRoles}"
+                                              SelectedItem="{Binding EditingUserRole}" />
+
+                                    <CheckBox Grid.Row="3"
+                                              Grid.ColumnSpan="2"
+                                              Margin="0,2,0,0"
+                                              IsChecked="{Binding EditingUserIsActive}"
+                                              Content="{DynamicResource IsActive}" />
+                                </Grid>
+                            </StackPanel>
+                        </ScrollViewer>
                     </Border>
                 </Grid>
             </Grid>

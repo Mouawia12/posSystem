@@ -74,6 +74,21 @@ namespace Application.Services
 
         public async Task<long> RegisterDeviceWarrantyAsync(RegisterDeviceWarrantyRequestDto request, CancellationToken cancellationToken = default)
         {
+            if (request.CustomerId <= 0)
+            {
+                throw new InvalidOperationException("CustomerId must be greater than zero.");
+            }
+
+            if (request.InvoiceId <= 0)
+            {
+                throw new InvalidOperationException("InvoiceId must be greater than zero.");
+            }
+
+            if (string.IsNullOrWhiteSpace(request.DeviceType) || string.IsNullOrWhiteSpace(request.Model) || string.IsNullOrWhiteSpace(request.SerialNumber))
+            {
+                throw new InvalidOperationException("Device type, model and serial number are required.");
+            }
+
             await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
             await using var tx = await db.Database.BeginTransactionAsync(cancellationToken);
 
@@ -97,6 +112,10 @@ namespace Application.Services
             }
 
             var soldAt = request.SoldAt.ToUniversalTime();
+            if (soldAt.Date > DateTime.UtcNow.Date)
+            {
+                throw new InvalidOperationException("Sale date cannot be in the future.");
+            }
 
             var device = new Device
             {

@@ -94,6 +94,21 @@ namespace Application.Services
 
         public async Task<long> AddVisitAsync(AddMaintenanceVisitRequestDto request, CancellationToken cancellationToken = default)
         {
+            if (request.ScheduleId <= 0)
+            {
+                throw new InvalidOperationException("ScheduleId must be greater than zero.");
+            }
+
+            if (string.IsNullOrWhiteSpace(request.WorkType))
+            {
+                throw new InvalidOperationException("Work type is required.");
+            }
+
+            if (request.CostAmount < 0)
+            {
+                throw new InvalidOperationException("Cost amount cannot be negative.");
+            }
+
             await using var db = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
             var schedule = await db.MaintenanceSchedules
                 .Include(x => x.Plan)

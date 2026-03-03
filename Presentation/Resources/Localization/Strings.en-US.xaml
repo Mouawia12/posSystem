@@ -25,6 +25,7 @@
     <sys:String x:Key="Search" xmlns:sys="clr-namespace:System;assembly=mscorlib">Search</sys:String>
     <sys:String x:Key="BarcodeInputLabel" xmlns:sys="clr-namespace:System;assembly=mscorlib">Barcode (Scan or Enter)</sys:String>
     <sys:String x:Key="ProductSearchLabel" xmlns:sys="clr-namespace:System;assembly=mscorlib">Product Search</sys:String>
+    <sys:String x:Key="PosCustomerLookupLabel" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer (ID/Phone/Name)</sys:String>
     <sys:String x:Key="New" xmlns:sys="clr-namespace:System;assembly=mscorlib">New</sys:String>
     <sys:String x:Key="Save" xmlns:sys="clr-namespace:System;assembly=mscorlib">Save</sys:String>
     <sys:String x:Key="Deactivate" xmlns:sys="clr-namespace:System;assembly=mscorlib">Deactivate</sys:String>
@@ -47,9 +48,11 @@
     <sys:String x:Key="CustomerName" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer Name</sys:String>
     <sys:String x:Key="CustomerId" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer ID</sys:String>
     <sys:String x:Key="InvoiceId" xmlns:sys="clr-namespace:System;assembly=mscorlib">Invoice ID</sys:String>
+    <sys:String x:Key="InvoiceNumber" xmlns:sys="clr-namespace:System;assembly=mscorlib">Invoice</sys:String>
     <sys:String x:Key="DeviceType" xmlns:sys="clr-namespace:System;assembly=mscorlib">Device Type</sys:String>
     <sys:String x:Key="Model" xmlns:sys="clr-namespace:System;assembly=mscorlib">Model</sys:String>
     <sys:String x:Key="SerialNo" xmlns:sys="clr-namespace:System;assembly=mscorlib">Serial No.</sys:String>
+    <sys:String x:Key="SaleDate" xmlns:sys="clr-namespace:System;assembly=mscorlib">Sale Date</sys:String>
     <sys:String x:Key="WarrantyStatus" xmlns:sys="clr-namespace:System;assembly=mscorlib">Warranty Status</sys:String>
     <sys:String x:Key="WarrantyEnd" xmlns:sys="clr-namespace:System;assembly=mscorlib">Warranty End</sys:String>
     <sys:String x:Key="RegisterWarranty" xmlns:sys="clr-namespace:System;assembly=mscorlib">Register Warranty</sys:String>
@@ -60,6 +63,8 @@
     <sys:String x:Key="MarkDone" xmlns:sys="clr-namespace:System;assembly=mscorlib">Mark Done</sys:String>
     <sys:String x:Key="MarkSkipped" xmlns:sys="clr-namespace:System;assembly=mscorlib">Mark Skipped</sys:String>
     <sys:String x:Key="AddVisit" xmlns:sys="clr-namespace:System;assembly=mscorlib">Add Visit</sys:String>
+    <sys:String x:Key="RequiredMaintenance" xmlns:sys="clr-namespace:System;assembly=mscorlib">Required Maintenance</sys:String>
+    <sys:String x:Key="UnderWarranty" xmlns:sys="clr-namespace:System;assembly=mscorlib">Under Warranty</sys:String>
     <sys:String x:Key="WorkType" xmlns:sys="clr-namespace:System;assembly=mscorlib">Work Type</sys:String>
     <sys:String x:Key="CostAmount" xmlns:sys="clr-namespace:System;assembly=mscorlib">Cost Amount</sys:String>
     <sys:String x:Key="WarrantyCovered" xmlns:sys="clr-namespace:System;assembly=mscorlib">Warranty Covered</sys:String>
@@ -68,6 +73,8 @@
     <sys:String x:Key="GenerateReport" xmlns:sys="clr-namespace:System;assembly=mscorlib">Generate Report</sys:String>
     <sys:String x:Key="PrintReport" xmlns:sys="clr-namespace:System;assembly=mscorlib">Print Report</sys:String>
     <sys:String x:Key="DownloadReport" xmlns:sys="clr-namespace:System;assembly=mscorlib">Download Report</sys:String>
+    <sys:String x:Key="ExportCsv" xmlns:sys="clr-namespace:System;assembly=mscorlib">Export CSV</sys:String>
+    <sys:String x:Key="CancelExternalInstall" xmlns:sys="clr-namespace:System;assembly=mscorlib">Cancel (External Install)</sys:String>
     <sys:String x:Key="ReportPeriod" xmlns:sys="clr-namespace:System;assembly=mscorlib">Period</sys:String>
     <sys:String x:Key="ReportGeneratedAt" xmlns:sys="clr-namespace:System;assembly=mscorlib">Generated At</sys:String>
     <sys:String x:Key="ReportSummarySection" xmlns:sys="clr-namespace:System;assembly=mscorlib">Summary</sys:String>
@@ -184,4 +191,13 @@
     <sys:String x:Key="MsgInvoiceSentToPrinter" xmlns:sys="clr-namespace:System;assembly=mscorlib">Invoice sent to printer.</sys:String>
     <sys:String x:Key="MsgPrintingCanceledOrFailed" xmlns:sys="clr-namespace:System;assembly=mscorlib">Printing was canceled or failed.</sys:String>
     <sys:String x:Key="MsgActionFailed" xmlns:sys="clr-namespace:System;assembly=mscorlib">Action failed: {0}</sys:String>
+    <sys:String x:Key="MsgCustomerLookupNotFound" xmlns:sys="clr-namespace:System;assembly=mscorlib">Customer was not found. Enter a valid customer ID, phone, or exact name.</sys:String>
+    <sys:String x:Key="MsgWarrantyCanceledExternalInstall" xmlns:sys="clr-namespace:System;assembly=mscorlib">Warranty canceled due to external installation.</sys:String>
+    <sys:String x:Key="MsgMaintenanceSkippedWarrantyCanceled" xmlns:sys="clr-namespace:System;assembly=mscorlib">Maintenance marked as Skipped. Warranty was canceled due to non-compliance with scheduled maintenance.</sys:String>
+    <sys:String x:Key="MsgServiceReportExported" xmlns:sys="clr-namespace:System;assembly=mscorlib">Service report exported: {0}</sys:String>
+    <sys:String x:Key="CsvCoverageUnderWarranty" xmlns:sys="clr-namespace:System;assembly=mscorlib">Under Warranty</sys:String>
+    <sys:String x:Key="CsvCoverageOutWarranty" xmlns:sys="clr-namespace:System;assembly=mscorlib">Out of Warranty</sys:String>
+    <sys:String x:Key="CsvCoverageOutWarrantyPaid" xmlns:sys="clr-namespace:System;assembly=mscorlib">Out of Warranty (Paid)</sys:String>
+    <sys:String x:Key="WarrantyRulesHint" xmlns:sys="clr-namespace:System;assembly=mscorlib">Warranty rules: 2 years from sale date. Warranty is canceled if installation is done by customer/third-party or if periodic maintenance is skipped. After month 24, service continues as paid maintenance up to year 6.</sys:String>
+    <sys:String x:Key="MaintenanceRulesHint" xmlns:sys="clr-namespace:System;assembly=mscorlib">Periodic visits are auto-scheduled at 3/6/9/12/15/18/21/24 months, then every 6 months until year 6. Visits after month 24 are paid (out of warranty).</sys:String>
 </ResourceDictionary>
